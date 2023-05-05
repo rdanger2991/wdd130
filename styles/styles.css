@@ -56,7 +56,7 @@ footer{
 aside h2 {
     position: relative;
     top: 47 px;
-    left: 10px;
+    left: 5px;
 }
 
 aside {
@@ -67,6 +67,11 @@ aside {
     color: #333;
     text-align: center;
     max-width: 1000rem;
+}
+
+aside img{
+    width: 200px;
+    height: auto;
 }
 
 main p {
