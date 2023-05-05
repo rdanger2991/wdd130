@@ -52,5 +52,5 @@
 
  nav a:hover{
     color: var(--nav-hover-link-color);
-    background-color: var(--nav-hover-bacground-color);
+    background-color: white;
  }
