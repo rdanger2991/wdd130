@@ -1,0 +1,95 @@
+@import url("https://coolors.co/palette/f72585-b5179e-7209b7-560bad-480ca8-3a0ca3-3f37c9-4361ee-4895ef-4cc9f0");
+@import url("https://fonts.google.com/specimen/Nunito+Sans");
+
+:root {
+    --primary-color: #3f37c9;
+    --secondary-color: #4361ee;
+    --accent1-color: #4895ef;
+    --accent2-color: #4cc9f0;
+    --paragraph-font: 'Open Sans';
+    --paragraph-font: 'EB Garamon';
+    --nav-bacground-color: #4895ef;
+    --nav-link-color: #4cc9f0;
+    --nav-hover-link-color: #3f37c9;
+    --nav-hover-bacground-color: #3f37c9;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+nav {
+    background-color: steelblue;
+}
+
+nav a {
+    color: white;
+    display: inline-block;
+}
+
+
+.hero{
+    margin: 1em;
+    position: relative;
+}
+
+.hero h1{
+    position: absolute;
+    top: 15px;
+    border: 1px solid rgb(0, 0, 0, 0.2);
+    padding: 1rem;
+    background-color: #36050565;
+    color: #ffffff;
+    text-align: center;
+    max-width: 1500rem;
+    width: 100%;
+}
+
+
+/*.hero article p{
+      
+}*/
+
+
+.hero article{
+    top: 100px;
+    position: absolute;
+        border: 1px solid rgba(40, 11, 205, 0.2);
+        padding: 1rem;
+        background-color: #05073665;
+        color: #ffffff;
+        max-width: 1500rem;
+        width: 800px;
+        left: 300px;
+}
+
+.hero article img{
+width: 200px;
+float: right;
+}
+
+.hero img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+section h2{
+    font-family: var(--paragraph-font);
+        color: var(--primary-color);
+}
+
+footer {
+    margin-top: 1em;
+    border-top: 1px solid #000;
+    text-align: center;
+    background-color: steelblue;
+    color: #ffffff;
+}
+
+footer img{
+width: 20px;
+
+}
