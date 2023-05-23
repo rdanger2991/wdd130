@@ -26,17 +26,17 @@ nav {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
+    float: right;
 }
 
 nav a {
     color: white;
-    display: block;
     text-decoration: none;
 }
 
 
 .hero{
-    margin: 1em;
+    margin: 0.2em;
     position: relative;
 }
 
@@ -44,7 +44,7 @@ nav a {
     position: absolute;
     top: 15px;
     border: 1px solid rgb(0, 0, 0, 0.2);
-    padding: 1rem;
+    padding: .5rem;
     background-color: #36050565;
     color: #ffffff;
     text-align: center;
@@ -62,7 +62,7 @@ nav a {
     top: 100px;
     position: absolute;
         border: 1px solid rgba(40, 11, 205, 0.2);
-        padding: 1rem;
+        padding: .5rem;
         background-color: #05073665;
         color: #ffffff;
         max-width: 1500rem;
@@ -82,7 +82,7 @@ float: right;
 }
 
 .hero iframe{
-   margin: .2rem;
+   margin: .1rem;
    width: 200px;
    height: auto;
   
@@ -111,33 +111,37 @@ header{
     display: grid;
 }
 
-.section {
-    margin: 1rem;
-    border: 1px solid rgb(0, 0, 0, .1);
-    padding: 1rem;
-    color: #000;
-    display: flex;
-    align-items: center;
+.section h2{
+
+    justify-content: center;
 }
 
 .section2{
-    margin: 1rem;
     border: 1px solid rgb(0, 0, 0, .1);
-    padding: 1rem;
     color: #000;
 }
 
-.section2 img{
-    width: 200px;
-    display: inline-block;
-    margin: 2rem;
-}
+
 
 
 .grid {
-    display: grid;
-    align-items: center;
-    justify-content: center;
+    margin: .5rem;
+        padding: 1rem;
+        color: #000;
+        display: grid;
+        align-items: center;
+        text-align: center;
+}
+
+.section {
+    border: 1px solid rgb(0, 0, 0, .1);
+    position: relative;
+    
+}
+
+
+.section2{
+    display: block;
 }
 
 .section img{
@@ -150,18 +154,6 @@ height: 170px;
     margin: 1rem;
 }
 
-.section h2{
-    position: absolute;
-    left: 690px;
-    top: 620px;
-    color: white;
-}
-
-.section_contact img{
-width: 200px;
-display: inline-block;
-margin: 2rem;
-}
 
 .section_contact {
     margin: 1rem;
@@ -172,17 +164,24 @@ margin: 2rem;
 }
 
 figure {
-    border: 2px #c0c0c0 solid;
+    border: thin #c0c0c0 solid;
+    display: flex;
     flex-flow: column;
-    width: 250px;
+    padding: 5px;
+    max-width: 220px;
+    margin: auto;
 }
 
+.section_contact img {
+    max-width: 220px;
+    max-height: 150px;
+}
 
 figcaption {
     background-color: #222;
     color: #fff;
     font: italic smaller sans-serif;
-    padding: 3px;
+   
     text-align: center;
 }
 
@@ -249,4 +248,5 @@ input[type="radio"] {
     height: 22px;
     vertical-align: bottom;
 }
+
     
