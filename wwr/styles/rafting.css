@@ -221,23 +221,6 @@ figcaption {
     margin-right: 8px;
 }
 
-/* Map section */
-.map-container {
-    background-color: #f5f5f5;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
-}
-
-.map h2 {
-    text-align: center;
-    color: var(--accent1-color);
-    font-size: 2rem;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-}
-
 
 .employee {
     padding: 40px 20px; 
