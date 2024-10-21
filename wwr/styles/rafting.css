@@ -217,7 +217,7 @@ figcaption {
 }
 
 .contact-info i {
-    color: var(--accent2-color); /* Appliquer une couleur différente pour les icônes */
+    color: var(--accent2-color); 
     margin-right: 8px;
 }
 
