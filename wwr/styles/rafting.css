@@ -238,19 +238,6 @@ figcaption {
     text-transform: uppercase;
 }
 
-.map iframe {
-    border: 3px solid var(--secondary-color); /* Bordure autour de la carte */
-    border-radius: 10px;
-    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1); /* Ajout d'ombre pour un effet de profondeur */
-    transition: transform 0.3s ease-in-out;
-}
-
-.map iframe:hover {
-    transform: scale(1.05); /* Zoom léger au survol */
-}
-
-
-
 
 .employee {
     padding: 40px 20px; 
