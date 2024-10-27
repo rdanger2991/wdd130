@@ -114,6 +114,119 @@ nav {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+
+/* Hero Section */
+.hero1 {
+    position: relative;
+    width: 100%;
+    height: 80vh;
+    background-image: url('../images/rafting64.jpg'); 
+    background-size: cover;
+    background-position: center;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.hero-overlay h1 {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero-overlay p {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.hero1 h1{
+    color: var(--article-bg-color);
+}
+
+.hero1 p{
+    color: var(--article-bg-color);
+}
+
+.newsletter-signup {
+    background-color: var(--article-bg-color);
+    color: #001C55;
+    padding: 2rem;
+    text-align: center;
+    margin: 2rem 0;
+    border-radius: 8px;
+}
+
+.newsletter-signup h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.newsletter-signup p {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.newsletter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.newsletter-form label {
+    font-size: 1rem;
+}
+
+.newsletter-form input {
+    padding: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.newsletter-form button {
+    background-color: #001C55;
+    color: #ffffff;
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.newsletter-form button:hover {
+    background-color: #0E6BA8;
+}
+
+
+.cta-button {
+    padding: 0.75rem 1.5rem;
+    background-color: #0A2472; 
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #001C55; 
+}
+
 .history {
     background-color: var(--primary-color); 
     padding: 40px; 
@@ -405,6 +518,8 @@ footer p {
     color: var(--accent2-color);
 }
 
+
+
 footer .sociallinks {
     display: flex;
     gap: 15px;
@@ -448,3 +563,103 @@ a:hover {
     margin: 0 auto;
     padding: 20px;
 }
+
+.grid-layout {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.grid-layout h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem; 
+}
+
+.grid-item {
+    background-color: var(--article-bg-color);
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden; 
+    transition: transform 0.3s;
+}
+
+.grid-item:hover {
+    transform: translateY(-5px);
+}
+
+.grid-item img {
+    width: 100%;
+    border-radius: 8px 8px 0 0; 
+    margin-top: 10px;
+}
+
+.trips-intro {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0E6BA8; /* Match your color scheme */
+    color: var(--article-bg-color);
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 1rem;
+}
+
+.trip-descriptions {
+    margin: 2rem 0;
+    background-color: var(--article-bg-color); /* Light background color for contrast */
+    padding: 2rem; /* Add padding for better spacing */
+    border-radius: 8px; /* Rounded corners for a modern look */
+}
+
+.trip-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Adjusted min width for better visuals */
+    gap: 20px;
+}
+
+.trip {
+    border: 1px solid #0A2472;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: var(--article-bg-color); 
+}
+
+.trip img {
+    width: 330px;
+    height: auto;
+    margin-top: 10px;
+}
+
+
+
+.trips-table {
+    margin: 2rem 0;
+    overflow-x: auto;
+    background-color: var(--article-bg-color); 
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #0A2472;
+    color: white;
+}
+
