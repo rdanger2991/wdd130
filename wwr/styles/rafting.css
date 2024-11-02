@@ -1,13 +1,14 @@
 /* Define CSS variables based on your selected color scheme */
 :root {
-    --primary-color: #0A2472; 
-    --secondary-color: #001C55; 
-    --accent1-color: #00072D;  
-    --accent2-color: #0E6BA8;  
-    --background-color: #A6E1FA;
-    --font-color: #333333;     
-    --article-bg-color: rgba(255, 255, 255, 0.8); 
+    --primary-color: #0A2472;      
+    --secondary-color: #001C55;     
+    --accent1-color: #0E6BA8;       
+    --accent2-color: #0D5687;       
+    --background-color: #ffffff;    
+    --font-color: #1E1E1E;          
+    --article-bg-color: #F5FAFD;    
 }
+
 
 body {
     background-color: var(--background-color);
@@ -24,7 +25,7 @@ header {
     grid-template-columns: auto 1fr; 
     align-items: center;
     padding: 20px;
-    background-color: var(--secondary-color); 
+    background-color: var(--article-bg-color); 
 }
 
 header img {
@@ -54,7 +55,7 @@ nav {
 }
 
 .nav-links li a:hover {
-    color: white; 
+    color: var(--secondary-color); 
 }
 
 .hero {
@@ -100,12 +101,15 @@ nav {
     width: 80%;
     padding: 20px;
     background-color: rgba(23, 22, 22, 0.7); 
-    color: var(--font-color);
     z-index: 2; 
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.hero .article{
+    color: white;
 }
 
 .hero article img {
@@ -209,7 +213,7 @@ nav {
 }
 
 .newsletter-form button:hover {
-    background-color: #0E6BA8;
+    background-color: #0A578A;
 }
 
 
@@ -228,7 +232,7 @@ nav {
 }
 
 .history {
-    background-color: var(--primary-color); 
+    background-color: var(--article-bg-color); 
     padding: 40px; 
     border-radius: 10px; 
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); 
@@ -262,7 +266,7 @@ nav {
 }
 
 .adventure {
-    background-color: var(--primary-color); 
+    background-color: var(--article-bg-color); 
     padding: 40px 20px; 
     border-radius: 10px; 
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); 
@@ -510,7 +514,7 @@ footer {
     justify-content: space-between;
     align-items: center;
     padding: 20px;
-    background-color: var(--primary-color);
+    background-color: var(--article-bg-color);
     font-size: 0.9rem; 
 }
 
