@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue.js Interface Example</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .navbar {
+      background-color: #007BFF;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    .container {
+      padding: 2rem;
+    }
+    .todo-item {
+      display: flex;
+      justify-content: space-between;
+      background: #f9f9f9;
+      padding: 1rem;
+      margin: 0.5rem 0;
+      border-radius: 4px;
+    }
+    .todo-item button {
+      background: red;
+      color: white;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    input[type="text"] {
+      width: calc(100% - 80px);
+      padding: 0.5rem;
+      margin-right: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button {
+      background: #007BFF;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- Barre de navigation -->
+    <div class="navbar">
+      <h1>Vue.js To-Do App</h1>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="container">
+      <!-- Ajouter une tâche -->
+      <div>
+        <input type="text" v-model="newTask" placeholder="Enter a task" />
+        <button @click="addTask">Add Task</button>
+      </div>
+
+      <!-- Liste des tâches -->
+      <div v-if="tasks.length">
+        <h2>Tasks:</h2>
+        <div class="todo-item" v-for="(task, index) in tasks" :key="index">
+          <span>{{ task }}</span>
+          <button @click="deleteTask(index)">Delete</button>
+        </div>
+      </div>
+      <p v-else>No tasks available.</p>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          newTask: "", // Tâche saisie par l'utilisateur
+          tasks: []    // Liste des tâches
+        };
+      },
+      methods: {
+        addTask() {
+          if (this.newTask.trim()) {
+            this.tasks.push(this.newTask);
+            this.newTask = ""; // Réinitialiser le champ
+          }
+        },
+        deleteTask(index) {
+          this.tasks.splice(index, 1); // Supprimer la tâche
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

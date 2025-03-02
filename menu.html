@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue.js Professional Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f5f6fa;
+    }
+    .dashboard {
+      display: flex;
+      height: 100vh;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 250px;
+      background-color: #2f3640;
+      color: white;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    .sidebar h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar li {
+      padding: 0.8rem 1rem;
+      margin: 0.5rem 0;
+      background: #353b48;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+    .sidebar li:hover {
+      background: #40739e;
+    }
+    .sidebar li i {
+      margin-right: 10px;
+    }
+    .dropdown {
+      margin-left: 10px;
+    }
+    .dropdown ul {
+      display: none;
+      list-style: none;
+      padding-left: 20px;
+    }
+    .dropdown:hover ul {
+      display: block;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Header */
+    .header {
+      background-color: #40739e;
+      color: white;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background-color: white;
+      border-radius: 8px;
+      padding: 0.5rem;
+    }
+    .search-bar input {
+      border: none;
+      outline: none;
+      padding: 0.5rem;
+      flex: 1;
+    }
+    .search-bar i {
+      color: #40739e;
+    }
+    .icons {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .icons i {
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* Widgets */
+    .widgets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .widget {
+      background: white;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="dashboard">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <h2>Dashboard</h2>
+        <ul>
+          <li>
+            <i class="fas fa-home"></i> Overview
+          </li>
+          <li class="dropdown">
+            <i class="fas fa-chart-line"></i> Analytics
+            <ul>
+              <li><i class="fas fa-circle"></i> Sales</li>
+              <li><i class="fas fa-circle"></i> Traffic</li>
+            </ul>
+          </li>
+          <li>
+            <i class="fas fa-cogs"></i> Settings
+          </li>
+          <li>
+            <i class="fas fa-users"></i> Users
+          </li>
+        </ul>
+      </div>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+          <div class="search-bar">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search...">
+          </div>
+          <div class="icons">
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-user-circle"></i>
+          </div>
+        </div>
+
+        <!-- Widgets -->
+        <div class="widgets">
+          <div class="widget" v-for="(stat, index) in stats" :key="index">
+            <h3>{{ stat.title }}</h3>
+            <p>{{ stat.value }}</p>
+          </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="widget">
+          <h3>Performance Chart</h3>
+          <div class="chart-container">
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          stats: [
+            { title: "Total Users", value: "1,250" },
+            { title: "Monthly Revenue", value: "$5,800" },
+            { title: "Active Projects", value: "12" },
+            { title: "Pending Tasks", value: "34" },
+          ],
+        };
+      },
+      mounted() {
+        this.renderChart();
+      },
+      methods: {
+        renderChart() {
+          const ctx = document.getElementById('myChart').getContext('2d');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: ['January', 'February', 'March', 'April', 'May'],
+              datasets: [{
+                label: 'Revenue',
+                data: [500, 700, 800, 600, 1000],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  display: true
+                }
+              },
+              scales: {
+                x: {
+                  beginAtZero: true
+                },
+                y: {
+                  beginAtZero: true
+                }
+              }
+            }
+          });
+        }
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

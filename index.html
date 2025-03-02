@@ -1,50 +1,1742 @@
 <!DOCTYPE html>
-<html lang="en-US">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Renil Danger's personal website showcasing his expertise in computer science, education technology
-    , and database management. Developer of Educa2024, a school management system. Learn more about his skills in office computing, 
-    SQL, PostgreSQL, and Excel, and his passion for football, reading, and innovative tech solutions.">
-    <meta name="author" content="Renil Danger">
-    <title>Renil Danger | WDD 130</title>
-    <link rel="stylesheet" href="styles/styles.css">
+    <title>MoroniPost - Portail d'Actualités</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome pour les icônes -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSS pour l'entête du site MoroniPost */
+        :root {
+            --primary-blue: #0A1E7A; /* Bleu marine du logo MoroniPost */
+            --primary-red: #E62D2D;  /* Rouge vif du logo MoroniPost */
+            --dark-blue: #071659;    /* Version plus foncée pour le footer */
+            --light-blue: #132DA5;   /* Version plus claire pour les survols */
+            --text-light: #ffffff;   /* Texte clair pour contraste */
+            --light-bg: #f8f9fa;     /* Fond clair pour la navbar */
+            --border-color: #e9ecef; /* Couleur légère pour les bordures */
+            --header-height: 150px;  /* Hauteur fixe pour tout l'en-tête */
+            --logo-height: 250px;     /* Hauteur fixe pour le logo */
+            --navbar-height: 50px;   /* Hauteur fixe pour la navbar */
+        }
+
+        /* Styles de base */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            color: #333;
+            background-color: #fff;
+        }
+
+        /* En-tête du site avec dimensions fixes */
+        .site-header {
+            background-color: #e9ecef;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            height: var(--header-height);
+            min-height: var(--header-height);
+            max-height: var(--header-height);
+            overflow: visible; /* Permet au menu déroulant de déborder */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Section logo avec hauteur fixe */
+        .logo-section {
+            height: calc(var(--header-height) - var(--navbar-height));
+            min-height: calc(var(--header-height) - var(--navbar-height));
+            max-height: calc(var(--header-height) - var(--navbar-height));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 0;
+        }
+
+        .logo-img {
+            height: var(--logo-height);
+            width: auto;
+            object-fit: contain;
+            max-width: 100%;
+        }
+
+        /* Barre de navigation avec hauteur fixe */
+        .navbar {
+            padding: 0;
+            height: var(--navbar-height);
+            min-height: var(--navbar-height);
+            max-height: var(--navbar-height);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Navigation principale */
+        .main-menu {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        .nav-item {
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--primary-blue) !important;
+            padding: 0 1rem !important;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-link:hover, 
+        .nav-link:focus {
+            color: var(--primary-red) !important;
+        }
+
+        .nav-link.active {
+            color: var(--primary-red) !important;
+            font-weight: 600;
+            border-bottom: 2px solid var(--primary-red);
+        }
+
+        /* Contrôles média en position absolue dans la section logo */
+        .media-controls {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        /* Bouton LIVE */
+        .live-button {
+            background-color: var(--primary-red);
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            border-radius: 3px;
+            margin-left: 10px;
+        }
+
+        .live-button:hover {
+            background-color: #d42121;
+            color: white;
+        }
+
+        /* Icônes média */
+        .media-icon {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            margin: 0 5px;
+            text-decoration: none;
+        }
+
+        .media-icon:hover {
+            color: var(--primary-red);
+        }
+
+        /* Recherche */
+        .search-form {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 200px;
+        }
+
+        .search-form .form-control {
+            border-radius: 20px;
+            font-size: 0.9rem;
+            padding-right: 35px;
+            border: 1px solid var(--border-color);
+            height: 36px;
+        }
+
+        .btn-search {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: var(--primary-blue);
+        }
+
+        .btn-search:hover {
+            color: var(--primary-red);
+        }
+
+        /* Menu hamburger en position absolue dans la section logo */
+        .mobile-controls {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-toggler {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+            padding: 0.25rem 0.5rem;
+        }
+
+        .search-toggle {
+            background: none;
+            border: none;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+
+        /* Gestion du menu déroulant mobile */
+        @media (max-width: 991.98px) {
+            .site-header {
+                height: auto;
+                min-height: var(--header-height);
+                max-height: none;
+            }
+            
+            .logo-section {
+                height: calc(var(--header-height) - var(--navbar-height));
+                min-height: calc(var(--header-height) - var(--navbar-height));
+                max-height: calc(var(--header-height) - var(--navbar-height));
+            }
+            
+            .navbar {
+                height: var(--navbar-height);
+                min-height: var(--navbar-height);
+            }
+            
+            .navbar-collapse {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: white;
+                z-index: 1000;
+                box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            }
+            
+            .main-menu {
+                flex-direction: column;
+                padding: 10px 0;
+                height: auto;
+            }
+            
+            .nav-item {
+                height: auto;
+            }
+            
+            .nav-link {
+                justify-content: center;
+                height: auto;
+                padding: 10px 1rem !important;
+            }
+            
+            /* Ajustement de la recherche pour mobile */
+            .search-form-mobile {
+                width: 100%;
+                padding: 10px 15px;
+                position: relative;
+                transform: none;
+                right: auto;
+                top: auto;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .logo-img {
+                height: 70px;
+            }
+        }
+
+        /* Styles pour la section d'actualités principales */
+.featured-news {
+    padding: 30px 0;
+    display: flex;
+    position: relative;
+}
+
+.featured-news .container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+/* Article principal */
+.main-article {
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.article-image-container {
+    position: relative;
+    width: 100%;
+    height: 500px;
+}
+
+.main-article-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.article-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+    padding: 40px 20px 20px;
+}
+
+.article-title {
+    color: white;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* Articles secondaires */
+.secondary-articles {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.secondary-article {
+    display: flex;
+    background: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.secondary-article-image {
+    flex: 0 0 120px;
+    height: 90px;
+}
+
+.article-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.secondary-article-content {
+    flex: 1;
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.article-category {
+    display: inline-block;
+    padding: 3px 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-red);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.secondary-article-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 5px 0;
+    line-height: 1.3;
+}
+
+.article-date {
+    font-size: 12px;
+    color: #777;
+}
+
+/* Media queries pour la responsivité */
+@media (max-width: 991.98px) {
+    .featured-news .container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .article-image-container {
+        height: 400px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .article-image-container {
+        height: 300px;
+    }
+    
+    .article-title {
+        font-size: 24px;
+    }
+    
+    .secondary-article-image {
+        flex: 0 0 100px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .article-image-container {
+        height: 250px;
+    }
+    
+    .article-title {
+        font-size: 20px;
+    }
+    
+    .secondary-article-title {
+        font-size: 14px;
+    }
+}
+
+/* Styles pour les sections de catégories d'actualités */
+
+/* Style commun pour les sections */
+.news-categories {
+    padding: 20px 0 40px;
+}
+
+.category-section {
+    margin-bottom: 40px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 10px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-blue);
+    margin: 0;
+    position: relative;
+    padding-left: 15px;
+}
+
+.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    bottom: 5px;
+    width: 5px;
+    background-color: var(--primary-red);
+    border-radius: 3px;
+}
+
+.see-all-link {
+    font-size: 14px;
+    color: var(--primary-blue);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.see-all-link i {
+    font-size: 10px;
+    margin-left: 5px;
+}
+
+.see-all-link:hover {
+    color: var(--primary-red);
+}
+
+/* Actualités nationales */
+.category-content {
+    display: flex;
+    gap: 20px;
+}
+
+.category-articles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+.category-article {
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.category-article:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.article-video-thumbnail,
+.article-thumbnail {
+    position: relative;
+    height: 180px;
+}
+
+.article-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-icon {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    color: white;
+    font-size: 24px;
+    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+.article-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 12px 15px 8px;
+    line-height: 1.3;
+}
+
+.article-excerpt {
+    font-size: 14px;
+    color: #666;
+    margin: 0 15px 15px;
+    line-height: 1.4;
+}
+
+/* Actualités internationales */
+.international-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.international-articles {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.international-article {
+    display: flex;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.international-article .article-thumbnail {
+    flex: 0 0 150px;
+    height: 120px;
+}
+
+.international-article .article-info {
+    flex: 1;
+    padding: 10px 15px;
+}
+
+.international-article .article-title {
+    font-size: 15px;
+    margin: 0 0 8px 0;
+}
+
+.international-article .article-excerpt {
+    font-size: 13px;
+    margin: 0;
+}
+
+.news-list {
+    background: white;
+    border-radius: 4px;
+    padding: 15px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.international-news-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.news-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.news-item:last-child {
+    border-bottom: none;
+}
+
+/* Section Sports */
+.sports-section {
+    padding: 20px 0 40px;
+    background-color: #f8f9fa;
+}
+
+.sports-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.sports-main-article {
+    position: relative;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sports-main-image {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+
+.sports-article-content {
+    background: white;
+    padding: 15px 20px;
+}
+
+.sports-article-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    line-height: 1.3;
+}
+
+.sports-article-excerpt {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.sports-secondary-articles {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.sports-secondary-article {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.sports-secondary-article .article-thumbnail {
+    height: 130px;
+}
+
+.sports-secondary-article .article-info {
+    padding: 10px 15px;
+}
+
+.secondary-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+}
+
+.secondary-excerpt {
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Media queries pour la responsivité */
+@media (max-width: 991.98px) {
+    .category-articles {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .international-content {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .sports-content {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .sports-secondary-articles {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 767.98px) {
+    .category-articles {
+        grid-template-columns: 1fr;
+    }
+    
+    .international-article {
+        flex-direction: column;
+    }
+    
+    .international-article .article-thumbnail {
+        flex: none;
+        height: 180px;
+        width: 100%;
+    }
+    
+    .sports-secondary-articles {
+        grid-template-columns: 1fr;
+    }
+    
+    .sports-main-image {
+        height: 250px;
+    }
+}
+
+/* Styles pour les sections 5 à 8 */
+
+/* 5ème section : Vidéos */
+.videos-section {
+    padding: 30px 0 50px;
+    background-color: white;
+}
+
+.videos-container {
+    position: relative;
+}
+
+.video-slider {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.video-item {
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.video-thumbnail {
+    position: relative;
+    height: 180px;
+}
+
+.video-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0) 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.play-button {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 20px;
+}
+
+.video-duration {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-size: 12px;
+}
+
+.video-badge {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background-color: var(--primary-red);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.video-title {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 15px;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.slider-controls {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+}
+
+.slider-prev,
+.slider-next {
+    background-color: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    pointer-events: auto;
+    color: var(--primary-blue);
+}
+
+.slider-prev {
+    margin-left: -20px;
+}
+
+.slider-next {
+    margin-right: -20px;
+}
+
+/* 6ème section : Contenu Original */
+.original-content {
+    padding: 30px 0 50px;
+    background-color: #f8f9fa;
+}
+
+.original-articles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.original-article {
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.original-thumbnail {
+    position: relative;
+    height: 180px;
+}
+
+.original-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.original-title {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 15px;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* 7ème section : Programme Audio */
+.audio-program {
+    padding: 30px 0 50px;
+    background-color: white;
+}
+
+.radio-program {
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.program-header {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.program-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--primary-blue);
+}
+
+.audio-player {
+    display: flex;
+    padding: 20px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.audio-thumbnail {
+    flex: 0 0 180px;
+    height: 180px;
+    margin-right: 20px;
+}
+
+.program-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.player-controls {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.play-pause-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.progress-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.progress-bar {
+    height: 4px;
+    background-color: #e5e5e5;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-indicator {
+    height: 100%;
+    background-color: var(--primary-red);
+}
+
+.time-display {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #666;
+}
+
+.volume-control {
+    margin-top: 10px;
+}
+
+.mute-btn {
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.available-programs {
+    padding: 20px;
+}
+
+.program-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.program-btn {
+    padding: 8px 15px;
+    border: none;
+    background-color: #f0f0f0;
+    color: #333;
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.program-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.program-btn.koze-fanm {
+    background-color: #ff5252;
+    color: white;
+}
+
+.program-btn.sak-pase {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.program-btn.randevou {
+    background-color: #00a6ed;
+    color: white;
+}
+
+.program-btn.twazem {
+    background-color: #00b8a9;
+    color: white;
+}
+
+/* 8ème section : Footer */
+.site-footer {
+    background-color: var(--dark-blue);
+    color: white;
+}
+
+.footer-main {
+    padding: 50px 0;
+}
+
+.footer-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+}
+
+.footer-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    color: white;
+    text-transform: uppercase;
+}
+
+.footer-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-nav li {
+    margin-bottom: 10px;
+}
+
+.footer-nav a {
+    color: #bdc3c7;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.footer-nav a:hover {
+    color: white;
+}
+
+.social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.social-link:hover {
+    background-color: var(--primary-red);
+}
+
+.footer-copyright {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 15px 0;
+    text-align: center;
+}
+
+.copyright-text {
+    margin: 0;
+    font-size: 14px;
+    color: #bdc3c7;
+}
+
+/* Media queries pour la responsivité */
+@media (max-width: 1199.98px) {
+    .video-slider {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .original-articles {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 991.98px) {
+    .video-slider {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .original-articles {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .audio-player {
+        flex-direction: column;
+    }
+    
+    .audio-thumbnail {
+        margin-right: 0;
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .video-slider {
+        grid-template-columns: 1fr;
+    }
+    
+    .original-articles {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-sections {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .footer-sections {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="wwr/">About</a></li>
-                <li><a href="wwr/site-plan-rafting.html">Contact</a></li>
-            </ul>
-        </nav>
+    <!-- En-tête du site MoroniPost -->
+    <header class="site-header">
+        <div class="container h-100">
+            <!-- Section logo avec contrôles mobiles et icônes média -->
+            <div class="logo-section">
+                <!-- Contrôles mobiles (hamburger + recherche) -->
+                <div class="mobile-controls d-lg-none">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <button class="search-toggle d-lg-none">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                
+                <!-- Logo central -->
+                <a href="index.html">
+                    <img src="images/logo.png" alt="MoroniPost" class="logo-img">
+                </a>
+                
+                <!-- Icônes média et live -->
+                <div class="media-controls">
+                    <a href="#" class="media-icon d-none d-lg-inline">
+                        <i class="fas fa-video"></i>
+                    </a>
+                    <a href="#" class="media-icon d-none d-lg-inline">
+                        <i class="fas fa-volume-up"></i>
+                    </a>
+                    <a href="#" class="live-button">
+                        LIVE
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Barre de navigation principale -->
+            <nav class="navbar navbar-expand-lg">
+                <div class="nav-container container-fluid">
+                    <!-- Menu de navigation -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav main-menu">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#">ACTUALITÉS</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">POLITIQUE</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">ÉCONOMIE</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">INTERNATIONAL</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">SPORT</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">CULTURE</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">SANTÉ</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">TECH</a>
+                            </li>
+                        </ul>
+                        
+                        <!-- Barre de recherche desktop -->
+                        <form class="d-none d-lg-block search-form">
+                            <input type="search" class="form-control" placeholder="Rechercher">
+                            <button class="btn btn-search" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                        
+                        <!-- Barre de recherche mobile (s'affiche quand on clique sur la loupe) -->
+                        <form class="d-none search-form-mobile">
+                            <input type="search" class="form-control" placeholder="Rechercher">
+                            <button class="btn btn-search" type="submit">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+        </div>
     </header>
 
-    <main>
-      <h1>Renil Danger | WDD 130</h1>
-      <img src="images/profile.jpg" width="200" height="200" alt="Renil Danger">
-      <p>Hello my name is Renil Danger and I am from Port-au-Prince, Haïti. I have some experience in teaching computer science and 
-        database management. Developer of Educa2024, a school management system. Skilled in office computing, SQL, PostgreSQL, 
-        and Excel. Passionate about reading, football, and creating innovative tech solutions. Always eager to connect and collaborate 
-        on education and technology projects.</p>
-    </main>
-<aside>
-    <h2>Port-au-Prince</h2>
-    <img src="images/port-au-prince.jpg" alt="Port-au-Prince">
-    <p>Port-au-Prince is the capital and largest city of Haiti, located on the country's western coast along the Gulf of Gonâve. 
-        It serves as Haiti’s economic, cultural, and political center. Known for its vibrant, bustling streets, Port-au-Prince has 
-        a rich history and is home to a diverse population. 
-        The city is a mix of colonial architecture, modern buildings, and informal housing, with notable landmarks like the National 
-        Palace, the Iron Market (Marché en Fer), and the Cathedral of Our Lady of the Assumption. The culture of Port-au-Prince is 
-        shaped by its French colonial heritage and African influences, seen in its art, music, and vibrant local markets.Despite facing 
-        challenges like poverty, natural disasters (notably the 2010 earthquake), and political instability, Port-au-Prince is known 
-        for its resilience. It’s also a hub for Haitian art, including the famous "tap-tap" buses, brightly painted public transport 
-        vehicles, and the city’s thriving art scene, especially in areas like the Croix-des-Bouquets. The city’s location gives it 
-        access to scenic views of the surrounding hills and the Caribbean Sea, with a tropical climate that brings warmth year-round.</p>
-</aside>
-    <footer>
-        <p>&copy; 🌴Renil Danger , Port-au-Prince, Haïti🌴</p>
-    </footer>
+<!-- Section d'actualités principales -->
+<section class="featured-news">
+    <div class="container">
+        <!-- Grand article principal -->
+        <div class="main-article">
+            <div class="article-image-container">
+                <img src="images/brh.png" alt="Trump et Zelensky en discussion" class="main-article-image">
+                <div class="article-overlay">
+                    <h2 class="article-title">Réunion historique: Trump et Zelensky discutent des enjeux de sécurité à la Maison Blanche</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Articles secondaires à droite -->
+        <div class="secondary-articles">
+            <!-- Article secondaire 1 -->
+            <div class="secondary-article">
+                <div class="secondary-article-image">
+                    <img src="images/black-man-depression-1-750x350.jpg" alt="Conférence internationale" class="article-thumb">
+                </div>
+                <div class="secondary-article-content">
+                    <span class="article-category">International</span>
+                    <h3 class="secondary-article-title">Sommet sur le climat: les États s'engagent à réduire leurs émissions</h3>
+                    <span class="article-date">Publié il y a 3 heures</span>
+                </div>
+            </div>
+
+            <!-- Article secondaire 2 -->
+            <div class="secondary-article">
+                <div class="secondary-article-image">
+                    <img src="images/culture-etrangere.jpg" alt="Élections" class="article-thumb">
+                </div>
+                <div class="secondary-article-content">
+                    <span class="article-category">Politique</span>
+                    <h3 class="secondary-article-title">Élections: les candidats intensifient leur campagne à une semaine du scrutin</h3>
+                    <span class="article-date">Publié il y a 5 heures</span>
+                </div>
+            </div>
+
+            <!-- Article secondaire 3 -->
+            <div class="secondary-article">
+                <div class="secondary-article-image">
+                    <img src="images/politque.jpg" alt="Économie" class="article-thumb">
+                </div>
+                <div class="secondary-article-content">
+                    <span class="article-category">Économie</span>
+                    <h3 class="secondary-article-title">Croissance économique: les prévisions revues à la hausse pour 2025</h3>
+                    <span class="article-date">Publié hier</span>
+                </div>
+            </div>
+
+            <!-- Article secondaire 4 -->
+            <div class="secondary-article">
+                <div class="secondary-article-image">
+                    <img src="images/Stress-et-sante.jpg" alt="Technologie" class="article-thumb">
+                </div>
+                <div class="secondary-article-content">
+                    <span class="article-category">Technologie</span>
+                    <h3 class="secondary-article-title">Intelligence artificielle: une nouvelle avancée révolutionnaire</h3>
+                    <span class="article-date">Publié il y a 2 jours</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Catégories d'actualités -->
+<section class="news-categories">
+    <div class="container">
+        <!-- Actualités nationales -->
+        <div class="category-section">
+            <div class="section-header">
+                <h2 class="section-title">Actualités Nationales</h2>
+                <a href="#" class="see-all-link">Voir tout <i class="fas fa-chevron-right"></i></a>
+            </div>
+            
+            <div class="category-content">
+                <!-- Articles avec images -->
+                <div class="category-articles">
+                    <!-- Article 1 -->
+                    <div class="category-article">
+                        <div class="article-video-thumbnail">
+                            <img src="images/culture-etrangere.jpg" alt="Actualité nationale" class="article-image">
+                            <span class="video-icon"><i class="fas fa-play-circle"></i></span>
+                        </div>
+                        <h3 class="article-title">Réforme du système éducatif: ce qui va changer à la rentrée</h3>
+                        <p class="article-excerpt">Le gouvernement annonce une série de mesures pour améliorer l'enseignement à tous les niveaux.</p>
+                    </div>
+                    
+                    <!-- Article 2 -->
+                    <div class="category-article">
+                        <div class="article-video-thumbnail">
+                            <img src="images/pap.jpg" alt="Actualité nationale" class="article-image">
+                            <span class="video-icon"><i class="fas fa-play-circle"></i></span>
+                        </div>
+                        <h3 class="article-title">Sécurité: Le chef de la police nationale présente son plan d'action</h3>
+                        <p class="article-excerpt">De nouvelles mesures pour renforcer la sécurité des citoyens et lutter contre la criminalité.</p>
+                    </div>
+                    
+                    <!-- Article 3 -->
+                    <div class="category-article">
+                        <div class="article-thumbnail">
+                            <img src="images/tech.png" alt="Actualité nationale" class="article-image">
+                        </div>
+                        <h3 class="article-title">La gangs continue de semer la terreur dans plusieurs quartiers</h3>
+                        <p class="article-excerpt">Les habitants des zones touchées demandent plus de protection face à l'insécurité grandissante.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actualités internationales -->
+        <div class="category-section">
+            <div class="section-header">
+                <h2 class="section-title">International</h2>
+                <a href="#" class="see-all-link">Voir tout <i class="fas fa-chevron-right"></i></a>
+            </div>
+            
+            <div class="category-content international-content">
+                <!-- Côté gauche: articles internationaux -->
+                <div class="international-articles">
+                    <!-- Article 1 -->
+                    <div class="international-article">
+                        <div class="article-thumbnail">
+                            <img src="images/culture.jpg" alt="International" class="article-image">
+                        </div>
+                        <div class="article-info">
+                            <h3 class="article-title">Crise au Moyen-Orient: Netanyahu demande une négociation directe</h3>
+                            <p class="article-excerpt">Le premier ministre israélien s'adresse aux médiateurs internationaux pour une résolution rapide du conflit.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Article 2 -->
+                    <div class="international-article">
+                        <div class="article-thumbnail">
+                            <img src="images/negro-news.jpg" alt="International" class="article-image">
+                        </div>
+                        <div class="article-info">
+                            <h3 class="article-title">Trump sanctionne la compagnie pétrolière Chevron au Venezuela</h3>
+                            <p class="article-excerpt">Une nouvelle série de sanctions économiques visant le régime vénézuélien.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Côté droit: liste de titres -->
+                <div class="news-list">
+                    <ul class="international-news-list">
+                        <li class="news-item">Israël et Hamas: Poursuite des négociations pour un cessez-le-feu</li>
+                        <li class="news-item">Le sénat américain rejette une proposition controversée sur l'immigration</li>
+                        <li class="news-item">Israël identifie quatre otages, mais ne confirme pas s'ils sont encore en vie</li>
+                        <li class="news-item">Hamas libère quatre otages israéliens et deux américains</li>
+                        <li class="news-item">Relations diplomatiques: Washington et Moscou engagent des discussions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Sport et autres catégories -->
+<section class="sports-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Sport</h2>
+            <a href="#" class="see-all-link">Voir tout <i class="fas fa-chevron-right"></i></a>
+        </div>
+        
+        <div class="sports-content">
+            <!-- Article principal -->
+            <div class="sports-main-article">
+                <img src="images/sport.jpg" alt="Équipe féminine de football" class="sports-main-image">
+                <div class="sports-article-content">
+                    <h3 class="sports-article-title">Football: L'équipe nationale féminine se qualifie pour le Mondial U-20</h3>
+                    <p class="sports-article-excerpt">Une performance historique qui place le pays sur la carte du football féminin international.</p>
+                </div>
+            </div>
+            
+            <!-- Articles secondaires -->
+            <div class="sports-secondary-articles">
+                <!-- Article secondaire 1 -->
+                <div class="sports-secondary-article">
+                    <div class="article-thumbnail">
+                        <img src="images/foot.jpg" alt="Football" class="article-image">
+                    </div>
+                    <div class="article-info">
+                        <h4 class="secondary-title">Éliminatoires mondiales U-20: Victoire contre l'équipe de Belize</h4>
+                        <p class="secondary-excerpt">Un match décisif qui ouvre la porte du tournoi international.</p>
+                    </div>
+                </div>
+                
+                <!-- Article secondaire 2 -->
+                <div class="sports-secondary-article">
+                    <div class="article-thumbnail">
+                        <img src="images/sport.jpg" alt="Football junior" class="article-image">
+                    </div>
+                    <div class="article-info">
+                        <h4 class="secondary-title">Football: Qualification pour le Mondial U-17</h4>
+                        <p class="secondary-excerpt">Les jeunes talents du pays brillent lors des éliminatoires.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5ème section : Vidéos -->
+<section class="videos-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Vidéo</h2>
+            <a href="#" class="see-all-link">Voir tout <i class="fas fa-chevron-right"></i></a>
+        </div>
+        
+        <div class="videos-container">
+            <!-- Carousel de vidéos -->
+            <div class="video-slider">
+                <!-- Vidéo 1 -->
+                <div class="video-item">
+                    <div class="video-thumbnail">
+                        <img src="images/foot.jpg" alt="Vidéo politique" class="video-image">
+                        <div class="video-overlay">
+                            <span class="play-button"><i class="fas fa-play"></i></span>
+                            <span class="video-duration">14:25</span>
+                        </div>
+                        <div class="video-badge">POLITIQUE</div>
+                    </div>
+                    <h3 class="video-title">Avoka Eddy Laguerre di Desizyon Imigrasyon Trump yo Poze Deranjman pou Anpil Ayisyen</h3>
+                </div>
+                
+                <!-- Vidéo 2 -->
+                <div class="video-item">
+                    <div class="video-thumbnail">
+                        <img src="images/politque.jpg" alt="Vidéo internationale" class="video-image">
+                        <div class="video-overlay">
+                            <span class="play-button"><i class="fas fa-play"></i></span>
+                            <span class="video-duration">08:12</span>
+                        </div>
+                        <div class="video-badge">INTERNATIONAL</div>
+                    </div>
+                    <h3 class="video-title">Trump Rankontre Premye Minis Britanik la nan Lamezonblanch</h3>
+                </div>
+                
+                <!-- Vidéo 3 -->
+                <div class="video-item">
+                    <div class="video-thumbnail">
+                        <img src="images/negro-news.jpg" alt="Vidéo économie" class="video-image">
+                        <div class="video-overlay">
+                            <span class="play-button"><i class="fas fa-play"></i></span>
+                            <span class="video-duration">10:37</span>
+                        </div>
+                        <div class="video-badge">ÉCONOMIE</div>
+                    </div>
+                    <h3 class="video-title">Etazini Siyen Kontra pou Achte Mineral nan Men Ikrèn</h3>
+                </div>
+                
+                <!-- Vidéo 4 -->
+                <div class="video-item">
+                    <div class="video-thumbnail">
+                        <img src="images/alaune.jpeg" alt="Vidéo politique" class="video-image">
+                        <div class="video-overlay">
+                            <span class="play-button"><i class="fas fa-play"></i></span>
+                            <span class="video-duration">06:45</span>
+                        </div>
+                        <div class="video-badge">POLITIQUE</div>
+                    </div>
+                    <h3 class="video-title">Repiblikèn Chanm Depite Etazini a Apwouve Plan Bidje Federal la</h3>
+                </div>
+            </div>
+            
+            <!-- Contrôles du slider -->
+            <div class="slider-controls">
+                <button class="slider-prev"><i class="fas fa-chevron-left"></i></button>
+                <button class="slider-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 6ème section : Contenu Original -->
+<section class="original-content">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Contenu Original</h2>
+            <a href="#" class="see-all-link">Voir tout <i class="fas fa-chevron-right"></i></a>
+        </div>
+        
+        <div class="original-articles">
+            <!-- Article 1 -->
+            <div class="original-article">
+                <div class="original-thumbnail">
+                    <img src="images/black-man-depression-1-750x350.jpg" alt="Population" class="original-image">
+                    <div class="video-badge">
+                        <i class="fas fa-video"></i>
+                    </div>
+                </div>
+                <h3 class="original-title">Popilasyon Potoprens ki nan Lari Akoz Atak Gang yo Ogmante</h3>
+            </div>
+            
+            <!-- Article 2 -->
+            <div class="original-article">
+                <div class="original-thumbnail">
+                    <img src="images/politque.jpg" alt="Immigration" class="original-image">
+                    <div class="video-badge">
+                        <i class="fas fa-video"></i>
+                    </div>
+                </div>
+                <h3 class="original-title">Pemisyon pou ICE Arete Migran Andedan Legliz yo Simen Panik nan Nouyok</h3>
+            </div>
+            
+            <!-- Article 3 -->
+            <div class="original-article">
+                <div class="original-thumbnail">
+                    <img src="images/Stress-et-sante.jpg" alt="Gang" class="original-image">
+                    <div class="video-badge">
+                        <i class="fas fa-video"></i>
+                    </div>
+                </div>
+                <h3 class="original-title">Ayiti: Gang Ame Atake Dèlma 30</h3>
+            </div>
+            
+            <!-- Article 4 -->
+            <div class="original-article">
+                <div class="original-thumbnail">
+                    <img src="images/sport.jpg" alt="Exposition" class="original-image">
+                    <div class="video-badge">
+                        <i class="fas fa-video"></i>
+                    </div>
+                </div>
+                <h3 class="original-title">Kèk Atis Ayisyen Patisipe Nan Youn Nan Pi Gwo Ekspozisyon Zèv Da Nan Vil Pari</h3>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 7ème section : Programme Audio -->
+<section class="audio-program">
+    <div class="container">
+        <!-- Programme radio -->
+        <div class="radio-program">
+            <div class="program-header">
+                <h2 class="program-title">Sak Pase Ayiti</h2>
+            </div>
+            
+            <!-- Lecteur audio -->
+            <div class="audio-player">
+                <div class="audio-thumbnail">
+                    <img src="images/foot.jpg" alt="Sak Pase Ayiti" class="program-logo">
+                </div>
+                <div class="player-controls">
+                    <button class="play-pause-btn"><i class="fas fa-play"></i></button>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-indicator" style="width: 30%;"></div>
+                        </div>
+                        <div class="time-display">
+                            <span class="current-time">0:00</span>
+                            <span class="duration">29:59</span>
+                        </div>
+                    </div>
+                    <div class="volume-control">
+                        <button class="mute-btn"><i class="fas fa-volume-up"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Programmes disponibles -->
+            <div class="available-programs">
+                <div class="program-buttons">
+                    <button class="program-btn koze-fanm">KOZE FANM</button>
+                    <button class="program-btn sak-pase">SAK PASE</button>
+                    <button class="program-btn randevou">RANDEVOU</button>
+                    <button class="program-btn twazem">TWAZYÈM</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 8ème section : Footer -->
+<footer class="site-footer">
+    <div class="footer-main">
+        <div class="container">
+            <div class="footer-sections">
+                <!-- Section VIDEO -->
+                <div class="footer-nav-section">
+                    <h3 class="footer-title">VIDEO</h3>
+                    <ul class="footer-nav">
+                        <li><a href="#">Pwogram aprè-midi a TV</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Section ABOUT & CONTACT US -->
+                <div class="footer-nav-section">
+                    <h3 class="footer-title">ABOUT & CONTACT US</h3>
+                    <ul class="footer-nav">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Section SUIV NOU -->
+                <div class="footer-nav-section">
+                    <h3 class="footer-title">SUIV NOU</h3>
+                    <div class="social-icons">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fas fa-rss"></i></a>
+                        <a href="#" class="social-link"><i class="fas fa-podcast"></i></a>
+                        <a href="#" class="social-link"><i class="fas fa-envelope"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <!-- Section RADYO -->
+                <div class="footer-nav-section">
+                    <h3 class="footer-title">RADYO</h3>
+                    <ul class="footer-nav">
+                        <li><a href="#">Pwogram mitan jounen an</a></li>
+                        <li><a href="#">Pwogram aprè-midi a</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Section AKSESIBILITE -->
+                <div class="footer-nav-section">
+                    <h3 class="footer-title">AKSESIBILITE</h3>
+                    <ul class="footer-nav">
+                        <li><a href="#">Aksesibilite</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Section EDITORYAL -->
+                <div class="footer-nav-section">
+                    <h3 class="footer-title">EDITORYAL NAN GOUVÈNMAN AMERIKEN AN</h3>
+                    <ul class="footer-nav">
+                        <li><a href="#">Editoryal nan gouvènman ameriken an</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Section RÈGLEMAN -->
+                <div class="footer-nav-section">
+                    <h3 class="footer-title">RÈGLEMAN SOU ENFÒMASYON PRIVE</h3>
+                    <ul class="footer-nav">
+                        <li><a href="#">Règleman sou enfòmasyon prive</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Copyright Footer -->
+    <div class="footer-copyright">
+        <div class="container">
+            <p class="copyright-text">© 2025 MoroniPost. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+    <!-- Scripts JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Script pour afficher/masquer la barre de recherche mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchToggle = document.querySelector('.search-toggle');
+            const searchFormMobile = document.querySelector('.search-form-mobile');
+            
+            if (searchToggle && searchFormMobile) {
+                searchToggle.addEventListener('click', function() {
+                    searchFormMobile.classList.toggle('d-none');
+                    searchFormMobile.classList.toggle('d-block');
+                });
+            }
+        });
+    </script>
 </body>
 </html>
