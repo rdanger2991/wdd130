@@ -1174,41 +1174,212 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* Améliorations pour les petits écrans */
+@media (max-width: 991.98px) {
+    .site-header {
+        height: auto;
+        min-height: auto;
+        max-height: none;
+    }
+    
+    .logo-section {
+        height: 70px;
+        min-height: 70px;
+        max-height: 70px;
+        padding: 0 15px;
+    }
+    
+    .logo-link {
+        display: flex;
+        align-items: center;
+    }
+    
+    .navbar-collapse {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background-color: white;
+        z-index: 1000;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        padding: 15px;
+    }
+    
+    .navbar-toggler {
+        padding: 8px 12px;
+        background-color: var(--primary-blue);
+        color: white;
+        border-radius: 4px;
+        border: none;
+    }
+    
+    .search-toggle {
+        background-color: var(--primary-blue);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 12px;
+        margin-left: 10px;
+    }
+    
+    .main-menu {
+        flex-direction: column;
+        width: 100%;
+        padding: 0;
+    }
+    
+    .nav-item {
+        border-bottom: 1px solid #e5e5e5;
+    }
+    
+    .nav-item:last-child {
+        border-bottom: none;
+    }
+    
+    .nav-link {
+        padding: 12px 0 !important;
+        font-size: 16px;
+    }
+    
+    /* Recherche mobile */
+    .mobile-search-container {
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        z-index: 1001;
+        background-color: white;
+        padding: 15px;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    
+    .mobile-search-form {
+        display: flex;
+        position: relative;
+    }
+    
+    .mobile-search-form .form-control {
+        border-radius: 4px;
+        border: 1px solid #e5e5e5;
+        padding: 10px 40px 10px 15px;
+        width: 100%;
+    }
+    
+    .btn-search {
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--primary-blue);
+    }
+    
+    .btn-close-search {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #666;
+        padding: 5px 10px;
+    }
+    
+    /* Contrôles média pour mobile */
+    .mobile-media-controls {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #e5e5e5;
+    }
+    
+    .mobile-media-title {
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: var(--primary-blue);
+    }
+    
+    .mobile-media-buttons {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .media-icon-mobile {
+        display: flex;
+        align-items: center;
+        color: var(--primary-blue);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    
+    .media-icon-mobile i {
+        margin-right: 8px;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .logo-section {
+        height: 60px;
+        min-height: 60px;
+        max-height: 60px;
+    }
+    
+    .navbar-collapse {
+        top: 60px;
+    }
+    
+    .mobile-search-container {
+        top: 60px;
+    }
+}
     </style>
 </head>
 <body>
-    <!-- En-tête du site MoroniPost -->
     <header class="site-header">
         <div class="container h-100">
             <!-- Section logo avec contrôles mobiles et icônes média -->
             <div class="logo-section">
                 <!-- Contrôles mobiles (hamburger + recherche) -->
-                <div class="mobile-controls d-lg-none">
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                        <span class="navbar-toggler-icon"></span>
+                <div class="mobile-controls d-block d-lg-none">
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-bars"></i>
                     </button>
-                    <button class="search-toggle d-lg-none">
+                    <button class="search-toggle" id="mobileSearchToggle">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
                 
                 <!-- Logo central -->
-                <a href="index.html">
+                <a href="index.html" class="logo-link">
                     <img src="images/logo.png" alt="MoroniPost" class="logo-img">
                 </a>
                 
                 <!-- Icônes média et live -->
                 <div class="media-controls">
-                    <a href="#" class="media-icon d-none d-lg-inline">
+                    <a href="#" class="media-icon d-none d-md-inline">
                         <i class="fas fa-video"></i>
                     </a>
-                    <a href="#" class="media-icon d-none d-lg-inline">
+                    <a href="#" class="media-icon d-none d-md-inline">
                         <i class="fas fa-volume-up"></i>
                     </a>
                     <a href="#" class="live-button">
                         LIVE
                     </a>
                 </div>
+            </div>
+            
+            <!-- Barre de recherche mobile (s'affiche quand on clique sur la loupe) -->
+            <div class="mobile-search-container d-none" id="mobileSearchForm">
+                <form class="mobile-search-form">
+                    <input type="search" class="form-control" placeholder="Rechercher">
+                    <button class="btn btn-search" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button type="button" class="btn-close-search" id="closeSearch">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </form>
             </div>
             
             <!-- Barre de navigation principale -->
@@ -1243,16 +1414,21 @@
                             </li>
                         </ul>
                         
+                        <!-- Icônes média pour mobile (dans le menu) -->
+                        <div class="d-block d-md-none mobile-media-controls">
+                            <div class="mobile-media-title">Médias</div>
+                            <div class="mobile-media-buttons">
+                                <a href="#" class="media-icon-mobile">
+                                    <i class="fas fa-video"></i> Vidéos
+                                </a>
+                                <a href="#" class="media-icon-mobile">
+                                    <i class="fas fa-volume-up"></i> Audio
+                                </a>
+                            </div>
+                        </div>
+                        
                         <!-- Barre de recherche desktop -->
                         <form class="d-none d-lg-block search-form">
-                            <input type="search" class="form-control" placeholder="Rechercher">
-                            <button class="btn btn-search" type="submit">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </form>
-                        
-                        <!-- Barre de recherche mobile (s'affiche quand on clique sur la loupe) -->
-                        <form class="d-none search-form-mobile">
                             <input type="search" class="form-control" placeholder="Rechercher">
                             <button class="btn btn-search" type="submit">
                                 <i class="fas fa-search"></i>
@@ -1738,5 +1914,25 @@
             }
         });
     </script>
+
+// Ajouter ce script à la fin de votre fichier HTML, juste avant la balise de fermeture </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Recherche mobile
+        const searchToggle = document.getElementById('mobileSearchToggle');
+        const searchForm = document.getElementById('mobileSearchForm');
+        const closeSearch = document.getElementById('closeSearch');
+        
+        if (searchToggle && searchForm && closeSearch) {
+            searchToggle.addEventListener('click', function() {
+                searchForm.classList.toggle('d-none');
+            });
+            
+            closeSearch.addEventListener('click', function() {
+                searchForm.classList.add('d-none');
+            });
+        }
+    });
+</script>
 </body>
 </html>
