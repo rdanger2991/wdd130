@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MonÉpargne - Suivi Intelligent</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.all.min.js"></script>
+    <!-- Ajout de Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <style>
+        /* Votre CSS existant reste inchangé */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+        }
+
+        .stat-card.debt::before {
+            background: linear-gradient(90deg, #f44336, #d32f2f);
+        }
+
+        .stat-card.progress::before {
+            background: linear-gradient(90deg, #2196F3, #1976D2);
+        }
+
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="date"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+
+        .savings-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .savings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.2s;
+        }
+
+        .savings-item:hover {
+            transform: translateX(5px);
+        }
+
+        .savings-item.deficit {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+
+        .savings-item.surplus {
+            border-left-color: #4CAF50;
+            background: #e8f5e8;
+        }
+
+        .savings-info {
+            flex: 1;
+        }
+
+        .savings-date {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .savings-amount {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .savings-status {
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            transition: width 0.5s ease;
+        }
+
+        .motivation {
+            text-align: center;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .motivation-text {
+            font-size: 1.3em;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .edit-form {
+            display: none;
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .weekly-summary {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .week-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .week-stat {
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .auth-section {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            color: white;
+            margin-top: 10px;
+        }
+
+        .sync-status {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="auth-section" id="authSection">
+            <button class="btn btn-success" id="loginButton" onclick="app.signIn()">Se connecter avec Google</button>
+            <div class="user-info" id="userInfo" style="display: none;">
+                <span id="userName"></span>
+                <button class="btn btn-danger btn-small" onclick="app.signOut()">Déconnexion</button>
+            </div>
+        </div>
+
+        <div class="sync-status" id="syncStatus">Mode hors ligne - Données locales</div>
+
+        <div class="header">
+            <h1>💰 MonÉpargne Intelligente</h1>
+            <p>Objectif : 1 000$ par jour (Lundi-Samedi) • Système de dette flexible</p>
+        </div>
+
+        <div class="motivation">
+            <div class="motivation-text" id="motivationText">Ajoutez votre première épargne pour commencer !</div>
+            <div id="streakInfo"></div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalSavings">0 $</div>
+                <div class="stat-label">Épargne Totale</div>
+            </div>
+            <div class="stat-card debt">
+                <div class="stat-value" id="currentDebt">0 $</div>
+                <div class="stat-label">Dette Actuelle</div>
+            </div>
+            <div class="stat-card progress">
+                <div class="stat-value" id="weeklyProgress">0%</div>
+                <div class="stat-label">Progrès Hebdomadaire</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="monthlyProgress">0%</div>
+                <div class="stat-label">Progrès Mensuel</div>
+            </div>
+        </div>
+
+        <div class="weekly-summary">
+            <h3>📊 Résumé de la Semaine Courante</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="weekProgressBar" style="width: 0%"></div>
+            </div>
+            <div class="week-stats">
+                <div class="week-stat">
+                    <div id="weekTotal" style="font-size: 1.3em; font-weight: bold; color: #1976D2;">0 $</div>
+                    <div>Total Semaine</div>
+                </div>
+                <div class="week-stat">
+                    <div id="weekObjectif" style="font-size: 1.3em; font-weight: bold; color: #333;">6 000 $</div>
+                    <div>Objectif Semaine</div>
+                </div>
+                <div class="week-stat">
+                    <div id="weekRemaining" style="font-size: 1.3em; font-weight: bold; color: #f57c00;">6 000 $</div>
+                    <div>Reste à Épargner</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="panel">
+                <h2>📝 Ajouter une Épargne</h2>
+                <form id="savingsForm">
+                    <div class="form-group">
+                        <label for="saveDate">Date :</label>
+                        <input type="date" id="saveDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="saveAmount">Montant ($) :</label>
+                        <input type="number" id="saveAmount" min="0" step="0.01" required placeholder="Ex: 1000">
+                    </div>
+                    <button type="submit" class="btn">Ajouter Épargne</button>
+                </form>
+
+                <div class="edit-form" id="editForm">
+                    <h3>✏️ Modifier l'Épargne</h3>
+                    <input type="hidden" id="editId">
+                    <div class="form-group">
+                        <label for="editDate">Date :</label>
+                        <input type="date" id="editDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAmount">Montant ($) :</label>
+                        <input type="number" id="editAmount" min="0" step="0.01" required>
+                    </div>
+                    <button type="button" class="btn" onclick="updateSaving()">Sauvegarder</button>
+                    <button type="button" class="btn btn-warning" onclick="cancelEdit()">Annuler</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>📋 Historique des Épargnes</h2>
+                <div class="savings-list" id="savingsList">
+                    <p style="text-align: center; color: #666; padding: 20px;">Aucune épargne enregistrée</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration Firebase - À REMPLACER AVEC VOS PROPRES CLÉS
+        const firebaseConfig = {
+            apiKey: "AIzaSyDiI0Ap-UrDpz65zgDhFO-UhyAQByalaYI",
+            authDomain: "project-816339851745.firebaseapp.com",
+            projectId: "epargneapp-ece19",
+            storageBucket: "your-project-id.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialiser Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // Base de données intégrée (IndexedDB)
+        class SavingsDB {
+            constructor() {
+                this.dbName = 'SavingsTracker';
+                this.version = 1;
+                this.db = null;
+            }
+
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.version);
+
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => {
+                        this.db = request.result;
+                        resolve();
+                    };
+
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+
+                        if (!db.objectStoreNames.contains('savings')) {
+                            const store = db.createObjectStore('savings', { keyPath: 'id', autoIncrement: true });
+                            store.createIndex('date', 'date', { unique: false });
+                        }
+
+                        if (!db.objectStoreNames.contains('syncQueue')) {
+                            const store = db.createObjectStore('syncQueue', { keyPath: 'id', autoIncrement: true });
+                            store.createIndex('type', 'type', { unique: false });
+                        }
+                    };
+                });
+            }
+
+            async addSaving(date, amount) {
+                const transaction = this.db.transaction(['savings'], 'readwrite');
+                const store = transaction.objectStore('savings');
+
+                return new Promise((resolve, reject) => {
+                    const request = store.add({
+                        date: date,
+                        amount: parseFloat(amount),
+                        timestamp: new Date().getTime()
+                    });
+
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getAllSavings() {
+                const transaction = this.db.transaction(['savings'], 'readonly');
+                const store = transaction.objectStore('savings');
+
+                return new Promise((resolve, reject) => {
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async updateSaving(id, date, amount) {
+                const transaction = this.db.transaction(['savings'], 'readwrite');
+                const store = transaction.objectStore('savings');
+
+                return new Promise((resolve, reject) => {
+                    const request = store.put({
+                        id: id,
+                        date: date,
+                        amount: parseFloat(amount),
+                        timestamp: new Date().getTime()
+                    });
+
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async deleteSaving(id) {
+                const transaction = this.db.transaction(['savings'], 'readwrite');
+                const store = transaction.objectStore('savings');
+
+                return new Promise((resolve, reject) => {
+                    const request = store.delete(id);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            // Méthodes pour la file d'attente de synchronisation
+            async addToSyncQueue(action, data) {
+                const transaction = this.db.transaction(['syncQueue'], 'readwrite');
+                const store = transaction.objectStore('syncQueue');
+
+                return new Promise((resolve, reject) => {
+                    const request = store.add({
+                        type: action,
+                        data: data,
+                        timestamp: new Date().getTime()
+                    });
+
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async getSyncQueue() {
+                const transaction = this.db.transaction(['syncQueue'], 'readonly');
+                const store = transaction.objectStore('syncQueue');
+
+                return new Promise((resolve, reject) => {
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async removeFromSyncQueue(id) {
+                const transaction = this.db.transaction(['syncQueue'], 'readwrite');
+                const store = transaction.objectStore('syncQueue');
+
+                return new Promise((resolve, reject) => {
+                    const request = store.delete(id);
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+        }
+
+        // Application principale
+        class SavingsApp {
+            constructor() {
+                this.db = new SavingsDB();
+                this.dailyTarget = 1000;
+                this.currentDebt = 0;
+                this.user = null;
+                this.isOnline = navigator.onLine;
+                this.motivationalMessages = [
+                    "Excellente discipline financière ! 🎯",
+                    "Vous êtes sur la bonne voie ! 💪",
+                    "Chaque dollar compte ! 💰",
+                    "Votre future vous remerciera ! 🌟",
+                    "L'épargne, c'est la liberté ! 🗽",
+                    "Continuez comme ça ! 🚀",
+                    "Votre détermination paie ! 💎"
+                ];
+
+                // Écouter les changements de connexion
+                window.addEventListener('online', () => this.handleConnectionChange(true));
+                window.addEventListener('offline', () => this.handleConnectionChange(false));
+            }
+
+            async init() {
+                await this.db.init();
+                this.bindEvents();
+                this.setTodayDate();
+                this.setupAuthListener();
+                await this.updateDisplay();
+            }
+
+            bindEvents() {
+                document.getElementById('savingsForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addSaving();
+                });
+            }
+
+            setupAuthListener() {
+                auth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        this.user = user;
+                        document.getElementById('loginButton').style.display = 'none';
+                        document.getElementById('userInfo').style.display = 'block';
+                        document.getElementById('userName').textContent = `Connecté en tant que: ${user.displayName}`;
+
+                        // Synchroniser les données
+                        await this.syncData();
+                    } else {
+                        this.user = null;
+                        document.getElementById('loginButton').style.display = 'block';
+                        document.getElementById('userInfo').style.display = 'none';
+                    }
+                });
+            }
+
+            async signIn() {
+                const provider = new firebase.auth.GoogleAuthProvider();
+                try {
+                    await auth.signInWithPopup(provider);
+                } catch (error) {
+                    console.error("Erreur de connexion:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur de connexion',
+                        text: 'Impossible de se connecter avec Google',
+                        confirmButtonColor: '#667eea'
+                    });
+                }
+            }
+
+            async signOut() {
+                try {
+                    await auth.signOut();
+                } catch (error) {
+                    console.error("Erreur de déconnexion:", error);
+                }
+            }
+
+            handleConnectionChange(online) {
+                this.isOnline = online;
+                const statusElement = document.getElementById('syncStatus');
+
+                if (online) {
+                    statusElement.textContent = 'En ligne - Synchronisation active';
+                    statusElement.style.color = '#4CAF50';
+
+                    // Tenter une synchronisation si l'utilisateur est connecté
+                    if (this.user) {
+                        this.syncData();
+                    }
+                } else {
+                    statusElement.textContent = 'Mode hors ligne - Données locales';
+                    statusElement.style.color = '#ff9800';
+                }
+            }
+
+            async syncData() {
+                if (!this.user || !this.isOnline) return;
+
+                try {
+                    // 1. Récupérer les données de Firestore
+                    const snapshot = await db.collection('savings')
+                        .where('userId', '==', this.user.uid)
+                        .orderBy('timestamp', 'desc')
+                        .get();
+
+                    const remoteSavings = snapshot.docs.map(doc => {
+                        const data = doc.data();
+                        return {
+                            id: doc.id,
+                            date: data.date,
+                            amount: data.amount,
+                            timestamp: data.timestamp
+                        };
+                    });
+
+                    // 2. Récupérer les données locales
+                    const localSavings = await this.db.getAllSavings();
+
+                    // 3. Fusionner les données (stratégie simple: priorité au serveur)
+                    for (const remoteSaving of remoteSavings) {
+                        const localExists = localSavings.find(s => s.id === remoteSaving.id);
+                        if (!localExists) {
+                            // Ajouter localement les éléments qui n'existent pas
+                            await this.db.addSaving(remoteSaving.date, remoteSaving.amount);
+                        }
+                    }
+
+                    // 4. Envoyer les données locales qui n'existent pas sur le serveur
+                    for (const localSaving of localSavings) {
+                        if (typeof localSaving.id === 'number') { // Les éléments locaux ont des IDs numériques
+                            const remoteExists = remoteSavings.find(s => s.id === localSaving.id);
+                            if (!remoteExists) {
+                                await db.collection('savings').doc(String(localSaving.id)).set({
+                                    userId: this.user.uid,
+                                    date: localSaving.date,
+                                    amount: localSaving.amount,
+                                    timestamp: localSaving.timestamp || new Date().getTime()
+                                });
+                            }
+                        }
+                    }
+
+                    // 5. Traiter la file d'attente de synchronisation
+                    await this.processSyncQueue();
+
+                    // 6. Mettre à jour l'affichage
+                    await this.updateDisplay();
+
+                    console.log('Synchronisation terminée');
+
+                } catch (error) {
+                    console.error('Erreur de synchronisation:', error);
+                }
+            }
+
+            async processSyncQueue() {
+                if (!this.user || !this.isOnline) return;
+
+                const queue = await this.db.getSyncQueue();
+                for (const item of queue) {
+                    try {
+                        if (item.type === 'add') {
+                            await db.collection('savings').doc(String(item.data.id)).set({
+                                userId: this.user.uid,
+                                date: item.data.date,
+                                amount: item.data.amount,
+                                timestamp: item.data.timestamp
+                            });
+                        } else if (item.type === 'update') {
+                            await db.collection('savings').doc(String(item.data.id)).update({
+                                date: item.data.date,
+                                amount: item.data.amount,
+                                timestamp: item.data.timestamp
+                            });
+                        } else if (item.type === 'delete') {
+                            await db.collection('savings').doc(String(item.data.id)).delete();
+                        }
+
+                        // Supprimer de la file d'attente après succès
+                        await this.db.removeFromSyncQueue(item.id);
+                    } catch (error) {
+                        console.error('Erreur lors du traitement de la file d\'attente:', error);
+                    }
+                }
+            }
+
+            setTodayDate() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('saveDate').value = today;
+            }
+
+            // Fonction pour formater la date en YYYY-MM-DD sans décalage horaire
+            formatDateForDisplay(dateString) {
+                // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
+                const date = new Date(dateString + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
+                return date.toISOString().split('T')[0];
+            }
+
+            // Fonction pour vérifier si c'est un dimanche
+            isSunday(dateString) {
+                // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
+                const date = new Date(dateString + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
+                return date.getDay() === 0; // 0 = Dimanche
+            }
+
+            async addSaving() {
+                const date = document.getElementById('saveDate').value;
+                const amount = document.getElementById('saveAmount').value;
+
+                if (!date || !amount) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Champs manquants',
+                        text: 'Veuillez remplir tous les champs',
+                        confirmButtonColor: '#667eea'
+                    });
+                    return;
+                }
+
+                // Vérifier si c'est un dimanche
+                if (this.isSunday(date)) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Jour non autorisé',
+                        text: 'L\'épargne n\'est pas prévue le dimanche selon vos objectifs',
+                        confirmButtonColor: '#667eea'
+                    });
+                    return;
+                }
+
+                try {
+                    const id = await this.db.addSaving(date, amount);
+
+                    // Si connecté, synchroniser avec Firestore
+                    if (this.user && this.isOnline) {
+                        await db.collection('savings').doc(String(id)).set({
+                            userId: this.user.uid,
+                            date: date,
+                            amount: parseFloat(amount),
+                            timestamp: new Date().getTime()
+                        });
+                    } else if (this.user) {
+                        // Si hors ligne, ajouter à la file d'attente
+                        await this.db.addToSyncQueue('add', {
+                            id: id,
+                            date: date,
+                            amount: parseFloat(amount),
+                            timestamp: new Date().getTime()
+                        });
+                    }
+
+                    document.getElementById('savingsForm').reset();
+                    this.setTodayDate();
+                    await this.updateDisplay();
+                    this.showMotivation();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Épargne ajoutée !',
+                        text: `${parseFloat(amount).toLocaleString()} $ ajoutés avec succès`,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: 'Erreur lors de l\'ajout: ' + error.message,
+                        confirmButtonColor: '#667eea'
+                    });
+                }
+            }
+
+            async updateSaving() {
+                const id = parseInt(document.getElementById('editId').value);
+                const date = document.getElementById('editDate').value;
+                const amount = document.getElementById('editAmount').value;
+
+                if (!date || !amount) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Champs manquants',
+                        text: 'Veuillez remplir tous les champs',
+                        confirmButtonColor: '#667eea'
+                    });
+                    return;
+                }
+
+                // Vérifier si c'est un dimanche
+                if (this.isSunday(date)) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Jour non autorisé',
+                        text: 'L\'épargne n\'est pas prévue le dimanche selon vos objectifs',
+                        confirmButtonColor: '#667eea'
+                    });
+                    return;
+                }
+
+                try {
+                    await this.db.updateSaving(id, date, amount);
+
+                    // Si connecté, synchroniser avec Firestore
+                    if (this.user && this.isOnline) {
+                        await db.collection('savings').doc(String(id)).update({
+                            date: date,
+                            amount: parseFloat(amount),
+                            timestamp: new Date().getTime()
+                        });
+                    } else if (this.user) {
+                        // Si hors ligne, ajouter à la file d'attente
+                        await this.db.addToSyncQueue('update', {
+                            id: id,
+                            date: date,
+                            amount: parseFloat(amount),
+                            timestamp: new Date().getTime()
+                        });
+                    }
+
+                    this.cancelEdit();
+                    await this.updateDisplay();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Modification réussie !',
+                        text: 'L\'épargne a été mise à jour',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: 'Erreur lors de la modification: ' + error.message,
+                        confirmButtonColor: '#667eea'
+                    });
+                }
+            }
+
+            async deleteSaving(id) {
+                const result = await Swal.fire({
+                    title: 'Confirmer la suppression',
+                    text: 'Êtes-vous sûr de vouloir supprimer cette épargne ?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#667eea',
+                    confirmButtonText: 'Oui, supprimer',
+                    cancelButtonText: 'Annuler'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        await this.db.deleteSaving(id);
+
+                        // Si connecté, synchroniser avec Firestore
+                        if (this.user && this.isOnline) {
+                            await db.collection('savings').doc(String(id)).delete();
+                        } else if (this.user) {
+                            // Si hors ligne, ajouter à la file d'attente
+                            await this.db.addToSyncQueue('delete', { id: id });
+                        }
+
+                        await this.updateDisplay();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Supprimé !',
+                            text: 'L\'épargne a été supprimée avec succès',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } catch (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur',
+                            text: 'Erreur lors de la suppression: ' + error.message,
+                            confirmButtonColor: '#667eea'
+                        });
+                    }
+                }
+            }
+
+            editSaving(id, date, amount) {
+                document.getElementById('editId').value = id;
+                document.getElementById('editDate').value = this.formatDateForDisplay(date);
+                document.getElementById('editAmount').value = amount;
+                document.getElementById('editForm').classList.add('active');
+            }
+
+            cancelEdit() {
+                document.getElementById('editForm').classList.remove('active');
+                // Réinitialiser les champs du formulaire d'édition manuellement
+                document.getElementById('editId').value = '';
+                document.getElementById('editDate').value = '';
+                document.getElementById('editAmount').value = '';
+            }
+
+            calculateDebt(savings) {
+                let debt = 0;
+                const savingsByDate = {};
+
+                // Grouper les épargnes par date
+                savings.forEach(saving => {
+                    if (!savingsByDate[saving.date]) {
+                        savingsByDate[saving.date] = 0;
+                    }
+                    savingsByDate[saving.date] += saving.amount;
+                });
+
+                // Calculer la dette jour par jour
+                Object.keys(savingsByDate).forEach(date => {
+                    // Vérifier si ce n'est pas un dimanche
+                    if (!this.isSunday(date)) {
+                        const dailyAmount = savingsByDate[date];
+                        if (dailyAmount < this.dailyTarget) {
+                            debt += (this.dailyTarget - dailyAmount);
+                        } else if (dailyAmount > this.dailyTarget && debt > 0) {
+                            const surplus = dailyAmount - this.dailyTarget;
+                            debt = Math.max(0, debt - surplus);
+                        }
+                    }
+                });
+
+                return debt;
+            }
+
+            getWeekStats(savings) {
+                const now = new Date();
+                const startOfWeek = new Date(now);
+                // Calculer le lundi de la semaine courante (getDay() : 0=Dimanche, 1=Lundi, ..., 6=Samedi)
+                const dayOfWeek = now.getDay();
+                const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Si c'est dimanche (0), on recule de 6 jours
+                startOfWeek.setDate(now.getDate() - daysToMonday);
+                startOfWeek.setHours(0, 0, 0, 0);
+
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6); // Dimanche
+                endOfWeek.setHours(23, 59, 59, 999);
+
+                const weekSavings = savings.filter(saving => {
+                    // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
+                    const saveDate = new Date(saving.date + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
+                    return saveDate >= startOfWeek && saveDate <= endOfWeek;
+                });
+
+                const total = weekSavings.reduce((sum, saving) => sum + saving.amount, 0);
+                const target = 6000; // 6 jours × 1000$
+                const progress = Math.min(100, (total / target) * 100);
+
+                return { total, target, progress, remaining: Math.max(0, target - total) };
+            }
+
+            getMonthStats(savings) {
+                const now = new Date();
+                const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+                const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+                const monthSavings = savings.filter(saving => {
+                    // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
+                    const saveDate = new Date(saving.date + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
+                    return saveDate >= startOfMonth && saveDate <= endOfMonth;
+                });
+
+                // Calculer le nombre de jours ouvrables (lundi à samedi) dans le mois
+                let workDays = 0;
+                for (let d = new Date(startOfMonth); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
+                    if (d.getDay() !== 0) workDays++; // 0 = Dimanche
+                }
+
+                const total = monthSavings.reduce((sum, saving) => sum + saving.amount, 0);
+                const target = workDays * this.dailyTarget;
+                const progress = Math.min(100, (total / target) * 100);
+
+                return { total, target, progress };
+            }
+
+            async updateDisplay() {
+                const savings = await this.db.getAllSavings();
+                savings.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                // Statistiques globales
+                const totalSavings = savings.reduce((sum, saving) => sum + saving.amount, 0);
+                this.currentDebt = this.calculateDebt(savings);
+
+                // Statistiques hebdomadaires et mensuelles
+                const weekStats = this.getWeekStats(savings);
+                const monthStats = this.getMonthStats(savings);
+
+                // Mise à jour de l'affichage
+                document.getElementById('totalSavings').textContent = `${totalSavings.toLocaleString()} $`;
+                document.getElementById('currentDebt').textContent = `${this.currentDebt.toLocaleString()} $`;
+                document.getElementById('weeklyProgress').textContent = `${weekStats.progress.toFixed(1)}%`;
+                document.getElementById('monthlyProgress').textContent = `${monthStats.progress.toFixed(1)}%`;
+
+                // Résumé hebdomadaire
+                document.getElementById('weekTotal').textContent = `${weekStats.total.toLocaleString()} $`;
+                document.getElementById('weekRemaining').textContent = `${weekStats.remaining.toLocaleString()} $`;
+                document.getElementById('weekProgressBar').style.width = `${weekStats.progress}%`;
+
+                this.updateSavingsList(savings);
+            }
+
+            updateSavingsList(savings) {
+                const listContainer = document.getElementById('savingsList');
+
+                if (savings.length === 0) {
+                    listContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Aucune épargne enregistrée</p>';
+                    return;
+                }
+
+                listContainer.innerHTML = '';
+
+                savings.forEach(saving => {
+                    // Formater la date pour l'affichage sans décalage
+                    const displayDate = this.formatDateForDisplay(saving.date);
+
+                    // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
+                    const saveDate = new Date(saving.date + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
+
+                    const deficit = this.dailyTarget - saving.amount;
+                    const isDeficit = deficit > 0;
+                    const isSurplus = deficit < 0;
+
+                    const item = document.createElement('div');
+                    item.className = `savings-item ${isDeficit ? 'deficit' : isSurplus ? 'surplus' : ''}`;
+
+                    const statusText = isDeficit
+                        ? `Déficit: ${deficit.toFixed(2)} $`
+                        : isSurplus
+                            ? `Excédent: ${Math.abs(deficit).toFixed(2)} $`
+                            : 'Objectif atteint ✓';
+
+                    item.innerHTML = `
+                        <div class="savings-info">
+                            <div class="savings-date">${saveDate.toLocaleDateString('fr-FR', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })}</div>
+                            <div class="savings-amount">${saving.amount.toLocaleString()} $</div>
+                            <div class="savings-status">${statusText}</div>
+                        </div>
+                        <div class="actions">
+                            <button class="btn btn-warning btn-small" onclick="app.editSaving(${saving.id}, '${saving.date}', ${saving.amount})">
+                                ✏️ Modifier
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="app.deleteSaving(${saving.id})">
+                                🗑️ Supprimer
+                            </button>
+                        </div>
+                    `;
+
+                    listContainer.appendChild(item);
+                });
+            }
+
+            showMotivation() {
+                const message = this.motivationalMessages[Math.floor(Math.random() * this.motivationalMessages.length)];
+                const debtStatus = this.currentDebt > 0
+                    ? `Dette actuelle: ${this.currentDebt.toFixed(2)} $ - Continuez vos efforts !`
+                    : "Aucune dette - Excellent travail ! 🎉";
+
+                document.getElementById('motivationText').textContent = message;
+                document.getElementById('streakInfo').textContent = debtStatus;
+            }
+        }
+
+        // Fonctions globales pour les boutons
+        function updateSaving() {
+            app.updateSaving();
+        }
+
+        function cancelEdit() {
+            app.cancelEdit();
+        }
+
+        // Initialisation de l'application
+        const app = new SavingsApp();
+        app.init().catch(console.error);
+    </script>
+</body>
+
+</html>
