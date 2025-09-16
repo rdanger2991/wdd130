@@ -693,6 +693,10 @@
                         // Synchroniser les données
                         await this.syncData();
                     } else {
+                        if (this.unsubscribe) {
+                            this.unsubscribe();
+                        }
+
                         this.user = null;
                         document.getElementById('loginButton').style.display = 'block';
                         document.getElementById('userInfo').style.display = 'none';
