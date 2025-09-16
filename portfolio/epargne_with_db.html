@@ -478,14 +478,30 @@
                 this.db = null;
             }
 
-            async init() {
-                await this.db.init();
-                this.bindEvents();
-                this.setTodayDate();
-                this.setupAuthListener();
+         async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.version);
 
-                // Charger les données locales immédiatement
-                await this.updateDisplay();
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => {
+                        this.db = request.result;
+                        resolve();
+                    };
+
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+
+                        if (!db.objectStoreNames.contains('savings')) {
+                            const store = db.createObjectStore('savings', { keyPath: 'id', autoIncrement: true });
+                            store.createIndex('date', 'date', { unique: false });
+                        }
+
+                        if (!db.objectStoreNames.contains('syncQueue')) {
+                            const store = db.createObjectStore('syncQueue', { keyPath: 'id', autoIncrement: true });
+                            store.createIndex('type', 'type', { unique: false });
+                        }
+                    };
+                });
             }
 
             async addSaving(date, amount) {
@@ -504,7 +520,7 @@
                 });
             }
 
-          async getAllSavings() {
+         async getAllSavings() {
                 // Essayer d'abord de récupérer depuis Firestore si connecté
                 if (this.user && this.isOnline && db) {
                     try {
@@ -526,8 +542,11 @@
                         // Mettre à jour la base locale avec les données de Firestore
                         const transaction = this.db.transaction(['savings'], 'readwrite');
                         const store = transaction.objectStore('savings');
-                        await store.clear(); // Vider les données locales
 
+                        // Vider les données locales
+                        await store.clear();
+
+                        // Ajouter les données Firestore à la base locale
                         for (const saving of savings) {
                             await store.add({
                                 id: saving.id,
@@ -540,6 +559,7 @@
                         return savings;
                     } catch (error) {
                         console.error('Erreur Firestore, utilisation des données locales:', error);
+                        // En cas d'erreur, continuer avec les données locales
                     }
                 }
 
