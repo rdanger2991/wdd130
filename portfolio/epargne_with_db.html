@@ -520,7 +520,46 @@
                 });
             }
 
-            async getAllSavings() {
+          async getAllSavings() {
+                // Essayer d'abord de récupérer depuis Firestore si connecté
+                if (this.user && this.isOnline && db) {
+                    try {
+                        const snapshot = await db.collection('savings')
+                            .where('userId', '==', this.user.uid)
+                            .orderBy('timestamp', 'desc')
+                            .get();
+
+                        const savings = snapshot.docs.map(doc => {
+                            const data = doc.data();
+                            return {
+                                id: doc.id,
+                                date: data.date,
+                                amount: data.amount,
+                                timestamp: data.timestamp
+                            };
+                        });
+
+                        // Mettre à jour la base locale avec les données de Firestore
+                        const transaction = this.db.transaction(['savings'], 'readwrite');
+                        const store = transaction.objectStore('savings');
+                        await store.clear(); // Vider les données locales
+
+                        for (const saving of savings) {
+                            await store.add({
+                                id: saving.id,
+                                date: saving.date,
+                                amount: saving.amount,
+                                timestamp: saving.timestamp
+                            });
+                        }
+
+                        return savings;
+                    } catch (error) {
+                        console.error('Erreur Firestore, utilisation des données locales:', error);
+                    }
+                }
+
+                // Fallback: utiliser les données locales
                 const transaction = this.db.transaction(['savings'], 'readonly');
                 const store = transaction.objectStore('savings');
 
@@ -650,6 +689,7 @@
                         document.getElementById('userInfo').style.display = 'block';
                         document.getElementById('userName').textContent = `Connecté en tant que: ${user.displayName}`;
 
+                        this.setupRealtimeListener();
                         // Synchroniser les données
                         await this.syncData();
                     } else {
@@ -876,20 +916,30 @@
                 }
 
                 try {
-                    const id = await this.db.addSaving(date, amount);
+                    let firebaseId = null;
 
-                    // Si connecté, synchroniser avec Firestore
+                    // Si connecté, ajouter d'abord à Firestore
                     if (this.user && this.isOnline && db) {
-                        await db.collection('savings').doc(String(id)).set({
-                            userId: this.user.uid,
-                            date: date,
-                            amount: parseFloat(amount),
-                            timestamp: new Date().getTime()
-                        });
-                    } else if (this.user) {
-                        // Si hors ligne, ajouter à la file d'attente
+                        try {
+                            const docRef = await db.collection('savings').add({
+                                userId: this.user.uid,
+                                date: date,
+                                amount: parseFloat(amount),
+                                timestamp: new Date().getTime()
+                            });
+                            firebaseId = docRef.id;
+                        } catch (error) {
+                            console.error("Erreur Firestore, sauvegarde locale seulement:", error);
+                        }
+                    }
+
+                    // Ajouter à la base locale
+                    const id = await this.db.addSaving(date, amount, firebaseId);
+
+                    // Si hors ligne ou erreur Firestore, ajouter à la file d'attente
+                    if (this.user && (!this.isOnline || !firebaseId)) {
                         await this.db.addToSyncQueue('add', {
-                            id: id,
+                            id: firebaseId || id,
                             date: date,
                             amount: parseFloat(amount),
                             timestamp: new Date().getTime()
@@ -1214,6 +1264,33 @@
 
                 document.getElementById('motivationText').textContent = message;
                 document.getElementById('streakInfo').textContent = debtStatus;
+            }
+
+            setupRealtimeListener() {
+                if (!this.user || !db) return;
+
+                // Écouter les changements en temps réel
+                this.unsubscribe = db.collection('savings')
+                    .where('userId', '==', this.user.uid)
+                    .orderBy('timestamp', 'desc')
+                    .onSnapshot(async (snapshot) => {
+                        // Traiter les changements
+                        snapshot.docChanges().forEach(async (change) => {
+                            if (change.type === 'added' || change.type === 'modified') {
+                                const data = change.doc.data();
+                                // Mettre à jour la base locale
+                                await this.db.updateSaving(change.doc.id, data.date, data.amount, data.timestamp);
+                            } else if (change.type === 'removed') {
+                                // Supprimer de la base locale
+                                await this.db.deleteSaving(change.doc.id);
+                            }
+                        });
+
+                        // Mettre à jour l'affichage
+                        await this.updateDisplay();
+                    }, (error) => {
+                        console.error("Erreur d'écoute en temps réel:", error);
+                    });
             }
         }
 
