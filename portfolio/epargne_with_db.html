@@ -426,9 +426,9 @@
     </div>
 
     <script>
-        // Configuration Firebase - À REMPLACER AVEC VOS PROPRES CLÉS
+        // Configuration Firebase - REMPLACEZ AVEC VOS PROPRES CLÉS
         const firebaseConfig = {
-            apiKey: "AIzaSyDiI0Ap-UrDpz65zgDhFO-UhyAQByalaYI",
+              apiKey: "AIzaSyDiI0Ap-UrDpz65zgDhFO-UhyAQByalaYI",
             authDomain: "epargneapp-ece19.firebaseapp.com",
             projectId: "epargneapp-ece19",
             storageBucket: "epargneapp-ece19.firebasestorage.app",
@@ -630,13 +630,36 @@
             async signIn() {
                 const provider = new firebase.auth.GoogleAuthProvider();
                 try {
-                    await auth.signInWithPopup(provider);
+                    // Ajouter des scope si nécessaire
+                    provider.addScope('profile');
+                    provider.addScope('email');
+
+                    // Forcer la sélection du compte à chaque fois
+                    provider.setCustomParameters({
+                        prompt: 'select_account'
+                    });
+
+                    const result = await auth.signInWithPopup(provider);
+                    console.log("Connexion réussie:", result.user);
+
                 } catch (error) {
-                    console.error("Erreur de connexion:", error);
+                    console.error("Erreur de connexion détaillée:", error);
+
+                    let errorMessage = "Impossible de se connecter avec Google";
+
+                    // Messages d'erreur plus spécifiques
+                    if (error.code === 'auth/popup-blocked') {
+                        errorMessage = "La popup de connexion a été bloquée. Veuillez autoriser les popups pour ce site.";
+                    } else if (error.code === 'auth/popup-closed-by-user') {
+                        errorMessage = "La fenêtre de connexion a été fermée avant la fin du processus.";
+                    } else if (error.code === 'auth/unauthorized-domain') {
+                        errorMessage = "Ce domaine n'est pas autorisé pour l'authentification. Veuillez vérifier la configuration Firebase.";
+                    }
+
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur de connexion',
-                        text: 'Impossible de se connecter avec Google',
+                        text: errorMessage,
                         confirmButtonColor: '#667eea'
                     });
                 }
