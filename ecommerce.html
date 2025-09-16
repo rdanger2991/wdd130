@@ -1,0 +1,2887 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="STAEFA Shopping & Servicing - Buy simple, live better. Votre boutique en ligne pour tous vos besoins.">
+    <title>STAEFA - Shopping & Servicing</title>
+
+    <!-- Bootstrap 3 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+        /* === VARIABLES CSS === */
+        :root {
+            --primary-color: #2d5f5f;
+            --secondary-color: #f39c12;
+            --accent-color: #3498db;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --bg-light: #ecf0f1;
+            --white: #ffffff;
+            --success: #27ae60;
+            --warning: #e67e22;
+            --danger: #e74c3c;
+        }
+
+        /* === RESET & BASE === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--white);
+        }
+
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        /* === HEADER & NAVIGATION === */
+        .top-bar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 0;
+            font-size: 12px;
+        }
+
+        .top-bar .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-custom {
+            background-color: white;
+            border: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0;
+            min-height: 80px;
+        }
+
+        .navbar-brand {
+            height: auto;
+            padding: 10px 15px;
+        }
+
+        .navbar-brand img {
+            height: 50px;
+            width: auto;
+        }
+
+        .navbar-nav>li>a {
+            color: var(--text-dark) !important;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 25px 15px !important;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-nav>li>a:hover {
+            color: var(--primary-color) !important;
+            background-color: transparent !important;
+        }
+
+        .search-bar {
+            position: relative;
+            max-width: 400px;
+            margin: 0 20px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid var(--bg-light);
+            border-radius: 25px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            border: none;
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .cart-icon {
+            position: relative;
+            padding: 10px 15px;
+            color: var(--primary-color);
+            font-size: 24px;
+            text-decoration: none;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* === HERO SECTION === */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 100px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn-hero {
+            background: var(--secondary-color);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-hero:hover {
+            background: #e67e22;
+            color: white;
+            text-decoration: none;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        /* === SECTIONS === */
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* === PRODUCT CARDS === */
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .product-image {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: var(--secondary-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .btn-add-cart {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-add-cart:hover {
+            background: var(--accent-color);
+            transform: translateY(-1px);
+        }
+
+        /* === FEATURES SECTION === */
+        .features-section {
+            background: var(--bg-light);
+        }
+
+        .feature-item {
+            text-align: center;
+            padding: 40px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-color);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover .feature-icon {
+            background: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        /* === FOOTER === */
+        .footer {
+            background: var(--text-dark);
+            color: white;
+            padding: 60px 0 20px;
+        }
+
+        .footer h5 {
+            color: var(--secondary-color);
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .footer ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer ul li a {
+            color: #bdc3c7;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer ul li a:hover {
+            color: var(--secondary-color);
+        }
+
+        .social-icons a {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #34495e;
+            margin-top: 40px;
+            padding-top: 20px;
+            text-align: center;
+            color: #95a5a6;
+        }
+
+        /* === PAGE STYLES === */
+        .page-header {
+            background: var(--bg-light);
+            padding: 40px 0;
+            margin-bottom: 40px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+            margin-bottom: 0;
+        }
+
+        /* === PRODUCT DETAIL === */
+        .product-gallery {
+            position: relative;
+        }
+
+        .main-image {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .thumbnail-images {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+
+        .thumbnail.active,
+        .thumbnail:hover {
+            border-color: var(--primary-color);
+        }
+
+        .product-detail-info {
+            padding-left: 30px;
+        }
+
+        .product-detail-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+
+        .product-detail-price {
+            font-size: 2rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .quantity-selector {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .quantity-input {
+            width: 80px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        /* === CART STYLES === */
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-right: 20px;
+        }
+
+        .cart-summary {
+            background: var(--bg-light);
+            padding: 30px;
+            border-radius: 12px;
+            position: sticky;
+            top: 20px;
+        }
+
+        /* === FORMS === */
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px 15px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(45, 95, 95, 0.1);
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .search-bar {
+                max-width: 100%;
+                margin: 10px 0;
+            }
+
+            .navbar-nav {
+                margin-top: 10px;
+            }
+
+            .product-detail-info {
+                padding-left: 0;
+                margin-top: 30px;
+            }
+
+            .section {
+                padding: 50px 0;
+            }
+        }
+
+        /* === ANIMATIONS === */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* === MODALS === */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+        }
+
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .modal-header h4 {
+            font-weight: 600;
+        }
+
+        /* === PAGINATION === */
+        .pagination>li>a {
+            color: var(--primary-color);
+            border: 1px solid #ddd;
+        }
+
+        .pagination>li>a:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .pagination>.active>a {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* === FILTERS === */
+        .filters-sidebar {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .filter-group {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .filter-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .filter-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        /* === ALERTS === */
+        .alert {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .alert-success {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success);
+        }
+
+        .alert-warning {
+            background: rgba(230, 126, 34, 0.1);
+            color: var(--warning);
+        }
+
+        /* === BADGES === */
+        .badge-custom {
+            background: var(--secondary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* === LOADING STATES === */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* === UTILITY CLASSES === */
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+
+        .text-secondary {
+            color: var(--secondary-color) !important;
+        }
+
+        .bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+
+        .bg-secondary {
+            background-color: var(--secondary-color) !important;
+        }
+
+        .border-primary {
+            border-color: var(--primary-color) !important;
+        }
+
+        .shadow-sm {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .shadow-lg {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* === HIDDEN PAGES STYLES === */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        /* Cart Table Styles */
+        .cart-table {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .cart-table th,
+        .cart-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-table th {
+            background: var(--bg-light);
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Checkout Steps */
+        .checkout-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #ddd;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .step.active .step-number {
+            background: var(--primary-color);
+        }
+
+        .step.completed .step-number {
+            background: var(--success);
+        }
+
+        /* User Profile Tabs */
+        .profile-tabs .nav-tabs {
+            border-bottom: 2px solid var(--bg-light);
+        }
+
+        .profile-tabs .nav-tabs>li>a {
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .profile-tabs .nav-tabs>li.active>a {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="pull-left">
+                <i class="fa fa-phone"></i> +33 1 23 45 67 89
+                <span class="hidden-xs" style="margin-left: 20px;">
+                    <i class="fa fa-envelope"></i> contact@staefa.com
+                </span>
+            </div>
+            <div class="pull-right">
+                <a href="#" class="text-white" style="margin-right: 15px;">
+                    <i class="fa fa-user"></i> Mon compte
+                </a>
+                <a href="#" class="text-white">
+                    <i class="fa fa-heart"></i> Favoris (0)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-custom navbar-fixed-top">
+        <div class="container">
+            <!-- Mobile menu button -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#main-nav">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#" onclick="showPage('home')">
+           
+                      
+                        <div style="font-size: 10px; margin-top: -2px; opacity: 0.9;"><img src="images/logo1.png" alt="Photo de profil"></div>
+                  
+                </a>
+            </div>
+
+            <!-- Navigation menu -->
+            <div class="collapse navbar-collapse" id="main-nav">
+                <!-- Search bar -->
+                <div class="search-bar pull-left hidden-xs" style="margin-left: 50px; margin-top: 12px;">
+                    <input type="text" placeholder="Rechercher des produits..." id="search-input">
+                    <button type="button" onclick="performSearch()">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+
+                <!-- Menu items -->
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" onclick="showPage('home')">Accueil</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Catalogue <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="showPage('catalog')">Tous les produits</a></li>
+                            <li><a href="#" onclick="showPage('catalog', 'electronics')">Électronique</a></li>
+                            <li><a href="#" onclick="showPage('catalog', 'fashion')">Mode</a></li>
+                            <li><a href="#" onclick="showPage('catalog', 'home')">Maison</a></li>
+                            <li><a href="#" onclick="showPage('catalog', 'sports')">Sports</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#" onclick="showPage('about')">À propos</a></li>
+                    <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+                    <li>
+                        <a href="#" onclick="showPage('cart')" class="cart-icon">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span class="cart-count" id="cart-count">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="main-content" style="margin-top: 120px;">
+
+        <!-- HOME PAGE -->
+        <div id="home-page" class="page-content active">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="container">
+                    <div class="hero-content animate-fade-in-up">
+                        <h1 class="hero-title">Buy simple, live better</h1>
+                        <p class="hero-subtitle">Découvrez notre sélection de produits de qualité pour simplifier votre
+                            quotidien</p>
+                        <a href="#" class="btn-hero" onclick="showPage('catalog')">Découvrir nos produits</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Products -->
+            <section class="section">
+                <div class="container">
+                    <div class="section-title">
+                        <h2>Produits Vedettes</h2>
+                        <p>Découvrez nos meilleures ventes et nouveautés</p>
+                    </div>
+                    <div class="row" id="featured-products">
+                        <!-- Products will be loaded here by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="section features-section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fa fa-truck"></i>
+                                </div>
+                                <h4 class="feature-title">Livraison Gratuite</h4>
+                                <p>Livraison gratuite pour toute commande supérieure à 50€</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fa fa-shield"></i>
+                                </div>
+                                <h4 class="feature-title">Paiement Sécurisé</h4>
+                                <p>Vos données sont protégées avec un cryptage SSL</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fa fa-refresh"></i>
+                                </div>
+                                <h4 class="feature-title">Retour Gratuit</h4>
+                                <p>30 jours pour retourner vos articles sans frais</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="feature-item">
+                                <div class="feature-icon">
+                                    <i class="fa fa-headphones"></i>
+                                </div>
+                                <h4 class="feature-title">Support 24/7</h4>
+                                <p>Notre équipe est disponible pour vous aider</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- CATALOG PAGE -->
+        <div id="catalog-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>Catalogue Produits</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <span>Catalogue</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <!-- Filters Sidebar -->
+                    <div class="col-md-3">
+                        <div class="filters-sidebar">
+                            <div class="filter-group">
+                                <h5 class="filter-title">Catégories</h5>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="electronics"> Électronique (45)</label>
+                                </div>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="fashion"> Mode (32)</label>
+                                </div>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="home"> Maison & Jardin (28)</label>
+                                </div>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="sports"> Sports & Loisirs (21)</label>
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <h5 class="filter-title">Prix</h5>
+                                <div class="radio">
+                                    <label><input type="radio" name="price" value="0-50"> Moins de 50€</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="price" value="50-100"> 50€ - 100€</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="price" value="100-200"> 100€ - 200€</label>
+                                </div>
+                                <div class="radio">
+                                    <label><input type="radio" name="price" value="200+"> Plus de 200€</label>
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <h5 class="filter-title">Marque</h5>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="apple"> Apple (12)</label>
+                                </div>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="samsung"> Samsung (8)</label>
+                                </div>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="nike"> Nike (15)</label>
+                                </div>
+                                <div class="checkbox">
+                                    <label><input type="checkbox" value="adidas"> Adidas (10)</label>
+                                </div>
+                            </div>
+
+                            <div class="filter-group">
+                                <button class="btn btn-primary btn-block" onclick="applyFilters()">
+                                    Appliquer les filtres
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <p><span id="products-count">24</span> produits trouvés</p>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group pull-right">
+                                    <select class="form-control" onchange="sortProducts(this.value)">
+                                        <option value="default">Trier par défaut</option>
+                                        <option value="price-asc">Prix croissant</option>
+                                        <option value="price-desc">Prix décroissant</option>
+                                        <option value="name">Nom A-Z</option>
+                                        <option value="rating">Mieux notés</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" id="products-grid">
+                            <!-- Products will be loaded here -->
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="text-center">
+                            <nav>
+                                <ul class="pagination">
+                                    <li class="disabled"><a href="#">&laquo;</a></li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">&raquo;</a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRODUCT DETAIL PAGE -->
+        <div id="product-detail-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <a href="#" onclick="showPage('catalog')">Catalogue</a>
+                        <span>/</span>
+                        <span id="product-breadcrumb">Produit</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="product-gallery">
+                            <img src="https://via.placeholder.com/600x500/2d5f5f/ffffff?text=Produit" alt="Produit"
+                                class="main-image" id="main-product-image">
+                            <div class="thumbnail-images">
+                                <img src="https://via.placeholder.com/80x80/2d5f5f/ffffff?text=1" alt="Thumb 1"
+                                    class="thumbnail active" onclick="changeMainImage(this.src)">
+                                <img src="https://via.placeholder.com/80x80/3498db/ffffff?text=2" alt="Thumb 2"
+                                    class="thumbnail" onclick="changeMainImage(this.src)">
+                                <img src="https://via.placeholder.com/80x80/f39c12/ffffff?text=3" alt="Thumb 3"
+                                    class="thumbnail" onclick="changeMainImage(this.src)">
+                                <img src="https://via.placeholder.com/80x80/27ae60/ffffff?text=4" alt="Thumb 4"
+                                    class="thumbnail" onclick="changeMainImage(this.src)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="product-detail-info">
+                            <h1 class="product-detail-title" id="product-title">Smartphone Premium XL</h1>
+                            <div class="product-detail-price" id="product-price">299,99 €</div>
+
+                            <div class="product-rating">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-star-o text-warning"></i>
+                                <span class="text-muted">(24 avis)</span>
+                            </div>
+
+                            <div class="product-description">
+                                <p>Un smartphone haut de gamme avec des fonctionnalités avancées pour répondre à tous
+                                    vos besoins quotidiens. Écran haute résolution, appareil photo professionnel et
+                                    batterie longue durée.</p>
+
+                                <h5>Caractéristiques principales :</h5>
+                                <ul>
+                                    <li>Écran 6.7" Super AMOLED</li>
+                                    <li>Triple caméra 108MP</li>
+                                    <li>Batterie 5000mAh</li>
+                                    <li>128GB de stockage</li>
+                                    <li>Résistant à l'eau IP68</li>
+                                </ul>
+                            </div>
+
+                            <div class="quantity-selector">
+                                <label>Quantité :</label>
+                                <div class="input-group" style="width: 120px;">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button"
+                                            onclick="changeQuantity(-1)">-</button>
+                                    </span>
+                                    <input type="number" class="form-control quantity-input" value="1" min="1"
+                                        id="product-quantity">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button"
+                                            onclick="changeQuantity(1)">+</button>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div style="margin: 30px 0;">
+                                <button class="btn btn-primary btn-lg" onclick="addToCart()"
+                                    style="margin-right: 15px;">
+                                    <i class="fa fa-shopping-cart"></i> Ajouter au panier
+                                </button>
+                                <button class="btn btn-outline-secondary btn-lg">
+                                    <i class="fa fa-heart-o"></i> Favoris
+                                </button>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="fa fa-truck"></i> <strong>Livraison gratuite</strong> pour cet article
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Tabs -->
+                <div class="row" style="margin-top: 60px;">
+                    <div class="col-md-12">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#description">Description</a></li>
+                            <li><a data-toggle="tab" href="#specifications">Spécifications</a></li>
+                            <li><a data-toggle="tab" href="#reviews">Avis clients (24)</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="description" class="tab-pane fade in active">
+                                <div style="padding: 30px 0;">
+                                    <h4>Description détaillée</h4>
+                                    <p>Ce smartphone révolutionnaire combine design élégant et technologie de pointe.
+                                        Avec son écran Super AMOLED de 6.7 pouces, profitez d'une qualité d'image
+                                        exceptionnelle pour tous vos contenus multimédias.</p>
+                                    <p>L'appareil photo triple objectif de 108MP vous permet de capturer des photos et
+                                        vidéos d'une qualité professionnelle, même dans des conditions de faible
+                                        luminosité.</p>
+                                    <p>Grâce à sa batterie de 5000mAh et à la charge rapide, restez connecté toute la
+                                        journée sans interruption.</p>
+                                </div>
+                            </div>
+                            <div id="specifications" class="tab-pane fade">
+                                <div style="padding: 30px 0;">
+                                    <table class="table table-striped">
+                                        <tr>
+                                            <td><strong>Écran</strong></td>
+                                            <td>6.7" Super AMOLED, 1080 x 2400 px</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Processeur</strong></td>
+                                            <td>Octa-core 2.8 GHz</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>RAM</strong></td>
+                                            <td>8 GB</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Stockage</strong></td>
+                                            <td>128 GB</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Caméra</strong></td>
+                                            <td>108MP + 12MP + 5MP</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Batterie</strong></td>
+                                            <td>5000 mAh</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>OS</strong></td>
+                                            <td>Android 13</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Connectivité</strong></td>
+                                            <td>5G, WiFi 6, Bluetooth 5.2</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div id="reviews" class="tab-pane fade">
+                                <div style="padding: 30px 0;">
+                                    <div class="review-item"
+                                        style="border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px;">
+                                        <div class="review-header"
+                                            style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                            <strong>Marie L.</strong>
+                                            <div>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <p>Excellent produit ! Très satisfaite de mon achat. La qualité de l'écran est
+                                            remarquable et l'appareil photo fait des merveilles.</p>
+                                        <small class="text-muted">Il y a 2 jours</small>
+                                    </div>
+                                    <div class="review-item"
+                                        style="border-bottom: 1px solid #eee; padding-bottom: 20px; margin-bottom: 20px;">
+                                        <div class="review-header"
+                                            style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                            <strong>Thomas K.</strong>
+                                            <div>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star text-warning"></i>
+                                                <i class="fa fa-star-o text-warning"></i>
+                                            </div>
+                                        </div>
+                                        <p>Très bon smartphone, performances excellentes. Seul bémol : la batterie
+                                            pourrait durer un peu plus longtemps en usage intensif.</p>
+                                        <small class="text-muted">Il y a 5 jours</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CART PAGE -->
+        <div id="cart-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>Mon Panier</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <span>Panier</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div id="cart-items">
+                            <!-- Cart items will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="cart-summary">
+                            <h4>Résumé de la commande</h4>
+                            <hr>
+                            <div class="summary-line">
+                                <span>Sous-total :</span>
+                                <strong id="cart-subtotal">0,00 €</strong>
+                            </div>
+                            <div class="summary-line">
+                                <span>Livraison :</span>
+                                <strong id="cart-shipping">Gratuite</strong>
+                            </div>
+                            <div class="summary-line">
+                                <span>TVA (20%) :</span>
+                                <strong id="cart-tax">0,00 €</strong>
+                            </div>
+                            <hr>
+                            <div class="summary-line" style="font-size: 1.2em;">
+                                <span><strong>Total :</strong></span>
+                                <strong id="cart-total" class="text-primary">0,00 €</strong>
+                            </div>
+                            <hr>
+                            <button class="btn btn-primary btn-lg btn-block" onclick="showPage('checkout')">
+                                Procéder au paiement
+                            </button>
+                            <a href="#" onclick="showPage('catalog')" class="btn btn-link btn-block">
+                                Continuer mes achats
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CHECKOUT PAGE -->
+        <div id="checkout-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>Finaliser la commande</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <a href="#" onclick="showPage('cart')">Panier</a>
+                        <span>/</span>
+                        <span>Commande</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <!-- Checkout Steps -->
+                <div class="checkout-steps">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <span>Livraison</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <span>Paiement</span>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <span>Confirmation</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- Shipping Information -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Informations de livraison</h4>
+                            </div>
+                            <div class="panel-body">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Prénom *</label>
+                                                <input type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Nom *</label>
+                                                <input type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Adresse *</label>
+                                        <input type="text" class="form-control" required>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label>Code postal *</label>
+                                                <input type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <div class="form-group">
+                                                <label>Ville *</label>
+                                                <input type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Pays *</label>
+                                        <select class="form-control" required>
+                                            <option value="">Sélectionner un pays</option>
+                                            <option value="FR">France</option>
+                                            <option value="BE">Belgique</option>
+                                            <option value="CH">Suisse</option>
+                                            <option value="CA">Canada</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Téléphone</label>
+                                        <input type="tel" class="form-control">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Payment Information -->
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Informations de paiement</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="payment-methods">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="payment" value="card" checked>
+                                            <i class="fa fa-credit-card"></i> Carte bancaire
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="payment" value="paypal">
+                                            <i class="fa fa-paypal"></i> PayPal
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="payment" value="transfer">
+                                            <i class="fa fa-bank"></i> Virement bancaire
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div id="card-form" style="margin-top: 30px;">
+                                    <div class="form-group">
+                                        <label>Numéro de carte *</label>
+                                        <input type="text" class="form-control" placeholder="1234 5678 9012 3456">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Date d'expiration *</label>
+                                                <input type="text" class="form-control" placeholder="MM/AA">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>CVV *</label>
+                                                <input type="text" class="form-control" placeholder="123">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nom sur la carte *</label>
+                                        <input type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="cart-summary">
+                            <h4>Récapitulatif de commande</h4>
+                            <hr>
+                            <div id="checkout-items">
+                                <!-- Order items will be loaded here -->
+                            </div>
+                            <hr>
+                            <div class="summary-line">
+                                <span>Sous-total :</span>
+                                <strong id="checkout-subtotal">0,00 €</strong>
+                            </div>
+                            <div class="summary-line">
+                                <span>Livraison :</span>
+                                <strong>Gratuite</strong>
+                            </div>
+                            <div class="summary-line">
+                                <span>TVA (20%) :</span>
+                                <strong id="checkout-tax">0,00 €</strong>
+                            </div>
+                            <hr>
+                            <div class="summary-line" style="font-size: 1.2em;">
+                                <span><strong>Total :</strong></span>
+                                <strong id="checkout-total" class="text-primary">0,00 €</strong>
+                            </div>
+                            <hr>
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" required> J'accepte les <a href="#"
+                                        onclick="showPage('terms')">conditions générales de vente</a>
+                                </label>
+                            </div>
+                            <button class="btn btn-success btn-lg btn-block" onclick="processOrder()">
+                                <i class="fa fa-lock"></i> Finaliser la commande
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LOGIN PAGE -->
+        <div id="login-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>Connexion</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <span>Connexion</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Se connecter</h4>
+                            </div>
+                            <div class="panel-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label>Adresse email *</label>
+                                        <input type="email" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Mot de passe *</label>
+                                        <input type="password" class="form-control" required>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox"> Se souvenir de moi
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+                                    <div class="text-center" style="margin-top: 15px;">
+                                        <a href="#" class="text-muted">Mot de passe oublié ?</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Créer un compte</h4>
+                            </div>
+                            <div class="panel-body">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Prénom *</label>
+                                                <input type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Nom *</label>
+                                                <input type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Adresse email *</label>
+                                        <input type="email" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Mot de passe *</label>
+                                        <input type="password" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Confirmer le mot de passe *</label>
+                                        <input type="password" class="form-control" required>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" required> J'accepte les <a href="#"
+                                                onclick="showPage('terms')">conditions d'utilisation</a>
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-success btn-block">Créer mon compte</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- USER PROFILE PAGE -->
+        <div id="profile-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>Mon Compte</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <span>Mon compte</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <div class="text-center">
+                                    <img src="https://via.placeholder.com/100x100/2d5f5f/ffffff?text=JD"
+                                        class="img-circle" style="width: 100px; height: 100px;">
+                                    <h4 style="margin-top: 15px;">John Doe</h4>
+                                    <p class="text-muted">john.doe@email.com</p>
+                                </div>
+                                <hr>
+                                <ul class="nav nav-pills nav-stacked">
+                                    <li class="active"><a href="#profile-info" data-toggle="tab">Informations
+                                            personnelles</a></li>
+                                    <li><a href="#profile-orders" data-toggle="tab">Mes commandes</a></li>
+                                    <li><a href="#profile-addresses" data-toggle="tab">Mes adresses</a></li>
+                                    <li><a href="#profile-wishlist" data-toggle="tab">Ma liste de souhaits</a></li>
+                                    <li><a href="#profile-security" data-toggle="tab">Sécurité</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="profile-tabs">
+                            <div class="tab-content">
+                                <div id="profile-info" class="tab-pane fade in active">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>Informations personnelles</h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <form>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Prénom</label>
+                                                            <input type="text" class="form-control" value="John">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Nom</label>
+                                                            <input type="text" class="form-control" value="Doe">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Email</label>
+                                                    <input type="email" class="form-control" value="john.doe@email.com">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Téléphone</label>
+                                                    <input type="tel" class="form-control" value="+33 1 23 45 67 89">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Date de naissance</label>
+                                                    <input type="date" class="form-control" value="1990-01-15">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="profile-orders" class="tab-pane fade">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>Historique des commandes</h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Commande #</th>
+                                                            <th>Date</th>
+                                                            <th>Statut</th>
+                                                            <th>Total</th>
+                                                            <th>Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>#STF-2024-001</td>
+                                                            <td>15/12/2024</td>
+                                                            <td><span class="badge badge-custom"
+                                                                    style="background: var(--success);">Livrée</span>
+                                                            </td>
+                                                            <td>299,99 €</td>
+                                                            <td>
+                                                                <a href="#" class="btn btn-sm btn-primary">Voir</a>
+                                                                <a href="#" class="btn btn-sm btn-default">Racheter</a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>#STF-2024-002</td>
+                                                            <td>10/12/2024</td>
+                                                            <td><span class="badge badge-custom"
+                                                                    style="background: var(--warning);">En
+                                                                    transit</span></td>
+                                                            <td>149,50 €</td>
+                                                            <td>
+                                                                <a href="#" class="btn btn-sm btn-primary">Suivre</a>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="profile-addresses" class="tab-pane fade">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>Mes adresses</h4>
+                                            <button class="btn btn-primary btn-sm pull-right" style="margin-top: -5px;">
+                                                <i class="fa fa-plus"></i> Ajouter une adresse
+                                            </button>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="address-card"
+                                                        style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                                        <h5>Adresse de livraison principale</h5>
+                                                        <p>
+                                                            John Doe<br>
+                                                            123 Rue de la Paix<br>
+                                                            75001 Paris<br>
+                                                            France
+                                                        </p>
+                                                        <div class="text-right">
+                                                            <a href="#" class="btn btn-sm btn-primary">Modifier</a>
+                                                            <a href="#" class="btn btn-sm btn-danger">Supprimer</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="address-card"
+                                                        style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                                        <h5>Adresse de facturation</h5>
+                                                        <p>
+                                                            John Doe<br>
+                                                            456 Avenue des Champs<br>
+                                                            75008 Paris<br>
+                                                            France
+                                                        </p>
+                                                        <div class="text-right">
+                                                            <a href="#" class="btn btn-sm btn-primary">Modifier</a>
+                                                            <a href="#" class="btn btn-sm btn-danger">Supprimer</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="profile-wishlist" class="tab-pane fade">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>Ma liste de souhaits (3 articles)</h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <div class="row">
+                                                <div class="col-md-4">
+                                                    <div class="product-card">
+                                                        <div class="product-image">
+                                                            <img src="https://via.placeholder.com/200x150/2d5f5f/ffffff?text=Produit"
+                                                                alt="Produit">
+                                                        </div>
+                                                        <div class="product-info">
+                                                            <h5 class="product-title">Smartphone XL</h5>
+                                                            <p class="product-price">299,99 €</p>
+                                                            <div class="text-center">
+                                                                <button class="btn btn-primary btn-sm"
+                                                                    style="margin-right: 5px;">
+                                                                    <i class="fa fa-shopping-cart"></i>
+                                                                </button>
+                                                                <button class="btn btn-danger btn-sm">
+                                                                    <i class="fa fa-times"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="profile-security" class="tab-pane fade">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4>Sécurité du compte</h4>
+                                        </div>
+                                        <div class="panel-body">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label>Mot de passe actuel</label>
+                                                    <input type="password" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Nouveau mot de passe</label>
+                                                    <input type="password" class="form-control">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Confirmer le nouveau mot de passe</label>
+                                                    <input type="password" class="form-control">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Changer le mot de
+                                                    passe</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTACT PAGE -->
+        <div id="contact-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>Nous contacter</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <span>Contact</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Envoyez-nous un message</h4>
+                            </div>
+                            <div class="panel-body">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Prénom *</label>
+                                                <input type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Nom *</label>
+                                                <input type="text" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email *</label>
+                                        <input type="email" class="form-control" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Sujet *</label>
+                                        <select class="form-control" required>
+                                            <option value="">Sélectionner un sujet</option>
+                                            <option value="order">Question sur une commande</option>
+                                            <option value="product">Information produit</option>
+                                            <option value="return">Retour/Échange</option>
+                                            <option value="technical">Support technique</option>
+                                            <option value="other">Autre</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Message *</label>
+                                        <textarea class="form-control" rows="6" required
+                                            placeholder="Décrivez votre demande..."></textarea>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" required> J'accepte d'être recontacté par email
+                                        </label>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fa fa-paper-plane"></i> Envoyer le message
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Informations de contact</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="contact-info">
+                                    <div style="margin-bottom: 20px;">
+                                        <i class="fa fa-map-marker"
+                                            style="color: var(--primary-color); margin-right: 10px;"></i>
+                                        <strong>Adresse</strong><br>
+                                        <span class="text-muted">123 Rue du Commerce<br>75001 Paris, France</span>
+                                    </div>
+                                    <div style="margin-bottom: 20px;">
+                                        <i class="fa fa-phone"
+                                            style="color: var(--primary-color); margin-right: 10px;"></i>
+                                        <strong>Téléphone</strong><br>
+                                        <span class="text-muted">+33 1 23 45 67 89</span>
+                                    </div>
+                                    <div style="margin-bottom: 20px;">
+                                        <i class="fa fa-envelope"
+                                            style="color: var(--primary-color); margin-right: 10px;"></i>
+                                        <strong>Email</strong><br>
+                                        <span class="text-muted">contact@staefa.com</span>
+                                    </div>
+                                    <div style="margin-bottom: 20px;">
+                                        <i class="fa fa-clock-o"
+                                            style="color: var(--primary-color); margin-right: 10px;"></i>
+                                        <strong>Horaires</strong><br>
+                                        <span class="text-muted">Lun-Ven: 9h-18h<br>Sam: 9h-17h<br>Dim: Fermé</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>FAQ</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="faq-item">
+                                    <strong>Quels sont les délais de livraison ?</strong>
+                                    <p class="text-muted">2-3 jours ouvrés en France métropolitaine.</p>
+                                </div>
+                                <div class="faq-item">
+                                    <strong>Puis-je retourner un article ?</strong>
+                                    <p class="text-muted">Oui, vous avez 30 jours pour retourner un article.</p>
+                                </div>
+                                <div class="faq-item">
+                                    <strong>Les frais de port sont-ils gratuits ?</strong>
+                                    <p class="text-muted">Gratuits dès 50€ d'achat.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABOUT PAGE -->
+        <div id="about-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>À propos de STAEFA</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <span>À propos</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="about-content">
+                            <h2>Notre Histoire</h2>
+                            <p>Depuis sa création, STAEFA s'est imposée comme une référence dans le domaine du shopping
+                                et des services en ligne. Notre philosophie "Buy simple, live better" reflète notre
+                                engagement à simplifier la vie de nos clients tout en leur offrant des produits de
+                                qualité exceptionnelle.</p>
+
+                            <h2>Notre Mission</h2>
+                            <p>Nous croyons fermement que faire ses achats doit être simple, agréable et accessible à
+                                tous. C'est pourquoi nous avons développé une plateforme intuitive qui vous permet de
+                                trouver facilement ce dont vous avez besoin, que ce soit pour votre quotidien, votre
+                                travail ou vos loisirs.</p>
+
+                            <h2>Nos Valeurs</h2>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="value-item" style="margin-bottom: 30px;">
+                                        <div class="value-icon"
+                                            style="color: var(--primary-color); font-size: 2rem; margin-bottom: 10px;">
+                                            <i class="fa fa-heart"></i>
+                                        </div>
+                                        <h4>Satisfaction Client</h4>
+                                        <p>Votre satisfaction est notre priorité absolue. Nous mettons tout en œuvre
+                                            pour vous offrir une expérience d'achat exceptionnelle.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="value-item" style="margin-bottom: 30px;">
+                                        <div class="value-icon"
+                                            style="color: var(--secondary-color); font-size: 2rem; margin-bottom: 10px;">
+                                            <i class="fa fa-leaf"></i>
+                                        </div>
+                                        <h4>Développement Durable</h4>
+                                        <p>Nous nous engageons dans une démarche éco-responsable en privilégiant des
+                                            produits respectueux de l'environnement.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="value-item" style="margin-bottom: 30px;">
+                                        <div class="value-icon"
+                                            style="color: var(--accent-color); font-size: 2rem; margin-bottom: 10px;">
+                                            <i class="fa fa-users"></i>
+                                        </div>
+                                        <h4>Esprit d'Équipe</h4>
+                                        <p>Notre équipe passionnée travaille main dans la main pour vous offrir le
+                                            meilleur service possible.</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="value-item" style="margin-bottom: 30px;">
+                                        <div class="value-icon"
+                                            style="color: var(--success); font-size: 2rem; margin-bottom: 10px;">
+                                            <i class="fa fa-rocket"></i>
+                                        </div>
+                                        <h4>Innovation</h4>
+                                        <p>Nous innovons constamment pour améliorer votre expérience et vous proposer
+                                            les dernières tendances.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h2>Notre Engagement Qualité</h2>
+                            <p>Tous nos produits sont soigneusement sélectionnés par notre équipe d'experts. Nous
+                                travaillons exclusivement avec des fournisseurs reconnus pour leur fiabilité et leur
+                                respect des normes de qualité les plus strictes.</p>
+
+                            <div class="alert alert-info">
+                                <i class="fa fa-info-circle"></i>
+                                <strong>Le saviez-vous ?</strong> Plus de 50 000 clients nous font confiance chaque
+                                année pour leurs achats en ligne.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Chiffres Clés</h4>
+                            </div>
+                            <div class="panel-body">
+                                <div class="stat-item text-center" style="margin-bottom: 30px;">
+                                    <div style="font-size: 3rem; font-weight: bold; color: var(--primary-color);">50K+
+                                    </div>
+                                    <div style="color: var(--text-light);">Clients satisfaits</div>
+                                </div>
+                                <div class="stat-item text-center" style="margin-bottom: 30px;">
+                                    <div style="font-size: 3rem; font-weight: bold; color: var(--secondary-color);">10K+
+                                    </div>
+                                    <div style="color: var(--text-light);">Produits disponibles</div>
+                                </div>
+                                <div class="stat-item text-center" style="margin-bottom: 30px;">
+                                    <div style="font-size: 3rem; font-weight: bold; color: var(--accent-color);">99%
+                                    </div>
+                                    <div style="color: var(--text-light);">Taux de satisfaction</div>
+                                </div>
+                                <div class="stat-item text-center">
+                                    <div style="font-size: 3rem; font-weight: bold; color: var(--success);">24/7</div>
+                                    <div style="color: var(--text-light);">Support client</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Certifications</h4>
+                            </div>
+                            <div class="panel-body text-center">
+                                <div style="margin-bottom: 20px;">
+                                    <i class="fa fa-shield" style="font-size: 2rem; color: var(--success);"></i>
+                                    <div><strong>SSL Sécurisé</strong></div>
+                                    <small class="text-muted">Transactions protégées</small>
+                                </div>
+                                <div style="margin-bottom: 20px;">
+                                    <i class="fa fa-check-circle"
+                                        style="font-size: 2rem; color: var(--primary-color);"></i>
+                                    <div><strong>ISO 9001</strong></div>
+                                    <small class="text-muted">Qualité certifiée</small>
+                                </div>
+                                <div>
+                                    <i class="fa fa-leaf" style="font-size: 2rem; color: var(--success);"></i>
+                                    <div><strong>Éco-Responsable</strong></div>
+                                    <small class="text-muted">Démarche verte</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TERMS PAGE -->
+        <div id="terms-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>Conditions Générales de Vente</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <span>CGV</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="terms-content">
+                            <h2>1. Objet</h2>
+                            <p>Les présentes conditions générales de vente (CGV) régissent les relations contractuelles
+                                entre STAEFA et ses clients dans le cadre de la vente en ligne de produits via le site
+                                www.staefa.com.</p>
+
+                            <h2>2. Acceptation des conditions</h2>
+                            <p>Toute commande passée sur notre site implique l'acceptation pleine et entière des
+                                présentes CGV. Ces conditions prévalent sur toutes autres conditions figurant dans tout
+                                autre document, sauf dérogation préalable, expresse et écrite.</p>
+
+                            <h2>3. Produits</h2>
+                            <p>Les produits proposés sont ceux qui figurent dans le catalogue publié sur le site
+                                www.staefa.com. Ces produits sont proposés dans la limite des stocks disponibles.</p>
+
+                            <h2>4. Prix</h2>
+                            <p>Les prix indiqués sont en euros toutes taxes comprises (TTC) hors frais de livraison.
+                                STAEFA se réserve le droit de modifier ses prix à tout moment, étant toutefois entendu
+                                que le prix figurant au catalogue le jour de la commande sera le seul applicable à
+                                l'acheteur.</p>
+
+                            <h2>5. Commande</h2>
+                            <p>Les informations contractuelles feront l'objet d'une confirmation au plus tard au moment
+                                de la validation de votre commande. STAEFA se réserve le droit d'annuler ou de refuser
+                                toute commande d'un client avec lequel il existerait un litige relatif au paiement d'une
+                                commande antérieure.</p>
+
+                            <h2>6. Paiement</h2>
+                            <p>Le règlement des commandes s'effectue par carte bancaire, PayPal ou virement bancaire. Le
+                                débit de la carte n'est effectué qu'au moment de l'expédition de la commande.</p>
+
+                            <h2>7. Livraison</h2>
+                            <p>Les produits sont livrés à l'adresse indiquée lors de la commande. Les délais de
+                                livraison sont de 2 à 3 jours ouvrés en France métropolitaine. La livraison est gratuite
+                                pour toute commande supérieure à 50€.</p>
+
+                            <h2>8. Droit de rétractation</h2>
+                            <p>Conformément à l'article L121-20 du Code de la consommation, vous disposez d'un délai de
+                                rétractation de 14 jours à compter de la réception de votre commande pour nous retourner
+                                tout produit ne vous convenant pas.</p>
+
+                            <h2>9. Garanties</h2>
+                            <p>Tous nos produits bénéficient de la garantie légale de conformité et de la garantie
+                                contre les vices cachés, permettant à l'acheteur de renvoyer les produits livrés
+                                défectueux ou non conformes.</p>
+
+                            <h2>10. Protection des données</h2>
+                            <p>STAEFA s'engage à préserver la confidentialité de toutes les informations fournies par
+                                l'acheteur. Ces informations ne seront transmises à des tiers qu'avec l'accord préalable
+                                et exprès de l'acheteur.</p>
+
+                            <h2>11. Droit applicable</h2>
+                            <p>Les présentes CGV sont soumises à la loi française. En cas de litige, les tribunaux
+                                français seront les seuls compétents.</p>
+
+                            <div class="alert alert-info">
+                                <i class="fa fa-calendar"></i> <strong>Dernière mise à jour :</strong> 15 décembre 2024
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4>Liens utiles</h4>
+                            </div>
+                            <div class="panel-body">
+                                <ul class="list-unstyled">
+                                    <li><a href="#" onclick="showPage('privacy')"><i class="fa fa-shield"></i> Politique
+                                            de confidentialité</a></li>
+                                    <li><a href="#" onclick="showPage('legal')"><i class="fa fa-gavel"></i> Mentions
+                                            légales</a></li>
+                                    <li><a href="#" onclick="showPage('contact')"><i class="fa fa-envelope"></i> Nous
+                                            contacter</a></li>
+                                    <li><a href="#" onclick="showPage('faq')"><i class="fa fa-question-circle"></i>
+                                            FAQ</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRIVACY POLICY PAGE -->
+        <div id="privacy-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>Politique de Confidentialité</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <span>Confidentialité</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="privacy-content">
+                    <h2>Collecte des données personnelles</h2>
+                    <p>STAEFA collecte vos données personnelles dans le but de traiter vos commandes et améliorer nos
+                        services. Les données collectées comprennent notamment vos nom, prénom, adresse e-mail, adresse
+                        de livraison et informations de paiement.</p>
+
+                    <h2>Utilisation des données</h2>
+                    <p>Vos données personnelles sont utilisées pour :</p>
+                    <ul>
+                        <li>Traiter et expédier vos commandes</li>
+                        <li>Vous tenir informé de l'état de vos commandes</li>
+                        <li>Vous proposer des offres personnalisées (avec votre accord)</li>
+                        <li>Améliorer nos services et votre expérience client</li>
+                    </ul>
+
+                    <h2>Protection des données</h2>
+                    <p>STAEFA met en œuvre toutes les mesures techniques et organisationnelles appropriées pour protéger
+                        vos données personnelles contre la destruction, la perte, l'altération, la divulgation ou
+                        l'accès non autorisés.</p>
+
+                    <h2>Vos droits</h2>
+                    <p>Conformément au RGPD, vous disposez des droits suivants :</p>
+                    <ul>
+                        <li>Droit d'accès à vos données personnelles</li>
+                        <li>Droit de rectification</li>
+                        <li>Droit à l'effacement</li>
+                        <li>Droit à la portabilité</li>
+                        <li>Droit d'opposition</li>
+                    </ul>
+
+                    <div class="alert alert-info">
+                        <i class="fa fa-envelope"></i> Pour exercer vos droits, contactez-nous à :
+                        <strong>privacy@staefa.com</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEGAL NOTICES PAGE -->
+        <div id="legal-page" class="page-content">
+            <div class="page-header">
+                <div class="container">
+                    <h1>Mentions Légales</h1>
+                    <nav class="breadcrumb">
+                        <a href="#" onclick="showPage('home')">Accueil</a>
+                        <span>/</span>
+                        <span>Mentions légales</span>
+                    </nav>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="legal-content">
+                    <h2>Éditeur du site</h2>
+                    <p>
+                        <strong>STAEFA Shopping & Servicing</strong><br>
+                        SARL au capital de 50 000 €<br>
+                        RCS Paris 123 456 789<br>
+                        SIRET : 123 456 789 00012<br>
+                        TVA Intracommunautaire : FR12 123456789
+                    </p>
+
+                    <h2>Siège social</h2>
+                    <p>
+                        123 Rue du Commerce<br>
+                        75001 Paris<br>
+                        France
+                    </p>
+
+                    <h2>Contact</h2>
+                    <p>
+                        Téléphone : +33 1 23 45 67 89<br>
+                        Email : contact@staefa.com
+                    </p>
+
+                    <h2>Directeur de la publication</h2>
+                    <p>M. Jean Dupont, Gérant</p>
+
+                    <h2>Hébergeur</h2>
+                    <p>
+                        OVH SAS<br>
+                        2 rue Kellermann<br>
+                        59100 Roubaix<br>
+                        France
+                    </p>
+
+                    <h2>Propriété intellectuelle</h2>
+                    <p>L'ensemble du contenu de ce site (textes, images, vidéos) est la propriété exclusive de STAEFA,
+                        sauf mention contraire. Toute reproduction, même partielle, est interdite sans autorisation
+                        préalable.</p>
+
+                    <h2>Responsabilité</h2>
+                    <p>STAEFA s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur ce site.
+                        Toutefois, STAEFA ne peut garantir l'exactitude, la précision ou l'exhaustivité des informations
+                        mises à disposition sur ce site.</p>
+
+                    <h2>Loi applicable</h2>
+                    <p>Le présent site est soumis au droit français. Les tribunaux français sont seuls compétents en cas
+                        de litige.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <h5>STAEFA</h5>
+                    <p>Buy simple, live better. Votre partenaire de confiance pour tous vos achats en ligne.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fa fa-facebook"></i></a>
+                        <a href="#"><i class="fa fa-twitter"></i></a>
+                        <a href="#"><i class="fa fa-instagram"></i></a>
+                        <a href="#"><i class="fa fa-linkedin"></i></a>
+                        <a href="#"><i class="fa fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <h5>Produits</h5>
+                    <ul>
+                        <li><a href="#" onclick="showPage('catalog', 'electronics')">Électronique</a></li>
+                        <li><a href="#" onclick="showPage('catalog', 'fashion')">Mode</a></li>
+                        <li><a href="#" onclick="showPage('catalog', 'home')">Maison & Jardin</a></li>
+                        <li><a href="#" onclick="showPage('catalog', 'sports')">Sports & Loisirs</a></li>
+                        <li><a href="#" onclick="showPage('catalog')">Tous les produits</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Service Client</h5>
+                    <ul>
+                        <li><a href="#" onclick="showPage('contact')">Nous contacter</a></li>
+                        <li><a href="#" onclick="showPage('profile')">Mon compte</a></li>
+                        <li><a href="#">Suivi de commande</a></li>
+                        <li><a href="#">Retours & Échanges</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5>Informations</h5>
+                    <ul>
+                        <li><a href="#" onclick="showPage('about')">À propos</a></li>
+                        <li><a href="#" onclick="showPage('terms')">CGV</a></li>
+                        <li><a href="#" onclick="showPage('privacy')">Confidentialité</a></li>
+                        <li><a href="#" onclick="showPage('legal')">Mentions légales</a></li>
+                        <li><a href="#">Plan du site</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 STAEFA Shopping & Servicing. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <script>
+        // === APPLICATION STATE ===
+        let currentPage = 'home';
+        let cart = [];
+        let products = [
+            {
+                id: 1,
+                name: 'Smartphone Premium XL',
+                price: 299.99,
+                category: 'electronics',
+                image: 'https://via.placeholder.com/300x250/2d5f5f/ffffff?text=Smartphone',
+                description: 'Un smartphone haut de gamme avec toutes les fonctionnalités modernes.',
+                rating: 4.5,
+                reviews: 24,
+                featured: true
+            },
+            {
+                id: 2,
+                name: 'Casque Audio Sans Fil',
+                price: 149.99,
+                category: 'electronics',
+                image: 'https://via.placeholder.com/300x250/3498db/ffffff?text=Casque',
+                description: 'Casque audio Bluetooth avec réduction de bruit active.',
+                rating: 4.2,
+                reviews: 18,
+                featured: true
+            },
+            {
+                id: 3,
+                name: 'T-shirt Premium Coton',
+                price: 29.99,
+                category: 'fashion',
+                image: 'https://via.placeholder.com/300x250/27ae60/ffffff?text=T-shirt',
+                description: 'T-shirt en coton biologique, coupe moderne.',
+                rating: 4.0,
+                reviews: 32,
+                featured: true
+            },
+            {
+                id: 4,
+                name: 'Chaussures de Sport',
+                price: 89.99,
+                category: 'sports',
+                image: 'https://via.placeholder.com/300x250/e74c3c/ffffff?text=Chaussures',
+                description: 'Chaussures de running haute performance.',
+                rating: 4.7,
+                reviews: 45,
+                featured: true
+            },
+            {
+                id: 5,
+                name: 'Lampe Design LED',
+                price: 79.99,
+                category: 'home',
+                image: 'https://via.placeholder.com/300x250/9b59b6/ffffff?text=Lampe',
+                description: 'Lampe LED moderne avec variateur d\'intensité.',
+                rating: 4.3,
+                reviews: 15,
+                featured: false
+            },
+            {
+                id: 6,
+                name: 'Montre Connectée',
+                price: 199.99,
+                category: 'electronics',
+                image: 'https://via.placeholder.com/300x250/34495e/ffffff?text=Montre',
+                description: 'Montre connectée avec suivi santé intégré.',
+                rating: 4.1,
+                reviews: 28,
+                featured: false
+            },
+            {
+                id: 7,
+                name: 'Sac à Dos Urbain',
+                price: 59.99,
+                category: 'fashion',
+                image: 'https://via.placeholder.com/300x250/f39c12/ffffff?text=Sac',
+                description: 'Sac à dos imperméable avec compartiment laptop.',
+                rating: 4.4,
+                reviews: 22,
+                featured: false
+            },
+            {
+                id: 8,
+                name: 'Bouteille Isotherme',
+                price: 24.99,
+                category: 'sports',
+                image: 'https://via.placeholder.com/300x250/1abc9c/ffffff?text=Bouteille',
+                description: 'Bouteille en acier inoxydable, garde au chaud/froid.',
+                rating: 4.6,
+                reviews: 67,
+                featured: false
+            }
+        ];
+
+        // === NAVIGATION FUNCTIONS ===
+        function showPage(pageName, filter = null) {
+            // Hide all pages
+            $('.page-content').removeClass('active');
+
+            // Show selected page
+            $(`#${pageName}-page`).addClass('active');
+
+            // Update current page
+            currentPage = pageName;
+
+            // Special handling for different pages
+            switch (pageName) {
+                case 'home':
+                    loadFeaturedProducts();
+                    break;
+                case 'catalog':
+                    loadCatalogProducts(filter);
+                    break;
+                case 'product-detail':
+                    loadProductDetail(filter);
+                    break;
+                case 'cart':
+                    loadCart();
+                    break;
+                case 'checkout':
+                    loadCheckout();
+                    break;
+                case 'profile':
+                    loadProfile();
+                    break;
+            }
+
+            // Scroll to top
+            $('html, body').animate({ scrollTop: 0 }, 300);
+        }
+
+        // === PRODUCT FUNCTIONS ===
+        function loadFeaturedProducts() {
+            const featuredProducts = products.filter(p => p.featured);
+            const html = featuredProducts.map(product => createProductCard(product)).join('');
+            $('#featured-products').html(html);
+        }
+
+        function loadCatalogProducts(categoryFilter = null) {
+            let filteredProducts = products;
+
+            if (categoryFilter) {
+                filteredProducts = products.filter(p => p.category === categoryFilter);
+            }
+
+            const html = filteredProducts.map(product => createProductCard(product)).join('');
+            $('#products-grid').html(html);
+            $('#products-count').text(filteredProducts.length);
+        }
+
+        function createProductCard(product) {
+            return `
+                <div class="col-md-4 col-sm-6">
+                    <div class="product-card animate-fade-in-up">
+                        <div class="product-image">
+                            <img src="${product.image}" alt="${product.name}">
+                            <div class="product-badge">Nouveau</div>
+                        </div>
+                        <div class="product-info">
+                            <h5 class="product-title">${product.name}</h5>
+                            <div class="product-rating" style="margin-bottom: 10px;">
+                                ${createStarRating(product.rating)}
+                                <span class="text-muted">(${product.reviews})</span>
+                            </div>
+                            <div class="product-price">${product.price.toFixed(2)} €</div>
+                            <button class="btn-add-cart" onclick="addToCart(${product.id})">
+                                <i class="fa fa-shopping-cart"></i> Ajouter au panier
+                            </button>
+                            <button class="btn btn-link btn-sm" onclick="showPage('product-detail', ${product.id})" style="margin-top: 10px; width: 100%;">
+                                Voir détails
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createStarRating(rating) {
+            let stars = '';
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 !== 0;
+
+            for (let i = 0; i < fullStars; i++) {
+                stars += '<i class="fa fa-star text-warning"></i>';
+            }
+
+            if (hasHalfStar) {
+                stars += '<i class="fa fa-star-half-o text-warning"></i>';
+            }
+
+            const emptyStars = 5 - Math.ceil(rating);
+            for (let i = 0; i < emptyStars; i++) {
+                stars += '<i class="fa fa-star-o text-warning"></i>';
+            }
+
+            return stars;
+        }
+
+        function loadProductDetail(productId) {
+            const product = products.find(p => p.id == productId);
+            if (!product) return;
+
+            $('#product-title').text(product.name);
+            $('#product-price').text(`${product.price.toFixed(2)} €`);
+            $('#product-breadcrumb').text(product.name);
+            $('#main-product-image').attr('src', product.image);
+        }
+
+        // === CART FUNCTIONS ===
+        function addToCart(productId = null) {
+            let product;
+            let quantity = 1;
+
+            if (productId) {
+                // Adding from catalog
+                product = products.find(p => p.id == productId);
+            } else {
+                // Adding from product detail page
+                const currentProductId = parseInt($('#product-title').data('product-id')) || 1;
+                product = products.find(p => p.id == currentProductId);
+                quantity = parseInt($('#product-quantity').val()) || 1;
+            }
+
+            if (!product) return;
+
+            // Check if product already in cart
+            const existingItem = cart.find(item => item.id === product.id);
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    image: product.image,
+                    quantity: quantity
+                });
+            }
+
+            updateCartCount();
+            showNotification('Produit ajouté au panier !', 'success');
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartCount();
+            loadCart();
+            showNotification('Produit retiré du panier', 'info');
+        }
+
+        function updateCartQuantity(productId, newQuantity) {
+            const item = cart.find(item => item.id === productId);
+            if (item && newQuantity > 0) {
+                item.quantity = newQuantity;
+                updateCartCount();
+                loadCart();
+            }
+        }
+
+        function updateCartCount() {
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            $('#cart-count').text(totalItems);
+        }
+
+        function loadCart() {
+            if (cart.length === 0) {
+                $('#cart-items').html(`
+                    <div class="text-center" style="padding: 60px 20px;">
+                        <i class="fa fa-shopping-cart" style="font-size: 4rem; color: #bdc3c7; margin-bottom: 20px;"></i>
+                        <h4>Votre panier est vide</h4>
+                        <p class="text-muted">Découvrez nos produits et ajoutez-les à votre panier</p>
+                        <a href="#" onclick="showPage('catalog')" class="btn btn-primary">Voir le catalogue</a>
+                    </div>
+                `);
+                updateCartSummary(0, 0, 0);
+                return;
+            }
+
+            const html = cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+                    <div style="flex-grow: 1;">
+                        <h5>${item.name}</h5>
+                        <p class="text-muted">${item.price.toFixed(2)} € / unité</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div class="input-group" style="width: 120px;">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default btn-sm" onclick="updateCartQuantity(${item.id}, ${item.quantity - 1})">-</button>
+                            </span>
+                            <input type="number" class="form-control input-sm text-center" value="${item.quantity}" readonly>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default btn-sm" onclick="updateCartQuantity(${item.id}, ${item.quantity + 1})">+</button>
+                            </span>
+                        </div>
+                        <strong>${(item.price * item.quantity).toFixed(2)} €</strong>
+                        <button class="btn btn-danger btn-sm" onclick="removeFromCart(${item.id})">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            $('#cart-items').html(html);
+
+            // Calculate totals
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.2;
+            const total = subtotal + tax;
+
+            updateCartSummary(subtotal, tax, total);
+        }
+
+        function updateCartSummary(subtotal, tax, total) {
+            $('#cart-subtotal').text(`${subtotal.toFixed(2)} €`);
+            $('#cart-tax').text(`${tax.toFixed(2)} €`);
+            $('#cart-total').text(`${total.toFixed(2)} €`);
+
+            // Update checkout summary too
+            $('#checkout-subtotal').text(`${subtotal.toFixed(2)} €`);
+            $('#checkout-tax').text(`${tax.toFixed(2)} €`);
+            $('#checkout-total').text(`${total.toFixed(2)} €`);
+        }
+
+        function loadCheckout() {
+            if (cart.length === 0) {
+                showPage('cart');
+                return;
+            }
+
+            const html = cart.map(item => `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span>${item.name} (x${item.quantity})</span>
+                    <strong>${(item.price * item.quantity).toFixed(2)} €</strong>
+                </div>
+            `).join('');
+
+            $('#checkout-items').html(html);
+
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.2;
+            const total = subtotal + tax;
+
+            updateCartSummary(subtotal, tax, total);
+        }
+
+        // === UTILITY FUNCTIONS ===
+        function changeQuantity(delta) {
+            const input = $('#product-quantity');
+            const currentValue = parseInt(input.val()) || 1;
+            const newValue = Math.max(1, currentValue + delta);
+            input.val(newValue);
+        }
+
+        function changeMainImage(src) {
+            $('#main-product-image').attr('src', src);
+            $('.thumbnail').removeClass('active');
+            $(event.target).addClass('active');
+        }
+
+        function performSearch() {
+            const query = $('#search-input').val().toLowerCase();
+            if (query.length < 2) return;
+
+            const filteredProducts = products.filter(p =>
+                p.name.toLowerCase().includes(query) ||
+                p.description.toLowerCase().includes(query)
+            );
+
+            showPage('catalog');
+
+            const html = filteredProducts.map(product => createProductCard(product)).join('');
+            $('#products-grid').html(html);
+            $('#products-count').text(filteredProducts.length);
+
+            if (filteredProducts.length === 0) {
+                $('#products-grid').html(`
+                    <div class="col-md-12 text-center" style="padding: 60px 20px;">
+                        <i class="fa fa-search" style="font-size: 4rem; color: #bdc3c7; margin-bottom: 20px;"></i>
+                        <h4>Aucun produit trouvé</h4>
+                        <p class="text-muted">Essayez avec d'autres mots-clés</p>
+                    </div>
+                `);
+            }
+        }
+
+        function applyFilters() {
+            showNotification('Filtres appliqués !', 'info');
+        }
+
+        function sortProducts(sortType) {
+            showNotification('Produits triés !', 'info');
+        }
+
+        function processOrder() {
+            // Simulate order processing
+            showNotification('Commande en cours de traitement...', 'info');
+
+            setTimeout(() => {
+                cart = [];
+                updateCartCount();
+                showNotification('Commande confirmée ! Vous allez recevoir un email de confirmation.', 'success');
+                showPage('home');
+            }, 2000);
+        }
+
+        function loadProfile() {
+            // Profile page is already static, no dynamic loading needed
+        }
+
+        function showNotification(message, type = 'info') {
+            const alertClass = type === 'success' ? 'alert-success' :
+                type === 'error' ? 'alert-danger' : 'alert-info';
+
+            const notification = $(`
+                <div class="alert ${alertClass} alert-dismissible" style="position: fixed; top: 100px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    ${message}
+                </div>
+            `);
+
+            $('body').append(notification);
+
+            setTimeout(() => {
+                notification.fadeOut(() => notification.remove());
+            }, 4000);
+        }
+
+        // === EVENT LISTENERS ===
+        $(document).ready(function () {
+            // Load initial page
+            loadFeaturedProducts();
+            updateCartCount();
+
+            // Search on Enter key
+            $('#search-input').keypress(function (e) {
+                if (e.which === 13) {
+                    performSearch();
+                }
+            });
+
+            // Mobile menu close on item click
+            $('.navbar-nav a').click(function () {
+                $('.navbar-collapse').collapse('hide');
+            });
+
+            // Smooth scrolling for anchor links
+            $('a[href^="#"]').click(function (e) {
+                e.preventDefault();
+                const target = $(this.getAttribute('href'));
+                if (target.length) {
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 100
+                    }, 500);
+                }
+            });
+
+            // Form validation
+            $('form').submit(function (e) {
+                const requiredFields = $(this).find('[required]');
+                let isValid = true;
+
+                requiredFields.each(function () {
+                    if (!$(this).val().trim()) {
+                        $(this).addClass('error');
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('error');
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    showNotification('Veuillez remplir tous les champs obligatoires', 'error');
+                }
+            });
+
+            // Add error styling
+            $('<style>')
+                .prop('type', 'text/css')
+                .html(`
+                    .form-control.error {
+                        border-color: #e74c3c !important;
+                        box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2) !important;
+                    }
+                `)
+                .appendTo('head');
+        });
+
+        // === DEMO DATA INITIALIZATION ===
+        // Add some demo items to cart for demonstration
+        setTimeout(() => {
+            if (cart.length === 0) {
+                cart.push({
+                    id: 1,
+                    name: 'Smartphone Premium XL',
+                    price: 299.99,
+                    image: 'https://via.placeholder.com/80x80/2d5f5f/ffffff?text=Phone',
+                    quantity: 1
+                });
+                updateCartCount();
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>

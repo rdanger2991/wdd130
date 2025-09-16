@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formation Beauté et Décoration</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .bg-gradient-custom {
+            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 100%);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #ff9ff3 0%, #f368e0 100%);
+            position: relative;
+        }
+
+        .decorative-pattern::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 120px;
+            height: 120px;
+            background-image:
+                radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px, 15px 15px;
+            border-radius: 50%;
+        }
+
+        .icon-badge {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .bg-gradient-light {
+            background: linear-gradient(45deg, #fce4ec, #f8bbd9);
+        }
+
+        .card {
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge {
+            font-weight: 600;
+        }
+
+        .course-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #flyer,
+            #flyer * {
+                visibility: visible;
+            }
+
+            #flyer {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100% !important;
+            }
+
+            .container-fluid {
+                background: none !important;
+            }
+        }
+
+        .text-primary {
+            color: #c44569 !important;
+        }
+
+        .bg-primary {
+            background-color: #c44569 !important;
+        }
+
+        .text-secondary {
+            color: #6c5ce7 !important;
+        }
+
+        .bg-secondary {
+            background-color: #6c5ce7 !important;
+        }
+
+        .text-accent {
+            color: #fd79a8 !important;
+        }
+
+        .bg-accent {
+            background-color: #fd79a8 !important;
+        }
+
+        .text-gold {
+            color: #fdcb6e !important;
+        }
+
+        .bg-gold {
+            background-color: #fdcb6e !important;
+        }
+
+        .course-icon {
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            font-size: 3rem;
+            color: white;
+            margin: 0 auto 1rem;
+        }
+
+        .course-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+        }
+
+        .emoji-icon {
+            font-size: 4rem;
+            line-height: 1;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            color: #c44569;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid bg-gradient-custom min-vh-100 py-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-xl-9">
+                    <div id="flyer" class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                        <!-- Header Section -->
+                        <div class="header-section position-relative text-white p-4 p-md-5">
+                            <!-- Decorative pattern -->
+                            <div class="decorative-pattern position-absolute top-0 start-0 w-100 h-100"></div>
+
+                            <div class="row align-items-center position-relative">
+                                <div class="col-md-8">
+                                    <h1 class="display-4 fw-bold mb-3 lh-1">
+                                        FORMATION<br>
+                                        BEAUTÉ &<br>
+                                        DÉCORATION
+                                    </h1>
+                                    <p class="lead mb-0 text-light">
+                                        Institut Mixte des Frères Toussaint
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-center text-md-end mt-3 mt-md-0">
+                                    <div class="icon-badge bg-gold rounded-3 p-3 d-inline-block">
+                                        <i class="bi bi-palette-fill fs-1 text-primary"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Content -->
+                        <div class="card-body p-4 p-md-5">
+                            <!-- Courses Grid -->
+                            <div class="mb-5">
+                                <h2 class="h3 fw-bold text-center text-primary mb-4">
+                                    <i class="bi bi-stars me-2"></i>
+                                    Nos Formations Spécialisées
+                                </h2>
+                                <div class="row g-3">
+                                    <!-- Décoration -->
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="course-card bg-light rounded-3 p-4 text-center h-100">
+                                            <div class="course-icon"
+                                                style="background: linear-gradient(135deg, #FFD700, #FFA500);">
+                                                <img src="images/decorateur-evenementiel.jpg" alt="Décoration"
+                                                    class="course-image"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                <div class="emoji-icon" style="display: none;">🎨</div>
+                                            </div>
+                                            <h4 class="h5 fw-bold text-primary">Décoration</h4>
+                                            <p class="text-muted small mb-0">Art de l'aménagement et embellissement
+                                                d'espaces</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Make-up -->
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="course-card bg-light rounded-3 p-4 text-center h-100">
+                                            <div class="course-icon"
+                                                style="background: linear-gradient(135deg, #FF69B4, #FF1493);">
+                                                <img src="images/make-up.jpg" alt="Make-up" class="course-image"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                <div class="emoji-icon" style="display: none;">💄</div>
+                                            </div>
+                                            <h4 class="h5 fw-bold text-primary">Make-up</h4>
+                                            <p class="text-muted small mb-0">Techniques de maquillage professionnel</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Onglerie -->
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="course-card bg-light rounded-3 p-4 text-center h-100">
+                                            <div class="course-icon"
+                                                style="background: linear-gradient(135deg, #9370DB, #8A2BE2);">
+                                                <img src="images/ongle.jpg" alt="Onglerie" class="course-image"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                <div class="emoji-icon" style="display: none;">💅</div>
+                                            </div>
+                                            <h4 class="h5 fw-bold text-primary">Onglerie</h4>
+                                            <p class="text-muted small mb-0">Soins et décoration des ongles</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tresse & Lace -->
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="course-card bg-light rounded-3 p-4 text-center h-100">
+                                            <div class="course-icon"
+                                                style="background: linear-gradient(135deg, #DAA520, #B8860B);">
+                                                <img src="images/tresse.jpeg" alt="Tresse & Lace" class="course-image"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                <div class="emoji-icon" style="display: none;">✨</div>
+                                            </div>
+                                            <h4 class="h5 fw-bold text-primary">Tresse & Lace</h4>
+                                            <p class="text-muted small mb-0">Coiffure africaine et pose de lace</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row g-4">
+                                <!-- Left Column -->
+                                <div class="col-lg-6">
+                                    <!-- Objectives Section -->
+                                    <div class="mb-4">
+                                        <h2 class="h4 fw-bold text-accent mb-3">
+                                            <i class="bi bi-trophy me-2"></i>
+                                            Objectifs de la formation :
+                                        </h2>
+                                        <ul class="list-unstyled text-primary">
+                                            <li class="d-flex align-items-start mb-2">
+                                                <span class="badge bg-accent text-white rounded-circle p-2 me-2 mt-1">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                                <span>Maîtriser les techniques professionnelles de beauté</span>
+                                            </li>
+                                            <li class="d-flex align-items-start mb-2">
+                                                <span class="badge bg-accent text-white rounded-circle p-2 me-2 mt-1">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                                <span>Développer votre créativité et style personnel</span>
+                                            </li>
+                                            <li class="d-flex align-items-start mb-2">
+                                                <span class="badge bg-accent text-white rounded-circle p-2 me-2 mt-1">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                                <span>Acquérir les compétences pour entreprendre</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- What you'll learn -->
+                                    <div class="mb-4">
+                                        <h2 class="h4 fw-bold bg-primary text-white px-3 py-2 rounded mb-3">
+                                            <i class="bi bi-lightbulb me-2"></i>
+                                            Ce que vous apprendrez :
+                                        </h2>
+                                        <ul class="list-unstyled text-primary ms-3">
+                                            <li class="d-flex align-items-center mb-2">
+                                                <span class="bg-primary rounded-circle me-3"
+                                                    style="width: 8px; height: 8px;"></span>
+                                                <span>Techniques de base et avancées</span>
+                                            </li>
+                                            <li class="d-flex align-items-center mb-2">
+                                                <span class="bg-primary rounded-circle me-3"
+                                                    style="width: 8px; height: 8px;"></span>
+                                                <span>Utilisation des outils professionnels</span>
+                                            </li>
+                                            <li class="d-flex align-items-center mb-2">
+                                                <span class="bg-primary rounded-circle me-3"
+                                                    style="width: 8px; height: 8px;"></span>
+                                                <span>Conseils en image et style</span>
+                                            </li>
+                                            <li class="d-flex align-items-center mb-2">
+                                                <span class="bg-primary rounded-circle me-3"
+                                                    style="width: 8px; height: 8px;"></span>
+                                                <span>Gestion d'un salon de beauté</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Right Column -->
+                                <div class="col-lg-6">
+                                    <!-- Date and Cost Section -->
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-sm-6">
+                                            <div class="bg-accent rounded-3 p-4 text-center text-white">
+                                                <i class="bi bi-calendar-event display-6 mb-2"></i>
+                                                <h3 class="h6 fw-bold mb-1">Début des cours</h3>
+                                                <p class="h5 fw-bold mb-0">18 Octobre 2025</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <div class="bg-gold rounded-3 p-4 text-center text-primary">
+                                                <i class="bi bi-currency-dollar display-6 mb-2"></i>
+                                                <h3 class="h6 fw-bold mb-1">Frais d'inscription</h3>
+                                                <p class="h5 fw-bold mb-0">1500 Gdes</p><br>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contact Section -->
+                                    <div class="bg-secondary rounded-3 p-4 text-white">
+                                        <h3 class="h5 fw-bold mb-3">
+                                            <i class="bi bi-telephone-fill me-2"></i>
+                                            Contactez-nous
+                                        </h3>
+                                        <div class="d-flex align-items-center mb-2">
+                                            <i class="bi bi-phone-fill me-3"></i>
+                                            <span class="fw-semibold">47121064 / 42712636</span>
+                                        </div>
+                                        <div class="d-flex align-items-start">
+                                            <i class="bi bi-geo-alt-fill me-3 mt-1"></i>
+                                            <div>
+                                                <span class="fw-semibold">Delmas 33, Rue Lafontant</span><br>
+                                                <small>Institution Mixte des Frères Toussaint</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Call to Action -->
+                            <div class="text-center mt-5 pt-4 border-top">
+                                <div class="mb-3">
+                                    <span class="badge bg-primary text-white fs-5 px-4 py-3 rounded-pill">
+                                        <i class="bi bi-pencil-square me-2"></i>
+                                        Inscriptions Ouvertes
+                                    </span>
+                                </div>
+                                <p class="text-primary fw-semibold mb-0">
+                                    <i class="bi bi-star-fill text-gold me-1"></i>
+                                    Transformez votre passion en profession !
+                                    <i class="bi bi-star-fill text-gold ms-1"></i>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Download Button -->
+                    <div class="text-center mt-4">
+                        <button id="downloadBtn" class="btn btn-primary btn-lg px-4 py-3 rounded-3 shadow">
+                            <i class="bi bi-download me-2"></i>
+                            Télécharger en PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-3 text-dark fw-bold">Génération du PDF en cours...</p>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const downloadBtn = document.getElementById('downloadBtn');
+            const flyer = document.getElementById('flyer');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            // Fonction pour précharger toutes les images
+            function preloadImages() {
+                return new Promise((resolve) => {
+                    const images = document.querySelectorAll('.course-image');
+                    let loadedCount = 0;
+                    const totalImages = images.length;
+
+                    if (totalImages === 0) {
+                        resolve();
+                        return;
+                    }
+
+                    images.forEach(img => {
+                        // Si l'image est déjà chargée
+                        if (img.complete && img.naturalWidth > 0) {
+                            loadedCount++;
+                            if (loadedCount === totalImages) resolve();
+                        } else {
+                            // Attendre le chargement de l'image
+                            img.onload = () => {
+                                loadedCount++;
+                                if (loadedCount === totalImages) resolve();
+                            };
+                            img.onerror = () => {
+                                loadedCount++;
+                                if (loadedCount === totalImages) resolve();
+                            };
+                        }
+                    });
+                });
+            }
+
+            // Fonction pour convertir les images en base64
+            function convertImagesToBase64() {
+                return new Promise((resolve) => {
+                    const images = document.querySelectorAll('.course-image');
+                    const promises = [];
+
+                    images.forEach(img => {
+                        const promise = new Promise((imgResolve) => {
+                            // Si l'image est déjà en base64 ou si elle n'est pas chargée
+                            if (img.src.startsWith('data:') || !img.complete || img.naturalWidth === 0) {
+                                imgResolve();
+                                return;
+                            }
+
+                            try {
+                                const canvas = document.createElement('canvas');
+                                const ctx = canvas.getContext('2d');
+                                canvas.width = img.naturalWidth;
+                                canvas.height = img.naturalHeight;
+
+                                ctx.drawImage(img, 0, 0);
+                                const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+                                img.src = dataURL;
+                                imgResolve();
+                            } catch (error) {
+                                console.error('Erreur conversion image:', error);
+                                imgResolve();
+                            }
+                        });
+                        promises.push(promise);
+                    });
+
+                    Promise.all(promises).then(() => resolve());
+                });
+            }
+
+            downloadBtn.addEventListener('click', function () {
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Préparation...';
+                downloadBtn.disabled = true;
+                loadingOverlay.style.display = 'flex';
+
+                // Précharger les images d'abord
+                preloadImages().then(() => {
+                    // Convertir les images en base64
+                    convertImagesToBase64().then(() => {
+                        downloadBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Génération en cours...';
+
+                        // Donner un peu de temps pour que les images soient mises à jour
+                        setTimeout(() => {
+                            const options = {
+                                scale: 2,
+                                useCORS: true,
+                                allowTaint: true,
+                                backgroundColor: '#ffffff',
+                                logging: false
+                            };
+
+                            html2canvas(flyer, options).then(function (canvas) {
+                                try {
+                                    const { jsPDF } = window.jspdf;
+                                    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+                                    // Calculer les dimensions pour le format A4
+                                    const imgWidth = 210; // Largeur A4 en mm
+                                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+                                    const pdf = new jsPDF({
+                                        orientation: imgHeight > imgWidth ? 'portrait' : 'landscape',
+                                        unit: 'mm',
+                                        format: [imgWidth, imgHeight]
+                                    });
+
+                                    pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+                                    pdf.save('Formation-Beaute-Decoration.pdf');
+
+                                } catch (error) {
+                                    console.error('Erreur lors de la génération du PDF:', error);
+                                    alert('Erreur lors de la génération du PDF: ' + error.message);
+                                } finally {
+                                    downloadBtn.innerHTML = originalText;
+                                    downloadBtn.disabled = false;
+                                    loadingOverlay.style.display = 'none';
+                                }
+                            }).catch(function (error) {
+                                console.error('Erreur html2canvas:', error);
+                                alert('Erreur lors de la capture: ' + error.message);
+                                downloadBtn.innerHTML = originalText;
+                                downloadBtn.disabled = false;
+                                loadingOverlay.style.display = 'none';
+                            });
+                        }, 500);
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formation Bureautique Gratuite</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .bg-gradient-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            position: relative;
+        }
+
+        .decorative-dots::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 100px;
+            height: 100px;
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 15px 15px;
+            border-radius: 50%;
+        }
+
+        .icon-badge {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .bg-gradient-light {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+        }
+
+        .card {
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge {
+            font-weight: 600;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #flyer,
+            #flyer * {
+                visibility: visible;
+            }
+
+            #flyer {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100% !important;
+            }
+
+            .container-fluid {
+                background: none !important;
+            }
+        }
+
+        .text-primary {
+            color: #1e3c72 !important;
+        }
+
+        .bg-primary {
+            background-color: #1e3c72 !important;
+        }
+
+        .text-warning {
+            color: #ffc107 !important;
+        }
+
+        .bg-warning {
+            background-color: #ffc107 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid bg-gradient-custom min-vh-100 py-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-7">
+                    <div id="flyer" class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                        <!-- Header Section -->
+                        <div class="header-section position-relative text-white p-4 p-md-5">
+                            <!-- Decorative dots -->
+                            <div class="decorative-dots position-absolute top-0 start-0 w-100 h-100"></div>
+
+                            <div class="row align-items-start position-relative">
+                                <div class="col-md-8">
+                                    <h1 class="display-4 fw-bold mb-3 lh-1">
+                                        FORMATION<br>
+                                        BUREAUTIQUE<br>
+                                        GRATUITE
+                                    </h1>
+                                    <p class="lead mb-0 text-light">
+                                        Organisée par l'Église de Jésus-Christ des Saints des derniers Jours de la
+                                        Paroisse de PV I
+                                    </p>
+                                </div>
+                                <div class="col-md-4 text-center text-md-end mt-3 mt-md-0">
+                                    <div class="icon-badge bg-warning rounded-3 p-3 d-inline-block">
+                                        <i class="bi bi-laptop fs-1 text-primary"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Content -->
+                        <div class="card-body p-4 p-md-5">
+                            <div class="row g-4">
+                                <!-- Left Column -->
+                                <div class="col-lg-6">
+                                    <!-- Objectives Section -->
+                                    <div class="mb-4">
+                                        <h2 class="h4 fw-bold text-warning mb-3">
+                                            <i class="bi bi-target me-2"></i>
+                                            Objectifs du cours :
+                                        </h2>
+                                        <ul class="list-unstyled text-primary">
+                                            <li class="d-flex align-items-start mb-2">
+                                                <span class="badge bg-warning text-dark rounded-circle p-2 me-2 mt-1">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                                <span>Maîtriser les outils bureautiques essentiels</span>
+                                            </li>
+                                            <li class="d-flex align-items-start mb-2">
+                                                <span class="badge bg-warning text-dark rounded-circle p-2 me-2 mt-1">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                                <span>Créer, éditer et formater des documents professionnels</span>
+                                            </li>
+                                            <li class="d-flex align-items-start mb-2">
+                                                <span class="badge bg-warning text-dark rounded-circle p-2 me-2 mt-1">
+                                                    <i class="bi bi-check-lg"></i>
+                                                </span>
+                                                <span>Utiliser efficacement les logiciels couramment utilisés en milieu
+                                                    professionnel</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Program Section -->
+                                    <div class="mb-4">
+                                        <h2 class="h4 fw-bold bg-primary text-white px-3 py-2 rounded mb-3">
+                                            <i class="bi bi-book me-2"></i>
+                                            Programme du cours :
+                                        </h2>
+                                        <ul class="list-unstyled text-primary ms-3">
+                                            <li class="d-flex align-items-center mb-2">
+                                                <span class="bg-primary rounded-circle me-3"
+                                                    style="width: 8px; height: 8px;"></span>
+                                                <span>Introduction à l'informatique bureautique</span>
+                                            </li>
+                                            <li class="d-flex align-items-center mb-2">
+                                                <span class="bg-primary rounded-circle me-3"
+                                                    style="width: 8px; height: 8px;"></span>
+                                                <span>Utilisation du système d'exploitation</span>
+                                            </li>
+                                            <li class="d-flex align-items-center mb-2">
+                                                <span class="bg-primary rounded-circle me-3"
+                                                    style="width: 8px; height: 8px;"></span>
+                                                <span>Traitement de texte (Microsoft Word)</span>
+                                            </li>
+                                            <li class="d-flex align-items-center mb-2">
+                                                <span class="bg-primary rounded-circle me-3"
+                                                    style="width: 8px; height: 8px;"></span>
+                                                <span>Tableurs (Microsoft Excel)</span>
+                                            </li>
+                                            <li class="d-flex align-items-center mb-2">
+                                                <span class="bg-primary rounded-circle me-3"
+                                                    style="width: 8px; height: 8px;"></span>
+                                                <span>Présentations (Microsoft PowerPoint)</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Right Column -->
+                                <div class="col-lg-6">
+                                    <!-- Visual Section -->
+                                    <div class="bg-light rounded-3 p-4 mb-4 position-relative overflow-hidden">
+                                        <div
+                                            class="bg-gradient-light position-absolute top-0 start-0 w-100 h-100 opacity-25">
+                                        </div>
+                                        <div class="position-relative">
+                                            <div class="bg-white rounded-2 shadow-sm p-4 mb-3 text-center">
+                                                <i class="bi bi-laptop display-4 text-primary"></i>
+                                            </div>
+                                            <div class="text-center">
+                                                <span class="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill">
+                                                    Frais de participation : Gratuit
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Date Section -->
+                                    <div class="bg-warning rounded-3 p-4 text-center">
+                                        <i class="bi bi-calendar-event display-6 text-primary mb-2"></i>
+                                        <h3 class="h5 fw-bold text-primary mb-2">Début des cours</h3>
+                                        <p class="h4 fw-bold text-primary mb-0">20 août 2025</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Call to Action -->
+                            <div class="text-center my-4">
+                                <span class="badge bg-warning text-dark fs-5 px-4 py-3 rounded-pill">
+                                    <i class="bi bi-pencil-square me-2"></i>
+                                    Inscription en cours
+                                </span>
+                            </div>
+
+                            <!-- Contact Info -->
+                            <div class="row g-3">
+                                <div class="col-12">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-geo-alt-fill text-warning me-2 mt-1"></i>
+                                        <div>
+                                            <h4 class="h6 fw-bold text-primary mb-1">Adresse:</h4>
+                                            <p class="fw-bold text-warning mb-0">
+                                                Rue Stephen Archer, Dos de la Mairie de Pétion-Ville
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Download Button -->
+                    <div class="text-center mt-4">
+                        <button id="downloadBtn" class="btn btn-primary btn-lg px-4 py-3 rounded-3 shadow">
+                            <i class="bi bi-download me-2"></i>
+                            Télécharger en PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const downloadBtn = document.getElementById('downloadBtn');
+            const flyer = document.getElementById('flyer');
+
+            downloadBtn.addEventListener('click', function () {
+                // Change button text to show loading
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Génération en cours...';
+                downloadBtn.disabled = true;
+
+                // Configure html2canvas options for better quality
+                const options = {
+                    scale: 2, // Higher resolution
+                    useCORS: true,
+                    allowTaint: false,
+                    backgroundColor: '#ffffff',
+                    width: flyer.offsetWidth,
+                    height: flyer.offsetHeight,
+                    scrollX: 0,
+                    scrollY: 0,
+                    windowWidth: window.innerWidth,
+                    windowHeight: window.innerHeight
+                };
+
+                html2canvas(flyer, options).then(function (canvas) {
+                    try {
+                        // Create jsPDF instance
+                        const { jsPDF } = window.jspdf;
+
+                        // Calculate dimensions
+                        const imgData = canvas.toDataURL('image/png', 1.0);
+                        const imgWidth = canvas.width;
+                        const imgHeight = canvas.height;
+
+                        // Create PDF in A4 format
+                        const pdf = new jsPDF({
+                            orientation: imgHeight > imgWidth ? 'portrait' : 'landscape',
+                            unit: 'px',
+                            format: [imgWidth, imgHeight]
+                        });
+
+                        // Add image to PDF
+                        pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+                        // Save the PDF
+                        pdf.save('Formation-Bureautique-Gratuite.pdf');
+
+                    } catch (error) {
+                        console.error('Erreur lors de la génération du PDF:', error);
+                        alert('Erreur lors de la génération du PDF. Veuillez réessayer.');
+                    } finally {
+                        // Restore button
+                        downloadBtn.innerHTML = originalText;
+                        downloadBtn.disabled = false;
+                    }
+                }).catch(function (error) {
+                    console.error('Erreur html2canvas:', error);
+                    alert('Erreur lors de la capture de l\'image. Veuillez réessayer.');
+                    downloadBtn.innerHTML = originalText;
+                    downloadBtn.disabled = false;
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

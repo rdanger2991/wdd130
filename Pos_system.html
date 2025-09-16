@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système POS - Point de Vente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Animation for buttons */
+        .btn-animate {
+            transition: all 0.2s ease;
+        }
+
+        .btn-animate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-animate:active {
+            transform: translateY(0);
+        }
+
+        /* Pulse animation for notifications */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-blue-600 text-white shadow-lg">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="text-2xl font-bold">
+                        <i class="fas fa-cash-register mr-2"></i>
+                        POS System
+                    </div>
+                    <div class="hidden md:block">
+                        <span id="current-date" class="text-blue-100"></span>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <button id="notif-btn" class="p-2 rounded-full hover:bg-blue-500 relative">
+                            <i class="fas fa-bell"></i>
+                            <span class="absolute top-0 right-0 h-3 w-3 bg-red-500 rounded-full pulse"></span>
+                        </button>
+                        <div id="notif-dropdown"
+                            class="hidden absolute right-0 mt-2 w-64 bg-white text-gray-800 rounded shadow-lg z-10">
+                            <div class="p-3 border-b">
+                                <h3 class="font-bold">Notifications</h3>
+                            </div>
+                            <div class="max-h-60 overflow-y-auto">
+                                <div class="p-3 border-b hover:bg-gray-100 cursor-pointer">
+                                    <div class="text-sm">Nouvelle commande #1256</div>
+                                    <div class="text-xs text-gray-500">Il y a 5 minutes</div>
+                                </div>
+                                <div class="p-3 border-b hover:bg-gray-100 cursor-pointer">
+                                    <div class="text-sm">Stock faible pour produit #458</div>
+                                    <div class="text-xs text-gray-500">Il y a 2 heures</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hidden md:flex items-center space-x-2">
+                        <div class="h-8 w-8 rounded-full bg-blue-400 flex items-center justify-center">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex flex-1 overflow-hidden">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-white shadow-md hidden md:block">
+                <div class="p-4">
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold text-gray-700">Menu Principal</h3>
+                    </div>
+
+                    <nav>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="#" class="flex items-center p-2 text-blue-600 bg-blue-50 rounded-lg">
+                                    <i class="fas fa-home mr-3"></i>
+                                    <span>Tableau de bord</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                                    <i class="fas fa-shopping-cart mr-3"></i>
+                                    <span>Ventes</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                                    <i class="fas fa-boxes mr-3"></i>
+                                    <span>Produits</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                                    <i class="fas fa-users mr-3"></i>
+                                    <span>Clients</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                                    <i class="fas fa-chart-line mr-3"></i>
+                                    <span>Rapports</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center p-2 text-gray-600 hover:bg-gray-100 rounded-lg">
+                                    <i class="fas fa-cog mr-3"></i>
+                                    <span>Paramètres</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Panel -->
+            <main class="flex-1 overflow-auto p-4">
+                <div class="container mx-auto">
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Ventes Aujourd'hui</p>
+                                    <h3 class="text-2xl font-bold">1,245.50 €</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                                    <i class="fas fa-chart-line text-xl"></i>
+                                </div>
+                            </div>
+                            <p class="text-sm text-green-600 mt-2"><i class="fas fa-arrow-up mr-1"></i> 12% depuis hier
+                            </p>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Transactions</p>
+                                    <h3 class="text-2xl font-bold">42</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                                    <i class="fas fa-receipt text-xl"></i>
+                                </div>
+                            </div>
+                            <p class="text-sm text-blue-600 mt-2"><i class="fas fa-arrow-up mr-1"></i> 3 nouvelles</p>
+                        </div>
+
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-500">Produits en stock</p>
+                                    <h3 class="text-2xl font-bold">156</h3>
+                                </div>
+                                <div class="p-3 rounded-full bg-orange-100 text-orange-600">
+                                    <i class="fas fa-box-open text-xl"></i>
+                                </div>
+                            </div>
+                            <p class="text-sm text-red-600 mt-2"><i class="fas fa-exclamation-circle mr-1"></i> 8
+                                produits en rupture</p>
+                        </div>
+                    </div>
+
+                    <!-- POS Interface -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Products List -->
+                        <div class="lg:col-span-2">
+                            <div class="bg-white rounded-lg shadow overflow-hidden">
+                                <div class="p-4 border-b">
+                                    <div class="flex justify-between items-center">
+                                        <h2 class="text-xl font-semibold">Produits</h2>
+                                        <div class="relative w-64">
+                                            <input type="text" placeholder="Rechercher un produit..."
+                                                class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Categories -->
+                                <div class="px-4 py-2 bg-gray-50 flex overflow-x-auto space-x-2">
+                                    <button
+                                        class="px-3 py-1 bg-blue-600 text-white rounded-full text-sm whitespace-nowrap">Tous</button>
+                                    <button
+                                        class="px-3 py-1 bg-white border rounded-full text-sm whitespace-nowrap hover:bg-gray-100">Électronique</button>
+                                    <button
+                                        class="px-3 py-1 bg-white border rounded-full text-sm whitespace-nowrap hover:bg-gray-100">Alimentation</button>
+                                    <button
+                                        class="px-3 py-1 bg-white border rounded-full text-sm whitespace-nowrap hover:bg-gray-100">Vêtements</button>
+                                    <button
+                                        class="px-3 py-1 bg-white border rounded-full text-sm whitespace-nowrap hover:bg-gray-100">Maison</button>
+                                    <button
+                                        class="px-3 py-1 bg-white border rounded-full text-sm whitespace-nowrap hover:bg-gray-100">Sports</button>
+                                </div>
+
+                                <!-- Products Grid -->
+                                <div
+                                    class="p-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-96 overflow-y-auto">
+                                    <!-- Product Item 1 -->
+                                    <div class="bg-white border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer product-item"
+                                        data-id="1" data-name="Smartphone X" data-price="599.99">
+                                        <div class="h-32 bg-gray-100 flex items-center justify-center">
+                                            <i class="fas fa-mobile-alt text-4xl text-gray-400"></i>
+                                        </div>
+                                        <div class="p-3">
+                                            <h3 class="font-medium text-gray-800">Smartphone X</h3>
+                                            <p class="text-gray-600 text-sm">Modèle 2023</p>
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="font-bold text-blue-600">599.99 €</span>
+                                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">En
+                                                    stock</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Item 2 -->
+                                    <div class="bg-white border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer product-item"
+                                        data-id="2" data-name="Casque Audio" data-price="89.99">
+                                        <div class="h-32 bg-gray-100 flex items-center justify-center">
+                                            <i class="fas fa-headphones text-4xl text-gray-400"></i>
+                                        </div>
+                                        <div class="p-3">
+                                            <h3 class="font-medium text-gray-800">Casque Audio</h3>
+                                            <p class="text-gray-600 text-sm">Noise Cancelling</p>
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="font-bold text-blue-600">89.99 €</span>
+                                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">En
+                                                    stock</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Item 3 -->
+                                    <div class="bg-white border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer product-item"
+                                        data-id="3" data-name="T-shirt Blanc" data-price="19.99">
+                                        <div class="h-32 bg-gray-100 flex items-center justify-center">
+                                            <i class="fas fa-tshirt text-4xl text-gray-400"></i>
+                                        </div>
+                                        <div class="p-3">
+                                            <h3 class="font-medium text-gray-800">T-shirt Blanc</h3>
+                                            <p class="text-gray-600 text-sm">100% Coton</p>
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="font-bold text-blue-600">19.99 €</span>
+                                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">En
+                                                    stock</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Item 4 -->
+                                    <div class="bg-white border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer product-item"
+                                        data-id="4" data-name="Cafetière" data-price="49.99">
+                                        <div class="h-32 bg-gray-100 flex items-center justify-center">
+                                            <i class="fas fa-coffee text-4xl text-gray-400"></i>
+                                        </div>
+                                        <div class="p-3">
+                                            <h3 class="font-medium text-gray-800">Cafetière</h3>
+                                            <p class="text-gray-600 text-sm">Programmable</p>
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="font-bold text-blue-600">49.99 €</span>
+                                                <span class="text-xs bg-red-100 text-red-800 px-2 py-1 rounded">Stock
+                                                    faible</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Item 5 -->
+                                    <div class="bg-white border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer product-item"
+                                        data-id="5" data-name="Sac à dos" data-price="39.99">
+                                        <div class="h-32 bg-gray-100 flex items-center justify-center">
+                                            <i class="fas fa-briefcase text-4xl text-gray-400"></i>
+                                        </div>
+                                        <div class="p-3">
+                                            <h3 class="font-medium text-gray-800">Sac à dos</h3>
+                                            <p class="text-gray-600 text-sm">15" Laptop</p>
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="font-bold text-blue-600">39.99 €</span>
+                                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">En
+                                                    stock</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Product Item 6 -->
+                                    <div class="bg-white border rounded-lg overflow-hidden hover:shadow-md transition-shadow cursor-pointer product-item"
+                                        data-id="6" data-name="Montre Connectée" data-price="129.99">
+                                        <div class="h-32 bg-gray-100 flex items-center justify-center">
+                                            <i class="fas fa-clock text-4xl text-gray-400"></i>
+                                        </div>
+                                        <div class="p-3">
+                                            <h3 class="font-medium text-gray-800">Montre Connectée</h3>
+                                            <p class="text-gray-600 text-sm">Fitness Tracker</p>
+                                            <div class="mt-2 flex justify-between items-center">
+                                                <span class="font-bold text-blue-600">129.99 €</span>
+                                                <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">En
+                                                    stock</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Cart Section -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-white rounded-lg shadow overflow-hidden">
+                                <div class="p-4 border-b">
+                                    <h2 class="text-xl font-semibold">Panier</h2>
+                                </div>
+
+                                <div class="p-4">
+                                    <!-- Customer Info -->
+                                    <div class="mb-4">
+                                        <div class="flex justify-between items-center mb-2">
+                                            <label class="text-sm font-medium text-gray-700">Client</label>
+                                            <button class="text-blue-600 text-sm hover:underline">Nouveau</button>
+                                        </div>
+                                        <select
+                                            class="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <option value="">Client anonyme</option>
+                                            <option value="1">Jean Dupont</option>
+                                            <option value="2">Marie Martin</option>
+                                            <option value="3">Pierre Durand</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Cart Items -->
+                                    <div class="border rounded-lg mb-4">
+                                        <div class="max-h-64 overflow-y-auto">
+                                            <table class="min-w-full divide-y divide-gray-200">
+                                                <thead class="bg-gray-50">
+                                                    <tr>
+                                                        <th
+                                                            class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                            Produit</th>
+                                                        <th
+                                                            class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                            Prix</th>
+                                                        <th
+                                                            class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                            Qté</th>
+                                                        <th
+                                                            class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                            Total</th>
+                                                        <th
+                                                            class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="cart-items" class="bg-white divide-y divide-gray-200">
+                                                    <!-- Cart items will be added here dynamically -->
+                                                    <tr id="empty-cart-message">
+                                                        <td colspan="5"
+                                                            class="px-3 py-4 text-center text-sm text-gray-500">Aucun
+                                                            produit dans le panier</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <!-- Summary -->
+                                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-gray-600">Sous-total:</span>
+                                            <span id="subtotal" class="font-medium">0.00 €</span>
+                                        </div>
+                                        <div class="flex justify-between mb-2">
+                                            <span class="text-gray-600">Taxe (20%):</span>
+                                            <span id="tax" class="font-medium">0.00 €</span>
+                                        </div>
+                                        <div class="flex justify-between border-t pt-2">
+                                            <span class="text-gray-800 font-semibold">Total:</span>
+                                            <span id="total" class="text-xl font-bold text-blue-600">0.00 €</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Payment Buttons -->
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button
+                                            class="bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium btn-animate">
+                                            <i class="fas fa-money-bill-wave mr-2"></i> Espèces
+                                        </button>
+                                        <button
+                                            class="bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg font-medium btn-animate">
+                                            <i class="fas fa-credit-card mr-2"></i> Carte
+                                        </button>
+                                        <button
+                                            class="bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium btn-animate">
+                                            <i class="fas fa-mobile-alt mr-2"></i> Mobile
+                                        </button>
+                                        <button
+                                            class="bg-gray-600 hover:bg-gray-700 text-white py-3 px-4 rounded-lg font-medium btn-animate">
+                                            <i class="fas fa-receipt mr-2"></i> Facture
+                                        </button>
+                                    </div>
+
+                                    <!-- Clear Cart -->
+                                    <div class="mt-4">
+                                        <button id="clear-cart"
+                                            class="w-full bg-red-100 hover:bg-red-200 text-red-700 py-2 px-4 rounded-lg font-medium btn-animate">
+                                            <i class="fas fa-trash-alt mr-2"></i> Vider le panier
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Update current date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('fr-FR', options);
+        }
+
+        // Initialize and update every minute
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+
+        // Toggle notifications dropdown
+        document.getElementById('notif-btn').addEventListener('click', function () {
+            document.getElementById('notif-dropdown').classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function (event) {
+            if (!event.target.closest('#notif-btn') && !event.target.closest('#notif-dropdown')) {
+                document.getElementById('notif-dropdown').classList.add('hidden');
+            }
+        });
+
+        // Cart functionality
+        let cart = [];
+
+        // Add product to cart
+        document.querySelectorAll('.product-item').forEach(item => {
+            item.addEventListener('click', function () {
+                const productId = this.getAttribute('data-id');
+                const productName = this.getAttribute('data-name');
+                const productPrice = parseFloat(this.getAttribute('data-price'));
+
+                // Check if product already in cart
+                const existingItem = cart.find(item => item.id === productId);
+
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({
+                        id: productId,
+                        name: productName,
+                        price: productPrice,
+                        quantity: 1
+                    });
+                }
+
+                updateCartDisplay();
+            });
+        });
+
+        // Update cart display
+        function updateCartDisplay() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const emptyCartMessage = document.getElementById('empty-cart-message');
+
+            if (cart.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+                cartItemsContainer.innerHTML = '';
+                cartItemsContainer.appendChild(emptyCartMessage);
+            } else {
+                emptyCartMessage.classList.add('hidden');
+
+                let cartHTML = '';
+                let subtotal = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    subtotal += itemTotal;
+
+                    cartHTML += `
+                        <tr class="cart-item" data-id="${item.id}">
+                            <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">${item.name}</td>
+                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">${item.price.toFixed(2)} €</td>
+                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                <div class="flex items-center">
+                                    <button class="quantity-btn decrease px-2 py-1 border rounded-l hover:bg-gray-100" data-id="${item.id}">-</button>
+                                    <span class="quantity px-2 py-1 border-t border-b">${item.quantity}</span>
+                                    <button class="quantity-btn increase px-2 py-1 border rounded-r hover:bg-gray-100" data-id="${item.id}">+</button>
+                                </div>
+                            </td>
+                            <td class="px-3 py-2 whitespace-nowrap text-sm font-medium text-gray-900">${itemTotal.toFixed(2)} €</td>
+                            <td class="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                <button class="remove-item text-red-600 hover:text-red-800" data-id="${item.id}">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                cartItemsContainer.innerHTML = cartHTML;
+
+                // Add event listeners to new buttons
+                document.querySelectorAll('.quantity-btn.decrease').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const itemId = this.getAttribute('data-id');
+                        const item = cart.find(item => item.id === itemId);
+
+                        if (item.quantity > 1) {
+                            item.quantity -= 1;
+                            updateCartDisplay();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.quantity-btn.increase').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const itemId = this.getAttribute('data-id');
+                        const item = cart.find(item => item.id === itemId);
+
+                        item.quantity += 1;
+                        updateCartDisplay();
+                    });
+                });
+
+                document.querySelectorAll('.remove-item').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        const itemId = this.getAttribute('data-id');
+                        cart = cart.filter(item => item.id !== itemId);
+                        updateCartDisplay();
+                    });
+                });
+            }
+
+            // Update totals
+            const tax = subtotal * 0.2; // 20% tax
+            const total = subtotal + tax;
+
+            document.getElementById('subtotal').textContent = subtotal.toFixed(2) + ' €';
+            document.getElementById('tax').textContent = tax.toFixed(2) + ' €';
+            document.getElementById('total').textContent = total.toFixed(2) + ' €';
+        }
+
+        // Clear cart
+        document.getElementById('clear-cart').addEventListener('click', function () {
+            cart = [];
+            updateCartDisplay();
+        });
+    </script>
+</body>
+
+</html>
