@@ -11,7 +11,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
-        /* Votre CSS existant reste inchangé */
         * {
             margin: 0;
             padding: 0;
@@ -320,11 +319,26 @@
             margin-bottom: 10px;
             font-size: 0.9em;
         }
+
+        .firebase-error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f44336;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
+        <div id="firebaseError" class="firebase-error" style="display: none;">
+            <h3>Erreur de configuration Firebase</h3>
+            <p id="errorMessage"></p>
+            <p>Veuillez vérifier votre configuration Firebase et les règles de sécurité.</p>
+        </div>
+
         <div class="auth-section" id="authSection">
             <button class="btn btn-success" id="loginButton" onclick="app.signIn()">Se connecter avec Google</button>
             <div class="user-info" id="userInfo" style="display: none;">
@@ -426,9 +440,9 @@
     </div>
 
     <script>
-        // Configuration Firebase - REMPLACEZ AVEC VOS PROPRES CLÉS
+        // Configuration Firebase
         const firebaseConfig = {
-              apiKey: "AIzaSyDiI0Ap-UrDpz65zgDhFO-UhyAQByalaYI",
+            apiKey: "AIzaSyDiI0Ap-UrDpz65zgDhFO-UhyAQByalaYI",
             authDomain: "epargneapp-ece19.firebaseapp.com",
             projectId: "epargneapp-ece19",
             storageBucket: "epargneapp-ece19.firebasestorage.app",
@@ -438,9 +452,23 @@
         };
 
         // Initialiser Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const auth = firebase.auth();
+        let db, auth;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            auth = firebase.auth();
+            console.log("Firebase initialisé avec succès");
+        } catch (error) {
+            console.error("Erreur d'initialisation Firebase:", error);
+            showFirebaseError("Erreur d'initialisation Firebase: " + error.message);
+        }
+
+        function showFirebaseError(message) {
+            const errorDiv = document.getElementById('firebaseError');
+            const errorMessage = document.getElementById('errorMessage');
+            errorMessage.textContent = message;
+            errorDiv.style.display = 'block';
+        }
 
         // Base de données intégrée (IndexedDB)
         class SavingsDB {
@@ -610,6 +638,11 @@
             }
 
             setupAuthListener() {
+                if (!auth) {
+                    console.error("Firebase Auth n'est pas initialisé");
+                    return;
+                }
+
                 auth.onAuthStateChanged(async (user) => {
                     if (user) {
                         this.user = user;
@@ -628,6 +661,11 @@
             }
 
             async signIn() {
+                if (!auth) {
+                    showFirebaseError("Firebase Auth n'est pas initialisé");
+                    return;
+                }
+
                 const provider = new firebase.auth.GoogleAuthProvider();
                 try {
                     // Ajouter des scope si nécessaire
@@ -666,6 +704,11 @@
             }
 
             async signOut() {
+                if (!auth) {
+                    console.error("Firebase Auth n'est pas initialisé");
+                    return;
+                }
+
                 try {
                     await auth.signOut();
                 } catch (error) {
@@ -692,7 +735,7 @@
             }
 
             async syncData() {
-                if (!this.user || !this.isOnline) return;
+                if (!this.user || !this.isOnline || !db) return;
 
                 try {
                     // 1. Récupérer les données de Firestore
@@ -748,11 +791,14 @@
 
                 } catch (error) {
                     console.error('Erreur de synchronisation:', error);
+                    if (error.code === 'permission-denied') {
+                        showFirebaseError("Permissions insuffisantes. Veuillez vérifier les règles de sécurité Firestore.");
+                    }
                 }
             }
 
             async processSyncQueue() {
-                if (!this.user || !this.isOnline) return;
+                if (!this.user || !this.isOnline || !db) return;
 
                 const queue = await this.db.getSyncQueue();
                 for (const item of queue) {
@@ -778,6 +824,9 @@
                         await this.db.removeFromSyncQueue(item.id);
                     } catch (error) {
                         console.error('Erreur lors du traitement de la file d\'attente:', error);
+                        if (error.code === 'permission-denied') {
+                            showFirebaseError("Permissions insuffisantes. Veuillez vérifier les règles de sécurité Firestore.");
+                        }
                     }
                 }
             }
@@ -830,7 +879,7 @@
                     const id = await this.db.addSaving(date, amount);
 
                     // Si connecté, synchroniser avec Firestore
-                    if (this.user && this.isOnline) {
+                    if (this.user && this.isOnline && db) {
                         await db.collection('savings').doc(String(id)).set({
                             userId: this.user.uid,
                             date: date,
@@ -860,6 +909,7 @@
                         showConfirmButton: false
                     });
                 } catch (error) {
+                    console.error("Erreur lors de l'ajout:", error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -899,7 +949,7 @@
                     await this.db.updateSaving(id, date, amount);
 
                     // Si connecté, synchroniser avec Firestore
-                    if (this.user && this.isOnline) {
+                    if (this.user && this.isOnline && db) {
                         await db.collection('savings').doc(String(id)).update({
                             date: date,
                             amount: parseFloat(amount),
@@ -926,6 +976,7 @@
                         showConfirmButton: false
                     });
                 } catch (error) {
+                    console.error("Erreur lors de la modification:", error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -952,7 +1003,7 @@
                         await this.db.deleteSaving(id);
 
                         // Si connecté, synchroniser avec Firestore
-                        if (this.user && this.isOnline) {
+                        if (this.user && this.isOnline && db) {
                             await db.collection('savings').doc(String(id)).delete();
                         } else if (this.user) {
                             // Si hors ligne, ajouter à la file d'attente
@@ -969,6 +1020,7 @@
                             showConfirmButton: false
                         });
                     } catch (error) {
+                        console.error("Erreur lors de la suppression:", error);
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
