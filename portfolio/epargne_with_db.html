@@ -479,29 +479,13 @@
             }
 
             async init() {
-                return new Promise((resolve, reject) => {
-                    const request = indexedDB.open(this.dbName, this.version);
+                await this.db.init();
+                this.bindEvents();
+                this.setTodayDate();
+                this.setupAuthListener();
 
-                    request.onerror = () => reject(request.error);
-                    request.onsuccess = () => {
-                        this.db = request.result;
-                        resolve();
-                    };
-
-                    request.onupgradeneeded = (event) => {
-                        const db = event.target.result;
-
-                        if (!db.objectStoreNames.contains('savings')) {
-                            const store = db.createObjectStore('savings', { keyPath: 'id', autoIncrement: true });
-                            store.createIndex('date', 'date', { unique: false });
-                        }
-
-                        if (!db.objectStoreNames.contains('syncQueue')) {
-                            const store = db.createObjectStore('syncQueue', { keyPath: 'id', autoIncrement: true });
-                            store.createIndex('type', 'type', { unique: false });
-                        }
-                    };
-                });
+                // Charger les données locales immédiatement
+                await this.updateDisplay();
             }
 
             async addSaving(date, amount) {
@@ -689,19 +673,83 @@
                         document.getElementById('userInfo').style.display = 'block';
                         document.getElementById('userName').textContent = `Connecté en tant que: ${user.displayName}`;
 
-                        this.setupRealtimeListener();
-                        // Synchroniser les données
+                        // Démarrer la synchronisation et l'écoute en temps réel
                         await this.syncData();
-                    } else {
-                        if (this.unsubscribe) {
-                            this.unsubscribe();
-                        }
+                        this.setupRealtimeListener();
 
+                    } else {
                         this.user = null;
                         document.getElementById('loginButton').style.display = 'block';
                         document.getElementById('userInfo').style.display = 'none';
+
+                        // Arrêter l'écoute en temps réel si active
+                        if (this.unsubscribe) {
+                            this.unsubscribe();
+                        }
                     }
                 });
+            }
+
+            setupRealtimeListener() {
+                if (!this.user || !db) return;
+
+                // Écouter les changements en temps réel dans Firestore
+                this.unsubscribe = db.collection('savings')
+                    .where('userId', '==', this.user.uid)
+                    .orderBy('timestamp', 'desc')
+                    .onSnapshot(async (snapshot) => {
+                        console.log("Changement détecté dans Firestore");
+
+                        // Mettre à jour les données locales avec les dernières données Firestore
+                        const remoteSavings = snapshot.docs.map(doc => {
+                            const data = doc.data();
+                            return {
+                                id: doc.id,
+                                date: data.date,
+                                amount: data.amount,
+                                timestamp: data.timestamp
+                            };
+                        });
+
+                        // Synchroniser avec la base locale
+                        await this.syncLocalWithRemote(remoteSavings);
+
+                        // Mettre à jour l'affichage
+                        await this.updateDisplay();
+                    }, (error) => {
+                        console.error("Erreur d'écoute en temps réel:", error);
+                        if (error.code === 'permission-denied') {
+                            showFirebaseError("Permissions insuffisantes pour l'écoute en temps réel.");
+                        }
+                    });
+            }
+
+            async syncLocalWithRemote(remoteSavings) {
+                try {
+                    // Récupérer les données locales
+                    const localSavings = await this.db.getAllSavings();
+
+                    // Mettre à jour la base locale avec les données Firestore
+                    const transaction = this.db.transaction(['savings'], 'readwrite');
+                    const store = transaction.objectStore('savings');
+
+                    // Supprimer toutes les données locales
+                    await store.clear();
+
+                    // Ajouter les données Firestore à la base locale
+                    for (const saving of remoteSavings) {
+                        await store.add({
+                            id: saving.id,
+                            date: saving.date,
+                            amount: saving.amount,
+                            timestamp: saving.timestamp
+                        });
+                    }
+
+                    console.log("Synchronisation locale avec Firestore terminée");
+                } catch (error) {
+                    console.error("Erreur lors de la synchronisation locale:", error);
+                }
             }
 
             async signIn() {
@@ -848,20 +896,20 @@
                 for (const item of queue) {
                     try {
                         if (item.type === 'add') {
-                            await db.collection('savings').doc(String(item.data.id)).set({
+                            await db.collection('savings').add({
                                 userId: this.user.uid,
                                 date: item.data.date,
                                 amount: item.data.amount,
-                                timestamp: item.data.timestamp
+                                timestamp: item.data.timestamp || new Date().getTime()
                             });
                         } else if (item.type === 'update') {
-                            await db.collection('savings').doc(String(item.data.id)).update({
+                            await db.collection('savings').doc(item.data.id).update({
                                 date: item.data.date,
                                 amount: item.data.amount,
-                                timestamp: item.data.timestamp
+                                timestamp: item.data.timestamp || new Date().getTime()
                             });
                         } else if (item.type === 'delete') {
-                            await db.collection('savings').doc(String(item.data.id)).delete();
+                            await db.collection('savings').doc(item.data.id).delete();
                         }
 
                         // Supprimer de la file d'attente après succès
@@ -869,7 +917,7 @@
                     } catch (error) {
                         console.error('Erreur lors du traitement de la file d\'attente:', error);
                         if (error.code === 'permission-denied') {
-                            showFirebaseError("Permissions insuffisantes. Veuillez vérifier les règles de sécurité Firestore.");
+                            console.error("Permissions insuffisantes pour traiter la file d'attente");
                         }
                     }
                 }
@@ -932,26 +980,34 @@
                                 timestamp: new Date().getTime()
                             });
                             firebaseId = docRef.id;
+                            console.log("Document ajouté à Firestore avec ID:", firebaseId);
                         } catch (error) {
-                            console.error("Erreur Firestore, sauvegarde locale seulement:", error);
+                            console.error("Erreur Firestore:", error);
+                            // En cas d'erreur, on ajoute à la file d'attente
+                            await this.db.addToSyncQueue('add', {
+                                date: date,
+                                amount: parseFloat(amount),
+                                timestamp: new Date().getTime()
+                            });
                         }
-                    }
-
-                    // Ajouter à la base locale
-                    const id = await this.db.addSaving(date, amount, firebaseId);
-
-                    // Si hors ligne ou erreur Firestore, ajouter à la file d'attente
-                    if (this.user && (!this.isOnline || !firebaseId)) {
+                    } else if (this.user) {
+                        // Si hors ligne, ajouter à la file d'attente
                         await this.db.addToSyncQueue('add', {
-                            id: firebaseId || id,
                             date: date,
                             amount: parseFloat(amount),
                             timestamp: new Date().getTime()
                         });
                     }
 
+                    // Ajouter à la base locale uniquement si pas déjà fait par l'écouteur temps réel
+                    if (!this.user || !this.isOnline) {
+                        await this.db.addSaving(date, amount);
+                    }
+
                     document.getElementById('savingsForm').reset();
                     this.setTodayDate();
+
+                    // Mettre à jour l'affichage
                     await this.updateDisplay();
                     this.showMotivation();
 
