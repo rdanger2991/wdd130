@@ -426,7 +426,7 @@
     </div>
 
     <script>
-       // Configuration Firebase - REMPLACEZ AVEC VOS PROPRES CLÉS
+      // Configuration Firebase - REMPLACEZ AVEC VOS PROPRES CLÉS
         const firebaseConfig = {
             apiKey: "AIzaSyDiI0Ap-UrDpz65zgDhFO-UhyAQByalaYI",
             authDomain: "epargneapp-ece19.firebaseapp.com",
@@ -741,6 +741,29 @@
                     return;
                 }
 
+                // Vérifier si une épargne existe déjà pour cette date
+                try {
+                    const existingSavings = await this.db.getAllSavings();
+                    const dateExists = existingSavings.some(saving => saving.date === date);
+
+                    if (dateExists) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Date déjà utilisée',
+                            text: `Une épargne existe déjà pour le ${new Date(date + 'T12:00:00').toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}. Modifiez l'épargne existante si nécessaire.`,
+                            confirmButtonColor: '#667eea'
+                        });
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la vérification:', error);
+                }
+
                 try {
                     const id = this.generateId();
                     const savingData = {
@@ -806,6 +829,34 @@
                         confirmButtonColor: '#667eea'
                     });
                     return;
+                }
+
+                // Vérifier si la nouvelle date est déjà utilisée par une autre épargne
+                try {
+                    const existingSavings = await this.db.getAllSavings();
+                    const currentSaving = existingSavings.find(saving => saving.id === id);
+
+                    // Vérifier si une autre épargne utilise déjà cette date
+                    const dateConflict = existingSavings.some(saving =>
+                        saving.date === date && saving.id !== id
+                    );
+
+                    if (dateConflict) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Date déjà utilisée',
+                            text: `Une autre épargne existe déjà pour le ${new Date(date + 'T12:00:00').toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            })}. Choisissez une date différente.`,
+                            confirmButtonColor: '#667eea'
+                        });
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la vérification:', error);
                 }
 
                 try {
