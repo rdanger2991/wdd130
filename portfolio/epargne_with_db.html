@@ -11,6 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
+        /* Votre CSS existant reste inchangé */
         * {
             margin: 0;
             padding: 0;
@@ -319,26 +320,11 @@
             margin-bottom: 10px;
             font-size: 0.9em;
         }
-
-        .firebase-error {
-            background: #ffebee;
-            color: #c62828;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 4px solid #f44336;
-        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <div id="firebaseError" class="firebase-error" style="display: none;">
-            <h3>Erreur de configuration Firebase</h3>
-            <p id="errorMessage"></p>
-            <p>Veuillez vérifier votre configuration Firebase et les règles de sécurité.</p>
-        </div>
-
         <div class="auth-section" id="authSection">
             <button class="btn btn-success" id="loginButton" onclick="app.signIn()">Se connecter avec Google</button>
             <div class="user-info" id="userInfo" style="display: none;">
@@ -440,7 +426,7 @@
     </div>
 
     <script>
-        // Configuration Firebase
+       // Configuration Firebase - REMPLACEZ AVEC VOS PROPRES CLÉS
         const firebaseConfig = {
             apiKey: "AIzaSyDiI0Ap-UrDpz65zgDhFO-UhyAQByalaYI",
             authDomain: "epargneapp-ece19.firebaseapp.com",
@@ -452,23 +438,9 @@
         };
 
         // Initialiser Firebase
-        let db, auth;
-        try {
-            firebase.initializeApp(firebaseConfig);
-            db = firebase.firestore();
-            auth = firebase.auth();
-            console.log("Firebase initialisé avec succès");
-        } catch (error) {
-            console.error("Erreur d'initialisation Firebase:", error);
-            showFirebaseError("Erreur d'initialisation Firebase: " + error.message);
-        }
-
-        function showFirebaseError(message) {
-            const errorDiv = document.getElementById('firebaseError');
-            const errorMessage = document.getElementById('errorMessage');
-            errorMessage.textContent = message;
-            errorDiv.style.display = 'block';
-        }
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
 
         // Base de données intégrée (IndexedDB)
         class SavingsDB {
@@ -492,48 +464,26 @@
                         const db = event.target.result;
 
                         if (!db.objectStoreNames.contains('savings')) {
-                            const store = db.createObjectStore('savings', { keyPath: 'id', autoIncrement: true });
+                            const store = db.createObjectStore('savings', { keyPath: 'id' });
                             store.createIndex('date', 'date', { unique: false });
-                        }
-
-                        if (!db.objectStoreNames.contains('syncQueue')) {
-                            const store = db.createObjectStore('syncQueue', { keyPath: 'id', autoIncrement: true });
-                            store.createIndex('type', 'type', { unique: false });
                         }
                     };
                 });
             }
 
-            async addSavingWithId(id, date, amount, timestamp) {
+            async addSaving(id, date, amount) {
                 const transaction = this.db.transaction(['savings'], 'readwrite');
                 const store = transaction.objectStore('savings');
 
                 return new Promise((resolve, reject) => {
                     const request = store.add({
-                        id: id, // Utiliser l'ID du serveur
-                        date: date,
-                        amount: parseFloat(amount),
-                        timestamp: timestamp || new Date().getTime()
-                    });
-
-                    request.onsuccess = () => resolve(id);
-                    request.onerror = () => reject(request.error);
-                });
-            }
-
-            async addSaving(date, amount) {
-                const uniqueId = Date.now().toString() + '_' + Math.random().toString(36).substr(2, 9);
-                const transaction = this.db.transaction(['savings'], 'readwrite');
-                const store = transaction.objectStore('savings');
-
-                return new Promise((resolve, reject) => {
-                    const request = store.add({
+                        id: id,
                         date: date,
                         amount: parseFloat(amount),
                         timestamp: new Date().getTime()
                     });
 
-                    request.onsuccess = () => resolve(request.result);
+                    request.onsuccess = () => resolve(id);
                     request.onerror = () => reject(request.error);
                 });
             }
@@ -561,7 +511,7 @@
                         timestamp: new Date().getTime()
                     });
 
-                    request.onsuccess = () => resolve(request.result);
+                    request.onsuccess = () => resolve(id);
                     request.onerror = () => reject(request.error);
                 });
             }
@@ -577,40 +527,12 @@
                 });
             }
 
-            // Méthodes pour la file d'attente de synchronisation
-            async addToSyncQueue(action, data) {
-                const transaction = this.db.transaction(['syncQueue'], 'readwrite');
-                const store = transaction.objectStore('syncQueue');
+            async clearAllSavings() {
+                const transaction = this.db.transaction(['savings'], 'readwrite');
+                const store = transaction.objectStore('savings');
 
                 return new Promise((resolve, reject) => {
-                    const request = store.add({
-                        type: action,
-                        data: data,
-                        timestamp: new Date().getTime()
-                    });
-
-                    request.onsuccess = () => resolve(request.result);
-                    request.onerror = () => reject(request.error);
-                });
-            }
-
-            async getSyncQueue() {
-                const transaction = this.db.transaction(['syncQueue'], 'readonly');
-                const store = transaction.objectStore('syncQueue');
-
-                return new Promise((resolve, reject) => {
-                    const request = store.getAll();
-                    request.onsuccess = () => resolve(request.result);
-                    request.onerror = () => reject(request.error);
-                });
-            }
-
-            async removeFromSyncQueue(id) {
-                const transaction = this.db.transaction(['syncQueue'], 'readwrite');
-                const store = transaction.objectStore('syncQueue');
-
-                return new Promise((resolve, reject) => {
-                    const request = store.delete(id);
+                    const request = store.clear();
                     request.onsuccess = () => resolve();
                     request.onerror = () => reject(request.error);
                 });
@@ -640,20 +562,12 @@
                 window.addEventListener('offline', () => this.handleConnectionChange(false));
             }
 
-           async init() {
+            async init() {
                 await this.db.init();
                 this.bindEvents();
                 this.setTodayDate();
                 this.setupAuthListener();
                 await this.updateDisplay();
-
-                // Synchroniser quand la page devient visible (changement d'onglet)
-                document.addEventListener('visibilitychange', async () => {
-                    if (!document.hidden && this.user && this.isOnline) {
-                        console.log('Page visible, synchronisation...');
-                        await this.syncData();
-                    }
-                });
             }
 
             bindEvents() {
@@ -663,12 +577,7 @@
                 });
             }
 
-           setupAuthListener() {
-                if (!auth) {
-                    console.error("Firebase Auth n'est pas initialisé");
-                    return;
-                }
-
+            setupAuthListener() {
                 auth.onAuthStateChanged(async (user) => {
                     if (user) {
                         this.user = user;
@@ -676,52 +585,23 @@
                         document.getElementById('userInfo').style.display = 'block';
                         document.getElementById('userName').textContent = `Connecté en tant que: ${user.displayName}`;
 
-                        // Synchroniser immédiatement les données
+                        // Synchroniser les données
                         await this.syncData();
-
-                        // Configurer une synchronisation périodique (optionnel)
-                        this.setupPeriodicSync();
-
+                        this.updateSyncStatus('En ligne - Synchronisation active', '#4CAF50');
                     } else {
                         this.user = null;
                         document.getElementById('loginButton').style.display = 'block';
                         document.getElementById('userInfo').style.display = 'none';
-
-                        // Arrêter la synchronisation périodique
-                        if (this.syncInterval) {
-                            clearInterval(this.syncInterval);
-                        }
+                        this.updateSyncStatus('Mode hors ligne - Données locales', '#ff9800');
                     }
                 });
             }
 
-            setupPeriodicSync() {
-                // Synchroniser toutes les 30 secondes quand l'utilisateur est actif
-                if (this.syncInterval) {
-                    clearInterval(this.syncInterval);
-                }
-
-                this.syncInterval = setInterval(async () => {
-                    if (this.user && this.isOnline && !document.hidden) {
-                        console.log('Synchronisation périodique...');
-                        await this.syncData();
-                    }
-                }, 30000); // 30 secondes
-            }
-
             async signIn() {
-                if (!auth) {
-                    showFirebaseError("Firebase Auth n'est pas initialisé");
-                    return;
-                }
-
                 const provider = new firebase.auth.GoogleAuthProvider();
                 try {
-                    // Ajouter des scope si nécessaire
                     provider.addScope('profile');
                     provider.addScope('email');
-
-                    // Forcer la sélection du compte à chaque fois
                     provider.setCustomParameters({
                         prompt: 'select_account'
                     });
@@ -730,17 +610,16 @@
                     console.log("Connexion réussie:", result.user);
 
                 } catch (error) {
-                    console.error("Erreur de connexion détaillée:", error);
+                    console.error("Erreur de connexion:", error);
 
                     let errorMessage = "Impossible de se connecter avec Google";
 
-                    // Messages d'erreur plus spécifiques
                     if (error.code === 'auth/popup-blocked') {
                         errorMessage = "La popup de connexion a été bloquée. Veuillez autoriser les popups pour ce site.";
                     } else if (error.code === 'auth/popup-closed-by-user') {
                         errorMessage = "La fenêtre de connexion a été fermée avant la fin du processus.";
                     } else if (error.code === 'auth/unauthorized-domain') {
-                        errorMessage = "Ce domaine n'est pas autorisé pour l'authentification. Veuillez vérifier la configuration Firebase.";
+                        errorMessage = "Ce domaine n'est pas autorisé pour l'authentification.";
                     }
 
                     Swal.fire({
@@ -753,11 +632,6 @@
             }
 
             async signOut() {
-                if (!auth) {
-                    console.error("Firebase Auth n'est pas initialisé");
-                    return;
-                }
-
                 try {
                     await auth.signOut();
                 } catch (error) {
@@ -765,26 +639,29 @@
                 }
             }
 
+            updateSyncStatus(text, color) {
+                const statusElement = document.getElementById('syncStatus');
+                statusElement.textContent = text;
+                statusElement.style.color = color;
+            }
+
             handleConnectionChange(online) {
                 this.isOnline = online;
-                const statusElement = document.getElementById('syncStatus');
 
                 if (online) {
-                    statusElement.textContent = 'En ligne - Synchronisation active';
-                    statusElement.style.color = '#4CAF50';
-
-                    // Tenter une synchronisation si l'utilisateur est connecté
                     if (this.user) {
                         this.syncData();
+                        this.updateSyncStatus('En ligne - Synchronisation active', '#4CAF50');
+                    } else {
+                        this.updateSyncStatus('En ligne - Non connecté', '#ff9800');
                     }
                 } else {
-                    statusElement.textContent = 'Mode hors ligne - Données locales';
-                    statusElement.style.color = '#ff9800';
+                    this.updateSyncStatus('Mode hors ligne - Données locales', '#ff9800');
                 }
             }
 
-           async syncData() {
-                if (!this.user || !this.isOnline || !db) return;
+            async syncData() {
+                if (!this.user || !this.isOnline) return;
 
                 try {
                     console.log('Début de la synchronisation...');
@@ -792,92 +669,32 @@
                     // 1. Récupérer les données de Firestore
                     const snapshot = await db.collection('savings')
                         .where('userId', '==', this.user.uid)
-                        .orderBy('timestamp', 'desc')
                         .get();
 
-                    const remoteSavings = [];
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        remoteSavings.push({
-                            id: doc.id,
-                            date: data.date,
-                            amount: data.amount,
-                            timestamp: data.timestamp,
-                            userId: data.userId
-                        });
-                    });
+                    const remoteSavings = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        date: doc.data().date,
+                        amount: doc.data().amount,
+                        timestamp: doc.data().timestamp
+                    }));
 
-                    // 2. Récupérer les données locales
-                    const localSavings = await this.db.getAllSavings();
+                    console.log('Données Firestore:', remoteSavings.length, 'éléments');
 
-                    // 3. Vider la base locale et la remplir avec les données du serveur
-                    // Cela garantit que tous les appareils ont les mêmes données
+                    // 2. Vider la base locale et la remplir avec les données serveur
+                    await this.db.clearAllSavings();
 
-                    // Supprimer toutes les données locales
-                    for (const localSaving of localSavings) {
-                        await this.db.deleteSaving(localSaving.id);
+                    for (const saving of remoteSavings) {
+                        await this.db.addSaving(saving.id, saving.date, saving.amount);
                     }
 
-                    // Ajouter toutes les données du serveur
-                    for (const remoteSaving of remoteSavings) {
-                        // Utiliser l'ID du serveur comme référence
-                        await this.db.addSavingWithId(remoteSaving.id, remoteSaving.date, remoteSaving.amount, remoteSaving.timestamp);
-                    }
-
-                    // 4. Traiter la file d'attente de synchronisation
-                    await this.processSyncQueue();
-
-                    // 5. Mettre à jour l'affichage
+                    // 3. Mettre à jour l'affichage
                     await this.updateDisplay();
 
                     console.log('Synchronisation terminée avec succès');
 
-                    // Mettre à jour le statut de synchronisation
-                    const statusElement = document.getElementById('syncStatus');
-                    statusElement.textContent = 'Synchronisé - Données à jour';
-                    statusElement.style.color = '#4CAF50';
-
                 } catch (error) {
                     console.error('Erreur de synchronisation:', error);
-                    if (error.code === 'permission-denied') {
-                        showFirebaseError("Permissions insuffisantes. Veuillez vérifier les règles de sécurité Firestore.");
-                    } else {
-                        showFirebaseError("Erreur de synchronisation: " + error.message);
-                    }
-                }
-            }
-
-            async processSyncQueue() {
-                if (!this.user || !this.isOnline || !db) return;
-
-                const queue = await this.db.getSyncQueue();
-                for (const item of queue) {
-                    try {
-                        if (item.type === 'add') {
-                            await db.collection('savings').doc(String(item.data.id)).set({
-                                userId: this.user.uid,
-                                date: item.data.date,
-                                amount: item.data.amount,
-                                timestamp: item.data.timestamp
-                            });
-                        } else if (item.type === 'update') {
-                            await db.collection('savings').doc(String(item.data.id)).update({
-                                date: item.data.date,
-                                amount: item.data.amount,
-                                timestamp: item.data.timestamp
-                            });
-                        } else if (item.type === 'delete') {
-                            await db.collection('savings').doc(String(item.data.id)).delete();
-                        }
-
-                        // Supprimer de la file d'attente après succès
-                        await this.db.removeFromSyncQueue(item.id);
-                    } catch (error) {
-                        console.error('Erreur lors du traitement de la file d\'attente:', error);
-                        if (error.code === 'permission-denied') {
-                            showFirebaseError("Permissions insuffisantes. Veuillez vérifier les règles de sécurité Firestore.");
-                        }
-                    }
+                    this.updateSyncStatus('Erreur de synchronisation', '#f44336');
                 }
             }
 
@@ -886,21 +703,21 @@
                 document.getElementById('saveDate').value = today;
             }
 
-            // Fonction pour formater la date en YYYY-MM-DD sans décalage horaire
             formatDateForDisplay(dateString) {
-                // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
-                const date = new Date(dateString + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
+                const date = new Date(dateString + 'T12:00:00');
                 return date.toISOString().split('T')[0];
             }
 
-            // Fonction pour vérifier si c'est un dimanche
             isSunday(dateString) {
-                // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
-                const date = new Date(dateString + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
-                return date.getDay() === 0; // 0 = Dimanche
+                const date = new Date(dateString + 'T12:00:00');
+                return date.getDay() === 0;
             }
 
-           async addSaving() {
+            generateId() {
+                return Date.now().toString() + Math.random().toString(36).substr(2, 9);
+            }
+
+            async addSaving() {
                 const date = document.getElementById('saveDate').value;
                 const amount = document.getElementById('saveAmount').value;
 
@@ -914,7 +731,6 @@
                     return;
                 }
 
-                // Vérifier si c'est un dimanche
                 if (this.isSunday(date)) {
                     Swal.fire({
                         icon: 'info',
@@ -926,24 +742,21 @@
                 }
 
                 try {
-                    const uniqueId = await this.db.addSaving(date, amount);
+                    const id = this.generateId();
+                    const savingData = {
+                        date: date,
+                        amount: parseFloat(amount),
+                        timestamp: new Date().getTime()
+                    };
 
-                    // Si connecté, synchroniser immédiatement avec Firestore
-                    if (this.user && this.isOnline && db) {
-                        await db.collection('savings').doc(uniqueId).set({
+                    // Ajouter localement
+                    await this.db.addSaving(id, date, amount);
+
+                    // Si connecté, synchroniser avec Firestore
+                    if (this.user && this.isOnline) {
+                        await db.collection('savings').doc(id).set({
                             userId: this.user.uid,
-                            date: date,
-                            amount: parseFloat(amount),
-                            timestamp: new Date().getTime()
-                        });
-                        console.log('Données sauvegardées sur Firestore avec ID:', uniqueId);
-                    } else if (this.user) {
-                        // Si hors ligne, ajouter à la file d'attente
-                        await this.db.addToSyncQueue('add', {
-                            id: uniqueId,
-                            date: date,
-                            amount: parseFloat(amount),
-                            timestamp: new Date().getTime()
+                            ...savingData
                         });
                     }
 
@@ -960,7 +773,7 @@
                         showConfirmButton: false
                     });
                 } catch (error) {
-                    console.error("Erreur lors de l'ajout:", error);
+                    console.error('Erreur lors de l\'ajout:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -970,8 +783,8 @@
                 }
             }
 
-           async updateSaving() {
-                const id = document.getElementById('editId').value; // Pas besoin de parseInt
+            async updateSaving() {
+                const id = document.getElementById('editId').value;
                 const date = document.getElementById('editDate').value;
                 const amount = document.getElementById('editAmount').value;
 
@@ -985,7 +798,6 @@
                     return;
                 }
 
-                // Vérifier si c'est un dimanche
                 if (this.isSunday(date)) {
                     Swal.fire({
                         icon: 'info',
@@ -997,22 +809,19 @@
                 }
 
                 try {
+                    const savingData = {
+                        date: date,
+                        amount: parseFloat(amount),
+                        timestamp: new Date().getTime()
+                    };
+
+                    // Mettre à jour localement
                     await this.db.updateSaving(id, date, amount);
 
                     // Si connecté, synchroniser avec Firestore
-                    if (this.user && this.isOnline && db) {
+                    if (this.user && this.isOnline) {
                         await db.collection('savings').doc(id).update({
-                            date: date,
-                            amount: parseFloat(amount),
-                            timestamp: new Date().getTime()
-                        });
-                    } else if (this.user) {
-                        // Si hors ligne, ajouter à la file d'attente
-                        await this.db.addToSyncQueue('update', {
-                            id: id,
-                            date: date,
-                            amount: parseFloat(amount),
-                            timestamp: new Date().getTime()
+                            ...savingData
                         });
                     }
 
@@ -1027,7 +836,7 @@
                         showConfirmButton: false
                     });
                 } catch (error) {
-                    console.error("Erreur lors de la modification:", error);
+                    console.error('Erreur lors de la modification:', error);
                     Swal.fire({
                         icon: 'error',
                         title: 'Erreur',
@@ -1037,7 +846,7 @@
                 }
             }
 
-           async deleteSaving(id) {
+            async deleteSaving(id) {
                 const result = await Swal.fire({
                     title: 'Confirmer la suppression',
                     text: 'Êtes-vous sûr de vouloir supprimer cette épargne ?',
@@ -1051,14 +860,12 @@
 
                 if (result.isConfirmed) {
                     try {
+                        // Supprimer localement
                         await this.db.deleteSaving(id);
 
                         // Si connecté, synchroniser avec Firestore
-                        if (this.user && this.isOnline && db) {
+                        if (this.user && this.isOnline) {
                             await db.collection('savings').doc(id).delete();
-                        } else if (this.user) {
-                            // Si hors ligne, ajouter à la file d'attente
-                            await this.db.addToSyncQueue('delete', { id: id });
                         }
 
                         await this.updateDisplay();
@@ -1071,7 +878,7 @@
                             showConfirmButton: false
                         });
                     } catch (error) {
-                        console.error("Erreur lors de la suppression:", error);
+                        console.error('Erreur lors de la suppression:', error);
                         Swal.fire({
                             icon: 'error',
                             title: 'Erreur',
@@ -1087,11 +894,13 @@
                 document.getElementById('editDate').value = this.formatDateForDisplay(date);
                 document.getElementById('editAmount').value = amount;
                 document.getElementById('editForm').classList.add('active');
+
+                // Défiler vers le formulaire d'édition
+                document.getElementById('editForm').scrollIntoView({ behavior: 'smooth' });
             }
 
             cancelEdit() {
                 document.getElementById('editForm').classList.remove('active');
-                // Réinitialiser les champs du formulaire d'édition manuellement
                 document.getElementById('editId').value = '';
                 document.getElementById('editDate').value = '';
                 document.getElementById('editAmount').value = '';
@@ -1101,7 +910,6 @@
                 let debt = 0;
                 const savingsByDate = {};
 
-                // Grouper les épargnes par date
                 savings.forEach(saving => {
                     if (!savingsByDate[saving.date]) {
                         savingsByDate[saving.date] = 0;
@@ -1109,9 +917,7 @@
                     savingsByDate[saving.date] += saving.amount;
                 });
 
-                // Calculer la dette jour par jour
                 Object.keys(savingsByDate).forEach(date => {
-                    // Vérifier si ce n'est pas un dimanche
                     if (!this.isSunday(date)) {
                         const dailyAmount = savingsByDate[date];
                         if (dailyAmount < this.dailyTarget) {
@@ -1129,24 +935,22 @@
             getWeekStats(savings) {
                 const now = new Date();
                 const startOfWeek = new Date(now);
-                // Calculer le lundi de la semaine courante (getDay() : 0=Dimanche, 1=Lundi, ..., 6=Samedi)
                 const dayOfWeek = now.getDay();
-                const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Si c'est dimanche (0), on recule de 6 jours
+                const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
                 startOfWeek.setDate(now.getDate() - daysToMonday);
                 startOfWeek.setHours(0, 0, 0, 0);
 
                 const endOfWeek = new Date(startOfWeek);
-                endOfWeek.setDate(startOfWeek.getDate() + 6); // Dimanche
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
                 endOfWeek.setHours(23, 59, 59, 999);
 
                 const weekSavings = savings.filter(saving => {
-                    // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
-                    const saveDate = new Date(saving.date + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
+                    const saveDate = new Date(saving.date + 'T12:00:00');
                     return saveDate >= startOfWeek && saveDate <= endOfWeek;
                 });
 
                 const total = weekSavings.reduce((sum, saving) => sum + saving.amount, 0);
-                const target = 6000; // 6 jours × 1000$
+                const target = 6000;
                 const progress = Math.min(100, (total / target) * 100);
 
                 return { total, target, progress, remaining: Math.max(0, target - total) };
@@ -1158,15 +962,13 @@
                 const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
                 const monthSavings = savings.filter(saving => {
-                    // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
-                    const saveDate = new Date(saving.date + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
+                    const saveDate = new Date(saving.date + 'T12:00:00');
                     return saveDate >= startOfMonth && saveDate <= endOfMonth;
                 });
 
-                // Calculer le nombre de jours ouvrables (lundi à samedi) dans le mois
                 let workDays = 0;
                 for (let d = new Date(startOfMonth); d <= endOfMonth; d.setDate(d.getDate() + 1)) {
-                    if (d.getDay() !== 0) workDays++; // 0 = Dimanche
+                    if (d.getDay() !== 0) workDays++;
                 }
 
                 const total = monthSavings.reduce((sum, saving) => sum + saving.amount, 0);
@@ -1180,21 +982,17 @@
                 const savings = await this.db.getAllSavings();
                 savings.sort((a, b) => new Date(b.date) - new Date(a.date));
 
-                // Statistiques globales
                 const totalSavings = savings.reduce((sum, saving) => sum + saving.amount, 0);
                 this.currentDebt = this.calculateDebt(savings);
 
-                // Statistiques hebdomadaires et mensuelles
                 const weekStats = this.getWeekStats(savings);
                 const monthStats = this.getMonthStats(savings);
 
-                // Mise à jour de l'affichage
                 document.getElementById('totalSavings').textContent = `${totalSavings.toLocaleString()} $`;
                 document.getElementById('currentDebt').textContent = `${this.currentDebt.toLocaleString()} $`;
                 document.getElementById('weeklyProgress').textContent = `${weekStats.progress.toFixed(1)}%`;
                 document.getElementById('monthlyProgress').textContent = `${monthStats.progress.toFixed(1)}%`;
 
-                // Résumé hebdomadaire
                 document.getElementById('weekTotal').textContent = `${weekStats.total.toLocaleString()} $`;
                 document.getElementById('weekRemaining').textContent = `${weekStats.remaining.toLocaleString()} $`;
                 document.getElementById('weekProgressBar').style.width = `${weekStats.progress}%`;
@@ -1213,12 +1011,8 @@
                 listContainer.innerHTML = '';
 
                 savings.forEach(saving => {
-                    // Formater la date pour l'affichage sans décalage
                     const displayDate = this.formatDateForDisplay(saving.date);
-
-                    // Créer une date à partir de la chaîne en utilisant le fuseau horaire local
-                    const saveDate = new Date(saving.date + 'T12:00:00'); // Utiliser midi pour éviter les problèmes de décalage
-
+                    const saveDate = new Date(saving.date + 'T12:00:00');
                     const deficit = this.dailyTarget - saving.amount;
                     const isDeficit = deficit > 0;
                     const isSurplus = deficit < 0;
@@ -1233,25 +1027,25 @@
                             : 'Objectif atteint ✓';
 
                     item.innerHTML = `
-                        <div class="savings-info">
-                            <div class="savings-date">${saveDate.toLocaleDateString('fr-FR', {
+                <div class="savings-info">
+                    <div class="savings-date">${saveDate.toLocaleDateString('fr-FR', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
                     })}</div>
-                            <div class="savings-amount">${saving.amount.toLocaleString()} $</div>
-                            <div class="savings-status">${statusText}</div>
-                        </div>
-                        <div class="actions">
-                            <button class="btn btn-warning btn-small" onclick="app.editSaving(${saving.id}, '${saving.date}', ${saving.amount})">
-                                ✏️ Modifier
-                            </button>
-                            <button class="btn btn-danger btn-small" onclick="app.deleteSaving(${saving.id})">
-                                🗑️ Supprimer
-                            </button>
-                        </div>
-                    `;
+                    <div class="savings-amount">${saving.amount.toLocaleString()} $</div>
+                    <div class="savings-status">${statusText}</div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-warning btn-small" onclick="app.editSaving('${saving.id}', '${saving.date}', ${saving.amount})">
+                        ✏️ Modifier
+                    </button>
+                    <button class="btn btn-danger btn-small" onclick="app.deleteSaving('${saving.id}')">
+                        🗑️ Supprimer
+                    </button>
+                </div>
+            `;
 
                     listContainer.appendChild(item);
                 });
