@@ -442,11 +442,11 @@
                     </div>
                     <div class="form-group">
                         <label for="transactionDate">Date :</label>
-                        <input type="date" id="transactionDate" required>
+                        <input type="date" id="transactionDate" >
                     </div>
                     <div class="form-group">
                         <label for="transactionAmount">Montant ($) :</label>
-                        <input type="number" id="transactionAmount" min="0" step="0.01" required placeholder="Ex: 1000">
+                        <input type="number" id="transactionAmount" min="0" step="0.01" placeholder="Ex: 1000">
                     </div>
                     <button type="submit" class="btn" id="submitBtn">Ajouter Épargne</button>
                 </form>
@@ -468,11 +468,11 @@
                     </div>
                     <div class="form-group">
                         <label for="editDate">Date :</label>
-                        <input type="date" id="editDate" required>
+                        <input type="date" id="editDate">
                     </div>
                     <div class="form-group">
                         <label for="editAmount">Montant ($) :</label>
-                        <input type="number" id="editAmount" min="0" step="0.01" required>
+                        <input type="number" id="editAmount" min="0" step="0.01" >
                     </div>
                     <button type="button" class="btn" onclick="updateTransaction()">Sauvegarder</button>
                     <button type="button" class="btn btn-warning" onclick="cancelEdit()">Annuler</button>
@@ -708,76 +708,105 @@
                 }
             }
 
-           setTodayDate() {
-                const today = new Date().toISOString().split('T')[0];
-                document.getElementById('transactionDate').value = today; // <- CORRECT
+         setTodayDate() {
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = String(today.getMonth() + 1).padStart(2, '0');
+                const day = String(today.getDate()).padStart(2, '0');
+                document.getElementById('transactionDate').value = `${year}-${month}-${day}`;
             }
 
-            async checkDateExists(date, excludeId = null) {
-                const savings = await this.db.getAllSavings();
-                return savings.some(saving =>
-                    saving.date === date && saving.id !== excludeId
-                );
+          async checkDateExists(date, excludeId = null) {
+                try {
+                    const savings = await this.db.getAllSavings();
+                    const exists = savings.some(saving =>
+                        saving.date === date &&
+                        (saving.type === 'deposit' || !saving.type) && // Seulement les dépôts
+                        (excludeId === null || saving.id !== excludeId)
+                    );
+                    return exists;
+                } catch (error) {
+                    console.error('Erreur lors de la vérification de date:', error);
+                    return false;
+                }
             }
 
     async addTransaction() {
-                const date = document.getElementById('transactionDate').value;
-                const amount = document.getElementById('transactionAmount').value;
-                const type = this.currentTransactionType;
+        const date = document.getElementById('transactionDate').value;
+        const amount = document.getElementById('transactionAmount').value;
+        const type = this.currentTransactionType;
 
-                if (!date || !amount) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Champs manquants',
-                        text: 'Veuillez remplir tous les champs',
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
+        if (!date || !amount) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Champs manquants',
+                text: 'Veuillez remplir tous les champs',
+                confirmButtonColor: '#667eea'
+            });
+            return;
+        }
 
-                // Vérifier si la date existe déjà
-                const dateExists = await this.checkDateExists(date);
-                if (dateExists) {
-                    const formattedDate = new Date(date + 'T12:00:00').toLocaleDateString('fr-FR', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
+        // Vérifier si la date existe déjà - CORRECTION PRINCIPALE
+       // Vérifier si la date existe déjà
+        const dateExists = await this.checkDateExists(date);
+        if (dateExists && type === 'deposit') {
+            const formattedDate = new Date(date + 'T12:00:00').toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
 
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Date déjà utilisée',
-                        text: `Une transaction existe déjà pour le ${formattedDate}. Veuillez choisir une autre date ou modifier la transaction existante.`,
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
+            Swal.fire({
+                icon: 'warning',
+                title: 'Date déjà utilisée',
+                text: `Une épargne existe déjà pour le ${formattedDate}. Veuillez choisir une autre date ou modifier l'épargne existante.`,
+                confirmButtonColor: '#667eea'
+            });
+            return;
+        }
 
-                // Pour les retraits, vérifier qu'il y a assez d'épargne
-                if (type === 'withdrawal') {
-                    const savings = await this.db.getAllSavings();
-                    const totalSavings = this.calculateTotalBalance(savings);
-                    if (parseFloat(amount) > totalSavings) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Solde insuffisant',
-                            text: `Votre solde actuel est de ${totalSavings.toFixed(2)} $. Vous ne pouvez pas retirer ${parseFloat(amount).toFixed(2)} $.`,
-                            confirmButtonColor: '#667eea'
-                        });
-                        return;
-                    }
-                }
+        // Validation pour les retraits - ne pas permettre les dates futures
+       // Validation pour les retraits - ne pas permettre les dates futures
+        if (type === 'withdrawal') {
+            const selectedDate = new Date(date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-                if (this.isSunday(date) && type === 'deposit') {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Jour non autorisé',
-                        text: 'L\'épargne n\'est pas prévue le dimanche selon vos objectifs',
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
+            if (selectedDate > today) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Date future non autorisée',
+                    text: 'Les retraits ne peuvent pas être effectués pour des dates futures.',
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
+        
+
+            // Vérifier le solde pour les retraits
+            const savings = await this.db.getAllSavings();
+            const totalSavings = this.calculateTotalBalance(savings);
+            if (parseFloat(amount) > totalSavings) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Solde insuffisant',
+                    text: `Votre solde actuel est de ${totalSavings.toFixed(2)} $. Vous ne pouvez pas retirer ${parseFloat(amount).toFixed(2)} $.`,
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
+        }
+
+        if (this.isSunday(date) && type === 'deposit') {
+            Swal.fire({
+                icon: 'info',
+                title: 'Jour non autorisé',
+                text: 'L\'épargne n\'est pas prévue le dimanche selon vos objectifs',
+                confirmButtonColor: '#667eea'
+            });
+            return;
+        }
 
                 try {
                     const id = this.generateId();
@@ -834,66 +863,83 @@
             }
 
     async updateTransaction() {
-                const id = document.getElementById('editId').value;
-                const date = document.getElementById('editDate').value;
-                const amount = document.getElementById('editAmount').value;
-                const editTypeDeposit = document.getElementById('editTypeDeposit');
-                const type = editTypeDeposit.classList.contains('active') ? 'deposit' : 'withdrawal';
+               const id = document.getElementById('editId').value;
+        const date = document.getElementById('editDate').value;
+        const amount = document.getElementById('editAmount').value;
+        const editTypeDeposit = document.getElementById('editTypeDeposit');
+        const type = editTypeDeposit.classList.contains('active') ? 'deposit' : 'withdrawal';
 
-                if (!date || !amount) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Champs manquants',
-                        text: 'Veuillez remplir tous les champs',
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
+        if (!date || !amount) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Champs manquants',
+                text: 'Veuillez remplir tous les champs',
+                confirmButtonColor: '#667eea'
+            });
+            return;
+        }
 
-                // Vérifier si la nouvelle date est déjà utilisée par une autre transaction
-                const dateConflict = await this.checkDateExists(date, id);
-                if (dateConflict) {
-                    const formattedDate = new Date(date + 'T12:00:00').toLocaleDateString('fr-FR', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
+       // Vérifier si la nouvelle date est déjà utilisée par une autre transaction
+        if (type === 'deposit') {
+            const dateConflict = await this.checkDateExists(date, id);
+            if (dateConflict) {
+                const formattedDate = new Date(date + 'T12:00:00').toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
 
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Date déjà utilisée',
-                        text: `Une autre transaction existe déjà pour le ${formattedDate}. Veuillez choisir une date différente.`,
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Date déjà utilisée',
+                    text: `Une autre épargne existe déjà pour le ${formattedDate}. Veuillez choisir une date différente.`,
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
+        }
 
-                // Vérification du solde pour les retraits
-                if (type === 'withdrawal') {
-                    const savings = await this.db.getAllSavings();
-                    const otherTransactions = savings.filter(s => s.id !== id);
-                    const balanceWithoutCurrent = this.calculateTotalBalance(otherTransactions);
-                    if (parseFloat(amount) > balanceWithoutCurrent) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Solde insuffisant',
-                            text: 'Cette modification créerait un solde négatif.',
-                            confirmButtonColor: '#667eea'
-                        });
-                        return;
-                    }
-                }
+        // Validation pour les retraits - ne pas permettre les dates futures
+        if (type === 'withdrawal') {
+          const selectedDate = new Date(date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-                if (this.isSunday(date) && type === 'deposit') {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Jour non autorisé',
-                        text: 'L\'épargne n\'est pas prévue le dimanche selon vos objectifs pour les dépôts',
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
+            if (selectedDate > today) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Date future non autorisée',
+                    text: 'Les retraits ne peuvent pas être effectués pour des dates futures.',
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
+
+            // Vérification du solde pour les retraits
+            const savings = await this.db.getAllSavings();
+            const otherTransactions = savings.filter(s => s.id !== id);
+            const balanceWithoutCurrent = this.calculateTotalBalance(otherTransactions);
+            if (parseFloat(amount) > balanceWithoutCurrent) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Solde insuffisant',
+                    text: 'Cette modification créerait un solde négatif.',
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
+        }
+
+        if (this.isSunday(date) && type === 'deposit') {
+            Swal.fire({
+                icon: 'info',
+                title: 'Jour non autorisé',
+                text: 'L\'épargne n\'est pas prévue le dimanche selon vos objectifs pour les dépôts',
+                confirmButtonColor: '#667eea'
+            });
+            return;
+        }
 
                 try {
                     const transactionData = {
@@ -937,7 +983,7 @@
                 return savings.map(saving => saving.date);
             }
 
-            addDateValidationListeners() {
+           addDateValidationListeners() {
                 // Validation pour le formulaire principal
                 const transactionDateInput = document.getElementById('transactionDate');
                 if (transactionDateInput) {
@@ -948,10 +994,11 @@
                             if (dateExists) {
                                 e.target.style.borderColor = '#f44336';
                                 e.target.style.backgroundColor = '#ffebee';
-                                // Optionnel : afficher un petit message d'avertissement
+                                e.target.title = 'Cette date est déjà utilisée';
                             } else {
-                                e.target.style.borderColor = '#ddd';
-                                e.target.style.backgroundColor = 'white';
+                                e.target.style.borderColor = '#4CAF50';
+                                e.target.style.backgroundColor = '#e8f5e8';
+                                e.target.title = 'Date disponible';
                             }
                         }
                     });
@@ -968,9 +1015,11 @@
                             if (dateExists) {
                                 e.target.style.borderColor = '#f44336';
                                 e.target.style.backgroundColor = '#ffebee';
+                                e.target.title = 'Cette date est déjà utilisée par une autre transaction';
                             } else {
-                                e.target.style.borderColor = '#ddd';
-                                e.target.style.backgroundColor = 'white';
+                                e.target.style.borderColor = '#4CAF50';
+                                e.target.style.backgroundColor = '#e8f5e8';
+                                e.target.title = 'Date disponible';
                             }
                         }
                     });
@@ -1262,92 +1311,7 @@
                 return Date.now().toString() + Math.random().toString(36).substr(2, 9);
             }
 
-           // Garder seulement les nouvelles méthodes de transaction
-            async addTransaction() {
-                const date = document.getElementById('transactionDate').value;
-                const amount = document.getElementById('transactionAmount').value;
-                const type = this.currentTransactionType;
-
-                if (!date || !amount) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Champs manquants',
-                        text: 'Veuillez remplir tous les champs',
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
-
-                // Pour les retraits, on vérifie qu'il y a assez d'épargne
-                if (type === 'withdrawal') {
-                    const savings = await this.db.getAllSavings();
-                    const totalSavings = this.calculateTotalBalance(savings);
-
-                    if (parseFloat(amount) > totalSavings) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Solde insuffisant',
-                            text: `Votre solde actuel est de ${totalSavings.toFixed(2)} $. Vous ne pouvez pas retirer ${parseFloat(amount).toFixed(2)} $.`,
-                            confirmButtonColor: '#667eea'
-                        });
-                        return;
-                    }
-                }
-
-                if (this.isSunday(date) && type === 'deposit') {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Jour non autorisé',
-                        text: 'L\'épargne n\'est pas prévue le dimanche selon vos objectifs',
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
-
-                try {
-                    const id = this.generateId();
-                    const transactionData = {
-                        date: date,
-                        amount: parseFloat(amount),
-                        type: type,
-                        timestamp: new Date().getTime()
-                    };
-
-                    // Ajouter localement
-                    await this.db.addTransaction(id, date, amount, type);
-
-                    // Si connecté, synchroniser avec Firestore
-                    if (this.user && this.isOnline) {
-                        await db.collection('savings').doc(id).set({
-                            userId: this.user.uid,
-                            ...transactionData
-                        });
-                    }
-
-                    document.getElementById('transactionForm').reset();
-                    this.setTodayDate();
-                    await this.updateDisplay();
-
-                    const actionText = type === 'deposit' ? 'ajoutés' : 'retirés';
-                    const icon = type === 'deposit' ? 'success' : 'info';
-
-                    Swal.fire({
-                        icon: icon,
-                        title: type === 'deposit' ? 'Épargne ajoutée !' : 'Retrait effectué !',
-                        text: `${parseFloat(amount).toLocaleString()} $ ${actionText} avec succès`,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                } catch (error) {
-                    console.error('Erreur lors de la transaction:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Erreur',
-                        text: 'Erreur lors de la transaction: ' + error.message,
-                        confirmButtonColor: '#667eea'
-                    });
-                }
-            }
+           
 
             calculateTotalBalance(savings) {
                 return savings.reduce((balance, transaction) => {
@@ -1358,80 +1322,6 @@
                         return balance + transaction.amount;
                     }
                 }, 0);
-            }
-
-            async updateTransaction() {
-                const id = document.getElementById('editId').value;
-                const date = document.getElementById('editDate').value;
-                const amount = document.getElementById('editAmount').value;
-
-                // Déterminer le type sélectionné dans l'édition
-                const editTypeDeposit = document.getElementById('editTypeDeposit');
-                const type = editTypeDeposit.classList.contains('active') ? 'deposit' : 'withdrawal';
-
-                if (!date || !amount) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Champs manquants',
-                        text: 'Veuillez remplir tous les champs',
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
-
-                // Vérification du solde pour les retraits
-                if (type === 'withdrawal') {
-                    const savings = await this.db.getAllSavings();
-                    const currentTransaction = savings.find(s => s.id === id);
-                    const otherTransactions = savings.filter(s => s.id !== id);
-                    const balanceWithoutCurrent = this.calculateTotalBalance(otherTransactions);
-
-                    if (parseFloat(amount) > balanceWithoutCurrent) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Solde insuffisant',
-                            text: `Cette modification créerait un solde négatif.`,
-                            confirmButtonColor: '#667eea'
-                        });
-                        return;
-                    }
-                }
-
-                try {
-                    const transactionData = {
-                        date: date,
-                        amount: parseFloat(amount),
-                        type: type,
-                        timestamp: new Date().getTime()
-                    };
-
-                    await this.db.updateTransaction(id, date, amount, type);
-
-                    if (this.user && this.isOnline) {
-                        await db.collection('savings').doc(id).update({
-                            ...transactionData
-                        });
-                    }
-
-                    this.cancelEdit();
-                    await this.updateDisplay();
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Modification réussie !',
-                        text: 'La transaction a été mise à jour',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                } catch (error) {
-                    console.error('Erreur lors de la modification:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Erreur',
-                        text: 'Erreur lors de la modification: ' + error.message,
-                        confirmButtonColor: '#667eea'
-                    });
-                }
             }
 
             editTransaction(id, date, amount, type) {
@@ -1445,47 +1335,6 @@
 
                 document.getElementById('editForm').classList.add('active');
                 document.getElementById('editForm').scrollIntoView({ behavior: 'smooth' });
-            }
-
-            async deleteTransaction(id) {
-                const result = await Swal.fire({
-                    title: 'Confirmer la suppression',
-                    text: 'Êtes-vous sûr de vouloir supprimer cette transaction ?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#667eea',
-                    confirmButtonText: 'Oui, supprimer',
-                    cancelButtonText: 'Annuler'
-                });
-
-                if (result.isConfirmed) {
-                    try {
-                        await this.db.deleteSaving(id);
-
-                        if (this.user && this.isOnline) {
-                            await db.collection('savings').doc(id).delete();
-                        }
-
-                        await this.updateDisplay();
-
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Supprimé !',
-                            text: 'La transaction a été supprimée avec succès',
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    } catch (error) {
-                        console.error('Erreur lors de la suppression:', error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Erreur',
-                            text: 'Erreur lors de la suppression: ' + error.message,
-                            confirmButtonColor: '#667eea'
-                        });
-                    }
-                }
             }
 
             cancelEdit() {
