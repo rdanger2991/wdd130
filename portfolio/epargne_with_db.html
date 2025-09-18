@@ -790,22 +790,23 @@
 
         // Validation pour les retraits - ne pas permettre les dates futures
         if (type === 'withdrawal') {
-            const selectedDate = new Date(date);
-                const today = new Date();
+          const selectedDate = new Date(date);
+            const today = new Date();
 
-                // Réinitialiser les heures pour comparer seulement les dates
-                selectedDate.setHours(0, 0, 0, 0);
-                today.setHours(0, 0, 0, 0);
+            // Réinitialiser les heures pour comparer seulement les dates
+            selectedDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
 
-                if (selectedDate.getTime() !== today.getTime()) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Date non autorisée',
-                        text: 'Les retraits ne peuvent être effectués que pour la date du jour.',
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
+            // Empêcher les dates passées ET futures (seule la date d'aujourd'hui est autorisée)
+            if (selectedDate.getTime() < today.getTime() || selectedDate.getTime() > today.getTime()) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Date non autorisée',
+                    text: 'Les retraits ne peuvent être effectués que pour la date du jour.',
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
             
         
 
@@ -927,22 +928,23 @@
 
         // Validation pour les retraits - ne pas permettre les dates futures
         if (type === 'withdrawal') {
-          const selectedDate = new Date(date);
-                const today = new Date();
+         const selectedDate = new Date(date);
+            const today = new Date();
 
-                // Réinitialiser les heures pour comparer seulement les dates
-                selectedDate.setHours(0, 0, 0, 0);
-                today.setHours(0, 0, 0, 0);
+            // Réinitialiser les heures pour comparer seulement les dates
+            selectedDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
 
-                if (selectedDate.getTime() !== today.getTime()) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Date non autorisée',
-                        text: 'Les retraits ne peuvent être effectués que pour la date du jour.',
-                        confirmButtonColor: '#667eea'
-                    });
-                    return;
-                }
+            // Empêcher les dates passées ET futures (seule la date d'aujourd'hui est autorisée)
+            if (selectedDate.getTime() < today.getTime() || selectedDate.getTime() > today.getTime()) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Date non autorisée',
+                    text: 'Les retraits ne peuvent être effectués que pour la date du jour.',
+                    confirmButtonColor: '#667eea'
+                });
+                return;
+            }
             
 
             // Vérification du solde pour les retraits
