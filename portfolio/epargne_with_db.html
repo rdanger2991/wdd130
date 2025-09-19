@@ -312,6 +312,54 @@
     color: #4CAF50;
 }
 
+.filter-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border-left: 4px solid #667eea;
+}
+
+.filter-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 10px;
+    align-items: end;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.btn-filter {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+}
+
+.btn-filter:hover {
+    background: #5a6fd8;
+}
+
+.btn-filter.active {
+    background: #4CAF50;
+}
+
+@media (max-width: 768px) {
+    .filter-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+}
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -360,6 +408,7 @@
             margin-bottom: 10px;
             font-size: 0.9em;
         }
+        
     </style>
 </head>
 
@@ -479,12 +528,39 @@
                 </div>
             </div>
 
-            <div class="panel">
-                <h2>📋 Historique des Épargnes</h2>
-                <div class="savings-list" id="savingsList">
-                    <p style="text-align: center; color: #666; padding: 20px;">Aucune épargne enregistrée</p>
+        <div class="panel">
+            <h2>📋 Historique des Épargnes</h2>
+        
+            <div class="filter-section">
+                <div class="filter-row">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="filterStartDate">Date de début :</label>
+                        <input type="date" id="filterStartDate">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="filterEndDate">Date de fin :</label>
+                        <input type="date" id="filterEndDate">
+                    </div>
+                    <div>
+                        <button class="btn btn-small" onclick="app.applyDateFilter()">Filtrer</button>
+                        <button class="btn btn-warning btn-small" onclick="app.clearDateFilter()">Effacer</button>
+                    </div>
+                </div>
+        
+                <div class="filter-buttons">
+                    <button class="btn-filter" onclick="app.setQuickFilter('today')">Aujourd'hui</button>
+                    <button class="btn-filter" onclick="app.setQuickFilter('thisWeek')">Cette semaine</button>
+                    <button class="btn-filter" onclick="app.setQuickFilter('lastWeek')">Semaine dernière</button>
+                    <button class="btn-filter" onclick="app.setQuickFilter('thisMonth')">Ce mois</button>
+                    <button class="btn-filter" onclick="app.setQuickFilter('lastMonth')">Mois dernier</button>
+                    <button class="btn-filter" onclick="app.setQuickFilter('last30Days')">30 derniers jours</button>
                 </div>
             </div>
+        
+            <div class="savings-list" id="savingsList">
+                <p style="text-align: center; color: #666; padding: 20px;">Aucune épargne enregistrée</p>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -664,6 +740,7 @@
                 // Écouter les changements de connexion
                 window.addEventListener('online', () => this.handleConnectionChange(true));
                 window.addEventListener('offline', () => this.handleConnectionChange(false));
+                this.currentFilter = null;
             }
 
               async init() {
@@ -743,6 +820,132 @@
                     console.error('Erreur lors de la vérification de date:', error);
                     return false;
                 }
+            }
+
+
+            // Nouvelle méthode pour appliquer le filtre par date
+            // Nouvelle méthode pour appliquer le filtre par date
+            async applyDateFilter() {
+                const startDate = document.getElementById('filterStartDate').value;
+                const endDate = document.getElementById('filterEndDate').value;
+
+                if (!startDate || !endDate) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Dates manquantes',
+                        text: 'Veuillez sélectionner une date de début et une date de fin',
+                        confirmButtonColor: '#667eea'
+                    });
+                    return;
+                }
+
+                if (startDate > endDate) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Dates invalides',
+                        text: 'La date de début doit être antérieure à la date de fin',
+                        confirmButtonColor: '#667eea'
+                    });
+                    return;
+                }
+
+                this.currentFilter = { startDate, endDate };
+
+                // Récupérer les transactions et les passer à updateTransactionsList
+                const transactions = await this.db.getAllSavings();
+                await this.updateTransactionsList(transactions);
+            }
+
+            // Effacer le filtre
+            async clearDateFilter() {
+                this.currentFilter = null;
+                document.getElementById('filterStartDate').value = '';
+                document.getElementById('filterEndDate').value = '';
+
+                // Retirer la classe active de tous les boutons de filtre rapide
+                document.querySelectorAll('.btn-filter').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // Récupérer les transactions et les passer à updateTransactionsList
+                const transactions = await this.db.getAllSavings();
+                await this.updateTransactionsList(transactions);
+            }
+
+            // Filtres rapides prédéfinis
+            async setQuickFilter(period) {
+                const today = new Date();
+                let startDate, endDate;
+
+                // Retirer la classe active de tous les boutons
+                document.querySelectorAll('.btn-filter').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                // Ajouter la classe active au bouton cliqué
+                event.target.classList.add('active');
+
+                switch (period) {
+                    case 'today':
+                        startDate = endDate = this.getCurrentDateString();
+                        break;
+
+                    case 'thisWeek':
+                        const startOfWeek = new Date(today);
+                        const dayOfWeek = today.getDay();
+                        const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+                        startOfWeek.setDate(today.getDate() - daysToMonday);
+
+                        const endOfWeek = new Date(startOfWeek);
+                        endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+                        startDate = this.formatDateString(startOfWeek);
+                        endDate = this.formatDateString(endOfWeek);
+                        break;
+
+                    case 'lastWeek':
+                        const lastWeekStart = new Date(today);
+                        const daysToLastMonday = (today.getDay() === 0 ? 6 : today.getDay() - 1) + 7;
+                        lastWeekStart.setDate(today.getDate() - daysToLastMonday);
+
+                        const lastWeekEnd = new Date(lastWeekStart);
+                        lastWeekEnd.setDate(lastWeekStart.getDate() + 6);
+
+                        startDate = this.formatDateString(lastWeekStart);
+                        endDate = this.formatDateString(lastWeekEnd);
+                        break;
+
+                    case 'thisMonth':
+                        startDate = this.formatDateString(new Date(today.getFullYear(), today.getMonth(), 1));
+                        endDate = this.formatDateString(new Date(today.getFullYear(), today.getMonth() + 1, 0));
+                        break;
+
+                    case 'lastMonth':
+                        startDate = this.formatDateString(new Date(today.getFullYear(), today.getMonth() - 1, 1));
+                        endDate = this.formatDateString(new Date(today.getFullYear(), today.getMonth(), 0));
+                        break;
+
+                    case 'last30Days':
+                        const thirtyDaysAgo = new Date(today);
+                        thirtyDaysAgo.setDate(today.getDate() - 30);
+                        startDate = this.formatDateString(thirtyDaysAgo);
+                        endDate = this.getCurrentDateString();
+                        break;
+                }
+
+                document.getElementById('filterStartDate').value = startDate;
+                document.getElementById('filterEndDate').value = endDate;
+
+                this.currentFilter = { startDate, endDate };
+
+                // Récupérer les transactions et les passer à updateTransactionsList
+                const transactions = await this.db.getAllSavings();
+                await this.updateTransactionsList(transactions);
+            }
+
+            // Méthode utilitaire pour formater les dates
+            formatDateString(date) {
+                return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             }
 
 
@@ -1063,95 +1266,130 @@
                     document.getElementById('editForm').scrollIntoView({ behavior: 'smooth' });
                 }
 
-    async updateDisplay() {
-                    const savings = await this.db.getAllSavings();
-                    savings.sort((a, b) => new Date(b.date) - new Date(a.date));
+            async updateDisplay() {
+                const savings = await this.db.getAllSavings();
 
-                    const totalBalance = this.calculateTotalBalance(savings);
-                    const depositsOnly = savings.filter(s => s.type !== 'withdrawal');
-                    this.currentDebt = this.calculateDebt(depositsOnly);
+                const totalBalance = this.calculateTotalBalance(savings);
+                const depositsOnly = savings.filter(s => s.type !== 'withdrawal');
+                this.currentDebt = this.calculateDebt(depositsOnly);
 
-                    const weekStats = this.getWeekStats(depositsOnly);
-                    const monthStats = this.getMonthStats(depositsOnly);
+                const weekStats = this.getWeekStats(depositsOnly);
+                const monthStats = this.getMonthStats(depositsOnly);
 
-                    document.getElementById('totalSavings').textContent = `${totalBalance.toLocaleString()} $`;
-                    document.getElementById('currentDebt').textContent = `${this.currentDebt.toLocaleString()} $`;
-                    document.getElementById('weeklyProgress').textContent = `${weekStats.progress.toFixed(1)}%`;
-                    document.getElementById('monthlyProgress').textContent = `${monthStats.progress.toFixed(1)}%`;
+                document.getElementById('totalSavings').textContent = `${totalBalance.toLocaleString()} $`;
+                document.getElementById('currentDebt').textContent = `${this.currentDebt.toLocaleString()} $`;
+                document.getElementById('weeklyProgress').textContent = `${weekStats.progress.toFixed(1)}%`;
+                document.getElementById('monthlyProgress').textContent = `${monthStats.progress.toFixed(1)}%`;
 
-                    document.getElementById('weekTotal').textContent = `${weekStats.total.toLocaleString()} $`;
-                    document.getElementById('weekRemaining').textContent = `${weekStats.remaining.toLocaleString()} $`;
-                    document.getElementById('weekProgressBar').style.width = `${weekStats.progress}%`;
+                document.getElementById('weekTotal').textContent = `${weekStats.total.toLocaleString()} $`;
+                document.getElementById('weekRemaining').textContent = `${weekStats.remaining.toLocaleString()} $`;
+                document.getElementById('weekProgressBar').style.width = `${weekStats.progress}%`;
 
-                    this.updateTransactionsList(savings);
+                // N'appeler updateTransactionsList QUE si aucun filtre n'est actif
+                if (!this.currentFilter) {
+                    await this.updateTransactionsList(savings);
                 }
+                // Si un filtre est actif, ne pas écraser la liste filtrée
+            }
 
-                updateTransactionsList(transactions) {
-                    const listContainer = document.getElementById('savingsList');
+              async updateTransactionsList(transactions = null) {
+                const listContainer = document.getElementById('savingsList');
 
-                    if (transactions.length === 0) {
-                        listContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Aucune transaction enregistrée</p>';
+                // Si pas de transactions passées en paramètre, les récupérer
+                if (!transactions) {
+                    try {
+                        transactions = await this.db.getAllSavings();
+                    } catch (error) {
+                        console.error('Erreur lors de la récupération des transactions:', error);
+                        listContainer.innerHTML = '<p style="text-align: center; color: #f44336; padding: 20px;">Erreur lors du chargement des transactions</p>';
                         return;
                     }
+                }
 
-                    listContainer.innerHTML = '';
+                // Vérifier que transactions est bien un tableau
+                if (!Array.isArray(transactions)) {
+                    console.error('transactions n\'est pas un tableau:', transactions);
+                    listContainer.innerHTML = '<p style="text-align: center; color: #f44336; padding: 20px;">Erreur: données invalides</p>';
+                    return;
+                }
 
-                    transactions.forEach(transaction => {
-                        const displayDate = this.formatDateForDisplay(transaction.date);
-                        const saveDate = new Date(transaction.date + 'T12:00:00');
-                        const isWithdrawal = transaction.type === 'withdrawal';
-
-                        let statusText = '';
-                        let itemClass = 'savings-item';
-
-                        if (isWithdrawal) {
-                            statusText = 'Retrait effectué';
-                            itemClass += ' withdrawal';
-                        } else {
-                            const deficit = this.dailyTarget - transaction.amount;
-                            const isDeficit = deficit > 0;
-                            const isSurplus = deficit < 0;
-
-                            statusText = isDeficit
-                                ? `Déficit: ${deficit.toFixed(2)} $`
-                                : isSurplus
-                                    ? `Excédent: ${Math.abs(deficit).toFixed(2)} $`
-                                    : 'Objectif atteint ✓';
-
-                            if (isDeficit) itemClass += ' deficit';
-                            else if (isSurplus) itemClass += ' surplus';
-                        }
-
-                        const item = document.createElement('div');
-                        item.className = itemClass;
-
-                        const amountClass = isWithdrawal ? 'transaction-amount withdrawal' : 'transaction-amount deposit';
-                        const amountPrefix = isWithdrawal ? '-' : '+';
-
-                        item.innerHTML = `
-                <div class="savings-info">
-                    <div class="savings-date">${saveDate.toLocaleDateString('fr-FR', {
-                            weekday: 'long',
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                        })}</div>
-                    <div class="savings-amount ${amountClass}">${amountPrefix}${transaction.amount.toLocaleString()} $</div>
-                    <div class="savings-status">${statusText}</div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-warning btn-small" onclick="app.editTransaction('${transaction.id}', '${transaction.date}', ${transaction.amount}, '${transaction.type || 'deposit'}')">
-                        ✏️ Modifier
-                    </button>
-                    <button class="btn btn-danger btn-small" onclick="app.deleteTransaction('${transaction.id}')">
-                        🗑️ Supprimer
-                    </button>
-                </div>
-            `;
-
-                        listContainer.appendChild(item);
+                // Appliquer le filtre de date si actif
+                let filteredTransactions = transactions;
+                if (this.currentFilter) {
+                    filteredTransactions = transactions.filter(transaction => {
+                        return transaction.date >= this.currentFilter.startDate &&
+                            transaction.date <= this.currentFilter.endDate;
                     });
                 }
+
+                // Trier par date décroissante
+                filteredTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                if (filteredTransactions.length === 0) {
+                    const message = this.currentFilter ?
+                        'Aucune transaction trouvée pour la période sélectionnée' :
+                        'Aucune transaction enregistrée';
+                    listContainer.innerHTML = `<p style="text-align: center; color: #666; padding: 20px;">${message}</p>`;
+                    return;
+                }
+
+                listContainer.innerHTML = '';
+
+                filteredTransactions.forEach(transaction => {
+                    const saveDate = new Date(transaction.date + 'T12:00:00');
+                    const isWithdrawal = transaction.type === 'withdrawal';
+
+                    let statusText = '';
+                    let itemClass = 'savings-item';
+
+                    if (isWithdrawal) {
+                        statusText = 'Retrait effectué';
+                        itemClass += ' withdrawal';
+                    } else {
+                        const deficit = this.dailyTarget - transaction.amount;
+                        const isDeficit = deficit > 0;
+                        const isSurplus = deficit < 0;
+
+                        statusText = isDeficit
+                            ? `Déficit: ${deficit.toFixed(2)} $`
+                            : isSurplus
+                                ? `Excédent: ${Math.abs(deficit).toFixed(2)} $`
+                                : 'Objectif atteint ✓';
+
+                        if (isDeficit) itemClass += ' deficit';
+                        else if (isSurplus) itemClass += ' surplus';
+                    }
+
+                    const item = document.createElement('div');
+                    item.className = itemClass;
+
+                    const amountClass = isWithdrawal ? 'transaction-amount withdrawal' : 'transaction-amount deposit';
+                    const amountPrefix = isWithdrawal ? '-' : '+';
+
+                    item.innerHTML = `
+            <div class="savings-info">
+                <div class="savings-date">${saveDate.toLocaleDateString('fr-FR', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    })}</div>
+                <div class="savings-amount ${amountClass}">${amountPrefix}${transaction.amount.toLocaleString()} $</div>
+                <div class="savings-status">${statusText}</div>
+            </div>
+            <div class="actions">
+                <button class="btn btn-warning btn-small" onclick="app.editTransaction('${transaction.id}', '${transaction.date}', ${transaction.amount}, '${transaction.type || 'deposit'}')">
+                    ✏️ Modifier
+                </button>
+                <button class="btn btn-danger btn-small" onclick="app.deleteTransaction('${transaction.id}')">
+                    🗑️ Supprimer
+                </button>
+            </div>
+        `;
+
+                    listContainer.appendChild(item);
+                });
+            }
 
     async deleteTransaction(id) {
                     const result = await Swal.fire({
@@ -1368,7 +1606,7 @@
                 document.getElementById('editAmount').value = '';
             }
 
-            // ... (garder toutes les autres méthodes existantes comme calculateDebt, getWeekStats, etc.)
+    
 
             async updateDisplay() {
                 const savings = await this.db.getAllSavings();
@@ -1393,73 +1631,7 @@
                 this.updateTransactionsList(savings);
             }
 
-            updateTransactionsList(transactions) {
-                const listContainer = document.getElementById('savingsList');
-
-                if (transactions.length === 0) {
-                    listContainer.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">Aucune transaction enregistrée</p>';
-                    return;
-                }
-
-                listContainer.innerHTML = '';
-
-                transactions.forEach(transaction => {
-                    const displayDate = this.formatDateForDisplay(transaction.date);
-                    const saveDate = new Date(transaction.date + 'T12:00:00');
-                    const type = transaction.type || 'deposit'; // Support des anciennes données
-                    const isWithdrawal = type === 'withdrawal';
-
-                    let statusText = '';
-                    let itemClass = 'savings-item';
-
-                    if (isWithdrawal) {
-                        statusText = 'Retrait effectué';
-                        itemClass += ' withdrawal';
-                    } else {
-                        const deficit = this.dailyTarget - transaction.amount;
-                        const isDeficit = deficit > 0;
-                        const isSurplus = deficit < 0;
-
-                        statusText = isDeficit
-                            ? `Déficit: ${deficit.toFixed(2)} $`
-                            : isSurplus
-                                ? `Excédent: ${Math.abs(deficit).toFixed(2)} $`
-                                : 'Objectif atteint ✓';
-
-                        if (isDeficit) itemClass += ' deficit';
-                        else if (isSurplus) itemClass += ' surplus';
-                    }
-
-                    const item = document.createElement('div');
-                    item.className = itemClass;
-
-                    const amountClass = isWithdrawal ? 'transaction-amount withdrawal' : 'transaction-amount deposit';
-                    const amountPrefix = isWithdrawal ? '-' : '+';
-
-                    item.innerHTML = `
-                <div class="savings-info">
-                    <div class="savings-date">${saveDate.toLocaleDateString('fr-FR', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    })}</div>
-                    <div class="savings-amount ${amountClass}">${amountPrefix}${transaction.amount.toLocaleString()} $</div>
-                    <div class="savings-status">${statusText}</div>
-                </div>
-                <div class="actions">
-                    <button class="btn btn-warning btn-small" onclick="app.editTransaction('${transaction.id}', '${transaction.date}', ${transaction.amount}, '${type}')">
-                        ✏️ Modifier
-                    </button>
-                    <button class="btn btn-danger btn-small" onclick="app.deleteTransaction('${transaction.id}')">
-                        🗑️ Supprimer
-                    </button>
-                </div>
-            `;
-
-                    listContainer.appendChild(item);
-                });
-            }
+          
 
             calculateDebt(savings) {
                 let debt = 0;
@@ -1555,6 +1727,19 @@
         function updateTransaction() {
                 app.updateTransaction();
             }
+
+            // Fonctions globales pour les boutons
+                function applyDateFilter() {
+                    app.applyDateFilter();
+                }
+
+                function clearDateFilter() {
+                    app.clearDateFilter();
+                }
+
+                function setQuickFilter(period) {
+                    app.setQuickFilter(period);
+                }
 
 
         // Initialisation de l'application
