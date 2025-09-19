@@ -360,6 +360,57 @@
     }
 }
 
+
+.income-section {
+    background: linear-gradient(135deg, #e8f5e8, #c8e6c8);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.income-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.income-day {
+    text-align: center;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    border: 2px solid #ddd;
+}
+
+.income-day input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.savings-item.tithe {
+    border-left-color: #9c27b0;
+    background: #f3e5f5;
+}
+.tithe-summary {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 15px;
+    border-left: 4px solid #4CAF50;
+}
+
+@media (max-width: 768px) {
+    .income-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -432,6 +483,47 @@
         <div class="motivation">
             <div class="motivation-text" id="motivationText">Ajoutez votre première épargne pour commencer !</div>
             <div id="streakInfo"></div>
+        </div>
+
+        <div class="income-section">
+            <h3>💼 Gains Hebdomadaires</h3>
+            <div class="income-grid">
+                <div class="income-day">
+                    <label>Lundi</label>
+                    <input type="number" id="mondayIncome" placeholder="0" min="0" step="0.01">
+                </div>
+                <div class="income-day">
+                    <label>Mardi</label>
+                    <input type="number" id="tuesdayIncome" placeholder="0" min="0" step="0.01">
+                </div>
+                <div class="income-day">
+                    <label>Mercredi</label>
+                    <input type="number" id="wednesdayIncome" placeholder="0" min="0" step="0.01">
+                </div>
+                <div class="income-day">
+                    <label>Jeudi</label>
+                    <input type="number" id="thursdayIncome" placeholder="0" min="0" step="0.01">
+                </div>
+                <div class="income-day">
+                    <label>Vendredi</label>
+                    <input type="number" id="fridayIncome" placeholder="0" min="0" step="0.01">
+                </div>
+                <div class="income-day">
+                    <label>Samedi</label>
+                    <input type="number" id="saturdayIncome" placeholder="0" min="0" step="0.01">
+                </div>
+            </div>
+        
+            <div style="text-align: center; margin-bottom: 15px;">
+                <button class="btn" onclick="saveWeeklyIncomes()">Enregistrer les Gains</button>
+                <button class="btn btn-success" onclick="calculateAndPayTithe()">Calculer et Payer la Dîme</button>
+            </div>
+        
+            <div class="tithe-summary">
+                <div id="weeklyIncomeTotal">Total hebdomadaire : 0 $</div>
+                <div id="titheAmount">Dîme à payer : 0 $</div>
+                <div id="netIncome">Revenu net : 0 $</div>
+            </div>
         </div>
 
         <div class="stats-grid">
@@ -589,7 +681,7 @@
         class SavingsDB {
             constructor() {
                 this.dbName = 'SavingsTracker';
-                this.version = 1;
+                this.version = 2;
                 this.db = null;
             }
 
@@ -610,8 +702,14 @@
                             const store = db.createObjectStore('savings', { keyPath: 'id' });
                             store.createIndex('date', 'date', { unique: false });
                         }
+
+                        // Ajouter cette partie
+                        if (!db.objectStoreNames.contains('incomes')) {
+                            const incomeStore = db.createObjectStore('incomes', { keyPath: 'weekKey' });
+                        }
                     };
                 });
+
             }
 
             async addSaving(id, date, amount) {
@@ -741,15 +839,18 @@
                 window.addEventListener('online', () => this.handleConnectionChange(true));
                 window.addEventListener('offline', () => this.handleConnectionChange(false));
                 this.currentFilter = null;
+                 this.weeklyIncomes = {};
+               this.currentWeekKey = this.getCurrentWeekKey();
             }
 
               async init() {
                 await this.db.init();
                 this.bindEvents();
                 this.addDateValidationListeners();
-                this.getUsedDates() // Ajouter cette ligne
+                this.getUsedDates() 
                 this.setTodayDate();
                 this.setupAuthListener();
+                await this.loadWeeklyIncomes(); 
                 await this.updateDisplay();
             }
 
@@ -948,6 +1049,201 @@
                 return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
             }
 
+            getCurrentWeekKey() {
+                const now = new Date();
+                const startOfWeek = new Date(now);
+                const dayOfWeek = now.getDay();
+                const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+                startOfWeek.setDate(now.getDate() - daysToMonday);
+                return this.formatDateString(startOfWeek);
+            }
+
+            async saveWeeklyIncomes() {
+                const incomes = {
+                    monday: parseFloat(document.getElementById('mondayIncome').value) || 0,
+                    tuesday: parseFloat(document.getElementById('tuesdayIncome').value) || 0,
+                    wednesday: parseFloat(document.getElementById('wednesdayIncome').value) || 0,
+                    thursday: parseFloat(document.getElementById('thursdayIncome').value) || 0,
+                    friday: parseFloat(document.getElementById('fridayIncome').value) || 0,
+                    saturday: parseFloat(document.getElementById('saturdayIncome').value) || 0
+                };
+
+                const weekKey = this.currentWeekKey;
+                this.weeklyIncomes[weekKey] = incomes;
+
+                // Sauvegarder dans IndexedDB
+                try {
+                    await this.saveIncomeToDb(weekKey, incomes);
+
+                    // Synchroniser avec Firebase si connecté
+                    if (this.user && this.isOnline) {
+                        await db.collection('incomes').doc(`${this.user.uid}_${weekKey}`).set({
+                            userId: this.user.uid,
+                            weekKey: weekKey,
+                            incomes: incomes,
+                            timestamp: new Date().getTime()
+                        });
+                    }
+
+                    this.updateIncomeDisplay();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Gains enregistrés !',
+                        text: 'Vos gains hebdomadaires ont été sauvegardés',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                } catch (error) {
+                    console.error('Erreur lors de la sauvegarde des gains:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Erreur',
+                        text: 'Erreur lors de la sauvegarde: ' + error.message
+                    });
+                }
+            }
+
+            async calculateAndPayTithe() {
+                const weekKey = this.currentWeekKey;
+                const incomes = this.weeklyIncomes[weekKey] || {};
+
+                const totalIncome = Object.values(incomes).reduce((sum, amount) => sum + (amount || 0), 0);
+                const titheAmount = totalIncome * 0.1;
+
+                if (totalIncome === 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Aucun gain enregistré',
+                        text: 'Veuillez d\'abord enregistrer vos gains hebdomadaires'
+                    });
+                    return;
+                }
+
+                const result = await Swal.fire({
+                    title: 'Confirmer le paiement de la dîme',
+                    html: `
+            <p>Total des gains: <strong>${totalIncome.toFixed(2)} $</strong></p>
+            <p>Dîme (10%): <strong>${titheAmount.toFixed(2)} $</strong></p>
+            <p>Voulez-vous enregistrer ce paiement de dîme ?</p>
+        `,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Payer la dîme',
+                    cancelButtonText: 'Annuler'
+                });
+
+                if (result.isConfirmed && titheAmount > 0) {
+                    try {
+                        // Enregistrer le paiement de la dîme comme un retrait spécial
+                        const id = this.generateId();
+                        const today = this.getCurrentDateString();
+
+                        await this.db.addTransaction(id, today, titheAmount, 'tithe');
+
+                        if (this.user && this.isOnline) {
+                            await db.collection('savings').doc(id).set({
+                                userId: this.user.uid,
+                                date: today,
+                                amount: titheAmount,
+                                type: 'tithe',
+                                timestamp: new Date().getTime()
+                            });
+                        }
+
+                        await this.updateDisplay();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Dîme payée !',
+                            text: `${titheAmount.toFixed(2)} $ ont été prélevés pour la dîme`,
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    } catch (error) {
+                        console.error('Erreur lors du paiement de la dîme:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Erreur',
+                            text: 'Erreur lors du paiement: ' + error.message
+                        });
+                    }
+                }
+            }
+
+            updateIncomeDisplay() {
+                const weekKey = this.currentWeekKey;
+                const incomes = this.weeklyIncomes[weekKey] || {};
+
+                const totalIncome = Object.values(incomes).reduce((sum, amount) => sum + (amount || 0), 0);
+                const titheAmount = totalIncome * 0.1;
+                const netIncome = totalIncome - titheAmount;
+
+                document.getElementById('weeklyIncomeTotal').textContent = `Total hebdomadaire : ${totalIncome.toFixed(2)} $`;
+                document.getElementById('titheAmount').textContent = `Dîme à payer : ${titheAmount.toFixed(2)} $`;
+                document.getElementById('netIncome').textContent = `Revenu net : ${netIncome.toFixed(2)} $`;
+            }
+
+         async saveIncomeToDb(weekKey, incomes) {
+                const transaction = this.db.db.transaction(['incomes'], 'readwrite'); // Notez le double .db
+                const store = transaction.objectStore('incomes');
+
+                return new Promise((resolve, reject) => {
+                    const request = store.put({
+                        weekKey: weekKey,
+                        incomes: incomes,
+                        timestamp: new Date().getTime()
+                    });
+
+                    request.onsuccess = () => resolve();
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            // Modifier la méthode loadWeeklyIncomes
+            async loadWeeklyIncomes() {
+                const weekKey = this.currentWeekKey;
+
+                try {
+                    if (!this.db.db.objectStoreNames.contains('incomes')) return;
+
+                    const transaction = this.db.db.transaction(['incomes'], 'readonly');
+                    const store = transaction.objectStore('incomes');
+
+                    const request = store.get(weekKey);
+                    const result = await new Promise((resolve, reject) => {
+                        request.onsuccess = () => resolve(request.result);
+                        request.onerror = () => reject(request.error);
+                    });
+
+                    if (result) {
+                        this.weeklyIncomes[weekKey] = result.incomes;
+
+                        // Remplir les champs avec les données sauvegardées
+                        document.getElementById('mondayIncome').value = result.incomes.monday || '';
+                        document.getElementById('tuesdayIncome').value = result.incomes.tuesday || '';
+                        document.getElementById('wednesdayIncome').value = result.incomes.wednesday || '';
+                        document.getElementById('thursdayIncome').value = result.incomes.thursday || '';
+                        document.getElementById('fridayIncome').value = result.incomes.friday || '';
+                        document.getElementById('saturdayIncome').value = result.incomes.saturday || '';
+                    } else {
+                        // Nouvelle semaine - vider tous les champs
+                        document.getElementById('mondayIncome').value = '';
+                        document.getElementById('tuesdayIncome').value = '';
+                        document.getElementById('wednesdayIncome').value = '';
+                        document.getElementById('thursdayIncome').value = '';
+                        document.getElementById('fridayIncome').value = '';
+                        document.getElementById('saturdayIncome').value = '';
+                    }
+
+                    this.updateIncomeDisplay();
+                } catch (error) {
+                    console.error('Erreur lors du chargement des gains:', error);
+                }
+            }
+
+     
+
 
     async addTransaction() {
         const date = document.getElementById('transactionDate').value;
@@ -1078,11 +1374,25 @@
                     });
                 }
             }
-
-                calculateTotalBalance(savings) {
+            // Version qui exclut la dîme pour les statistiques d'épargne
+            calculateSavingsBalance(savings) {
                 return savings.reduce((balance, transaction) => {
-                    const type = transaction.type || 'deposit'; // Support des anciennes données
+                    const type = transaction.type || 'deposit';
                     if (type === 'withdrawal') {
+                        return balance - transaction.amount;
+                    } else if (type === 'deposit') {
+                        return balance + transaction.amount;
+                    }
+                    // Ignore les transactions de type 'tithe'
+                    return balance;
+                }, 0);
+            }
+
+            // Version qui inclut la dîme pour le solde réel disponible
+            calculateTotalBalance(savings) {
+                return savings.reduce((balance, transaction) => {
+                    const type = transaction.type || 'deposit';
+                    if (type === 'withdrawal' || type === 'tithe') {
                         return balance - transaction.amount;
                     } else {
                         return balance + transaction.amount;
@@ -1266,17 +1576,19 @@
                     document.getElementById('editForm').scrollIntoView({ behavior: 'smooth' });
                 }
 
-            async updateDisplay() {
+        async updateDisplay() {
                 const savings = await this.db.getAllSavings();
 
-                const totalBalance = this.calculateTotalBalance(savings);
-                const depositsOnly = savings.filter(s => s.type !== 'withdrawal');
+                // Utiliser calculateSavingsBalance pour les statistiques d'épargne
+                const savingsBalance = this.calculateSavingsBalance(savings);
+                const depositsOnly = savings.filter(s => s.type !== 'withdrawal' && s.type !== 'tithe'); // Exclure aussi la dîme
                 this.currentDebt = this.calculateDebt(depositsOnly);
 
                 const weekStats = this.getWeekStats(depositsOnly);
                 const monthStats = this.getMonthStats(depositsOnly);
 
-                document.getElementById('totalSavings').textContent = `${totalBalance.toLocaleString()} $`;
+                // Afficher le solde d'épargne (sans la dîme)
+                document.getElementById('totalSavings').textContent = `${savingsBalance.toLocaleString()} $`;
                 document.getElementById('currentDebt').textContent = `${this.currentDebt.toLocaleString()} $`;
                 document.getElementById('weeklyProgress').textContent = `${weekStats.progress.toFixed(1)}%`;
                 document.getElementById('monthlyProgress').textContent = `${monthStats.progress.toFixed(1)}%`;
@@ -1289,7 +1601,6 @@
                 if (!this.currentFilter) {
                     await this.updateTransactionsList(savings);
                 }
-                // Si un filtre est actif, ne pas écraser la liste filtrée
             }
 
               async updateTransactionsList(transactions = null) {
@@ -1338,11 +1649,15 @@
                 filteredTransactions.forEach(transaction => {
                     const saveDate = new Date(transaction.date + 'T12:00:00');
                     const isWithdrawal = transaction.type === 'withdrawal';
+                    const isTithe = transaction.type === 'tithe';
 
                     let statusText = '';
                     let itemClass = 'savings-item';
 
-                    if (isWithdrawal) {
+                  if (isTithe) {
+                        statusText = 'Dîme payée';
+                        itemClass += ' tithe';
+                    } else if (isWithdrawal) {
                         statusText = 'Retrait effectué';
                         itemClass += ' withdrawal';
                     } else {
@@ -1363,8 +1678,8 @@
                     const item = document.createElement('div');
                     item.className = itemClass;
 
-                    const amountClass = isWithdrawal ? 'transaction-amount withdrawal' : 'transaction-amount deposit';
-                    const amountPrefix = isWithdrawal ? '-' : '+';
+                  const amountClass = (isWithdrawal || isTithe) ? 'transaction-amount withdrawal' : 'transaction-amount deposit';
+                    const amountPrefix = (isWithdrawal || isTithe) ? '-' : '+';
 
                     item.innerHTML = `
             <div class="savings-info">
@@ -1575,17 +1890,6 @@
 
            
 
-            calculateTotalBalance(savings) {
-                return savings.reduce((balance, transaction) => {
-                    const type = transaction.type || 'deposit';
-                    if (type === 'withdrawal') {
-                        return balance - transaction.amount;
-                    } else {
-                        return balance + transaction.amount;
-                    }
-                }, 0);
-            }
-
             editTransaction(id, date, amount, type) {
                 document.getElementById('editId').value = id;
                 document.getElementById('editDate').value = this.formatDateForDisplay(date);
@@ -1604,31 +1908,6 @@
                 document.getElementById('editId').value = '';
                 document.getElementById('editDate').value = '';
                 document.getElementById('editAmount').value = '';
-            }
-
-    
-
-            async updateDisplay() {
-                const savings = await this.db.getAllSavings();
-                savings.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                const totalBalance = this.calculateTotalBalance(savings);
-                const depositsOnly = savings.filter(s => (s.type || 'deposit') !== 'withdrawal');
-                this.currentDebt = this.calculateDebt(depositsOnly);
-
-                const weekStats = this.getWeekStats(depositsOnly);
-                const monthStats = this.getMonthStats(depositsOnly);
-
-                document.getElementById('totalSavings').textContent = `${totalBalance.toLocaleString()} $`;
-                document.getElementById('currentDebt').textContent = `${this.currentDebt.toLocaleString()} $`;
-                document.getElementById('weeklyProgress').textContent = `${weekStats.progress.toFixed(1)}%`;
-                document.getElementById('monthlyProgress').textContent = `${monthStats.progress.toFixed(1)}%`;
-
-                document.getElementById('weekTotal').textContent = `${weekStats.total.toLocaleString()} $`;
-                document.getElementById('weekRemaining').textContent = `${weekStats.remaining.toLocaleString()} $`;
-                document.getElementById('weekProgressBar').style.width = `${weekStats.progress}%`;
-
-                this.updateTransactionsList(savings);
             }
 
           
@@ -1740,7 +2019,13 @@
                 function setQuickFilter(period) {
                     app.setQuickFilter(period);
                 }
+    function saveWeeklyIncomes() {
+        app.saveWeeklyIncomes();
+    }
 
+    function calculateAndPayTithe() {
+        app.calculateAndPayTithe();
+    }
 
         // Initialisation de l'application
         const app = new SavingsApp();
