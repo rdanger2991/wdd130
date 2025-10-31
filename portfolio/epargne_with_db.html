@@ -1662,9 +1662,9 @@
                         const isSurplus = deficit < 0;
 
                         statusText = isDeficit
-                            ? `Déficit: ${deficit.toFixed(2)} $`
+                            ? `Déficit: ${deficit.toFixed(2)} GDES`  // Changé de $ à GDES
                             : isSurplus
-                                ? `Excédent: ${Math.abs(deficit).toFixed(2)} $`
+                                ? `Excédent: ${Math.abs(deficit).toFixed(2)} GDES`  // Changé de $ à GDES
                                 : 'Objectif atteint ✓';
 
                         if (isDeficit) itemClass += ' deficit';
