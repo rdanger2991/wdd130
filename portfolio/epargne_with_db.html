@@ -1660,15 +1660,23 @@
                         const deficit = this.dailyTarget - transaction.amount;
                         const isDeficit = deficit > 0;
                         const isSurplus = deficit < 0;
+                        const isExactTarget = Math.abs(deficit) < 0.01;
 
-                        statusText = isDeficit
-                            ? `Déficit: ${deficit.toFixed(2)} GDES`  // Changé de $ à GDES
-                            : isSurplus
-                                ? `Excédent: ${Math.abs(deficit).toFixed(2)} GDES`  // Changé de $ à GDES
-                                : 'Objectif atteint ✓';
-
-                        if (isDeficit) itemClass += ' deficit';
-                        else if (isSurplus) itemClass += ' surplus';
+                        // Cas spéciaux pour les montants remarquables
+                        if (transaction.amount === 10000) {
+                            statusText = '🎉 Objectif hebdomadaire complet !';
+                            itemClass += ' surplus';
+                        } else if (isExactTarget) {
+                            statusText = 'Objectif quotidien atteint ✓';
+                        } else if (isDeficit) {
+                            statusText = `Déficit: ${deficit.toFixed(2)} GDES`;
+                            itemClass += ' deficit';
+                        } else {
+                            // Pour l'excédent, montrer aussi en % de l'objectif quotidien
+                            const percentOfDaily = ((transaction.amount / this.dailyTarget) * 100).toFixed(0);
+                            statusText = `Excédent: ${Math.abs(deficit).toFixed(2)} GDES (${percentOfDaily}% de l'objectif quotidien)`;
+                            itemClass += ' surplus';
+                        }
                     }
 
                     const item = document.createElement('div');
