@@ -477,7 +477,7 @@
 
         <div class="header">
             <h1>💰 MonÉpargne Intelligente</h1>
-            <p>Objectif : 1 000$ par jour (Lundi-Samedi) • Système de dette flexible</p>
+        <p>Objectif : 10 000 GDES par semaine (Lundi-Samedi) • Système de dette flexible</p>
         </div>
 
         <div class="motivation">
@@ -519,20 +519,20 @@
                 <button class="btn btn-success" onclick="calculateAndPayTithe()">Calculer et Payer la Dîme</button>
             </div>
         
-            <div class="tithe-summary">
-                <div id="weeklyIncomeTotal">Total hebdomadaire : 0 $</div>
-                <div id="titheAmount">Dîme à payer : 0 $</div>
-                <div id="netIncome">Revenu net : 0 $</div>
-            </div>
+        <div class="tithe-summary">
+            <div id="weeklyIncomeTotal">Total hebdomadaire : 0 GDES</div>
+            <div id="titheAmount">Dîme à payer : 0 GDES</div>
+            <div id="netIncome">Revenu net : 0 GDES</div>
+        </div>
         </div>
 
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-value" id="totalSavings">0 $</div>
+                <div class="stat-value" id="totalSavings">0 GDES</div>
                 <div class="stat-label">Épargne Totale</div>
             </div>
             <div class="stat-card debt">
-                <div class="stat-value" id="currentDebt">0 $</div>
+                <div class="stat-value" id="currentDebt">0 GDES</div>
                 <div class="stat-label">Dette Actuelle</div>
             </div>
             <div class="stat-card progress">
@@ -552,15 +552,15 @@
             </div>
             <div class="week-stats">
                 <div class="week-stat">
-                    <div id="weekTotal" style="font-size: 1.3em; font-weight: bold; color: #1976D2;">0 $</div>
+                    <div id="weekTotal" style="font-size: 1.3em; font-weight: bold; color: #1976D2;">0 GDES</div>
                     <div>Total Semaine</div>
                 </div>
                 <div class="week-stat">
-                    <div id="weekObjectif" style="font-size: 1.3em; font-weight: bold; color: #333;">6 000 $</div>
+                    <div id="weekObjectif" style="font-size: 1.3em; font-weight: bold; color: #333;">10 000 GDES</div>
                     <div>Objectif Semaine</div>
                 </div>
                 <div class="week-stat">
-                    <div id="weekRemaining" style="font-size: 1.3em; font-weight: bold; color: #f57c00;">6 000 $</div>
+                    <div id="weekRemaining" style="font-size: 1.3em; font-weight: bold; color: #f57c00;">10 000 GDES</div>
                     <div>Reste à Épargner</div>
                 </div>
             </div>
@@ -586,8 +586,8 @@
                         <input type="date" id="transactionDate" >
                     </div>
                     <div class="form-group">
-                        <label for="transactionAmount">Montant ($) :</label>
-                        <input type="number" id="transactionAmount" min="0" step="0.01" placeholder="Ex: 1000">
+                    <label for="transactionAmount">Montant (GDES) :</label>
+                    <input type="number" id="transactionAmount" min="0" step="0.01" placeholder="Ex: 1667">
                     </div>
                     <button type="submit" class="btn" id="submitBtn">Ajouter Épargne</button>
                 </form>
@@ -612,7 +612,7 @@
                         <input type="date" id="editDate">
                     </div>
                     <div class="form-group">
-                        <label for="editAmount">Montant ($) :</label>
+                        <label for="editAmount">Montant (GDES) :</label>
                         <input type="number" id="editAmount" min="0" step="0.01" >
                     </div>
                     <button type="button" class="btn" onclick="updateTransaction()">Sauvegarder</button>
@@ -820,7 +820,8 @@
         class SavingsApp {
            constructor() {
                 this.db = new SavingsDB();
-                this.dailyTarget = 1000;
+                this.dailyTarget = 1667; // 10,000 GDES / 6 jours = 1,666.67 arrondi
+                this.weeklyTarget = 10000; // Nouvel attribut pour l'objectif hebdomadaire
                 this.currentDebt = 0;
                 this.user = null;
                 this.isOnline = navigator.onLine;
@@ -828,19 +829,17 @@
                 this.motivationalMessages = [
                     "Excellente discipline financière ! 🎯",
                     "Vous êtes sur la bonne voie ! 💪",
-                    "Chaque dollar compte ! 💰",
+                    "Chaque gourde compte ! 💰",
                     "Votre future vous remerciera ! 🌟",
                     "L'épargne, c'est la liberté ! 🗽",
                     "Continuez comme ça ! 🚀",
                     "Votre détermination paie ! 💎"
                 ];
-
-                // Écouter les changements de connexion
                 window.addEventListener('online', () => this.handleConnectionChange(true));
                 window.addEventListener('offline', () => this.handleConnectionChange(false));
                 this.currentFilter = null;
-                 this.weeklyIncomes = {};
-               this.currentWeekKey = this.getCurrentWeekKey();
+                this.weeklyIncomes = {};
+                this.currentWeekKey = this.getCurrentWeekKey();
             }
 
               async init() {
@@ -1104,7 +1103,7 @@
                 }
             }
 
-            async calculateAndPayTithe() {
+           async calculateAndPayTithe() {
                 const weekKey = this.currentWeekKey;
                 const incomes = this.weeklyIncomes[weekKey] || {};
 
@@ -1123,8 +1122,8 @@
                 const result = await Swal.fire({
                     title: 'Confirmer le paiement de la dîme',
                     html: `
-            <p>Total des gains: <strong>${totalIncome.toFixed(2)} $</strong></p>
-            <p>Dîme (10%): <strong>${titheAmount.toFixed(2)} $</strong></p>
+            <p>Total des gains: <strong>${totalIncome.toFixed(2)} GDES</strong></p>
+            <p>Dîme (10%): <strong>${titheAmount.toFixed(2)} GDES</strong></p>
             <p>Voulez-vous enregistrer ce paiement de dîme ?</p>
         `,
                     icon: 'question',
@@ -1135,7 +1134,6 @@
 
                 if (result.isConfirmed && titheAmount > 0) {
                     try {
-                        // Enregistrer le paiement de la dîme comme un retrait spécial
                         const id = this.generateId();
                         const today = this.getCurrentDateString();
 
@@ -1156,7 +1154,7 @@
                         Swal.fire({
                             icon: 'success',
                             title: 'Dîme payée !',
-                            text: `${titheAmount.toFixed(2)} $ ont été prélevés pour la dîme`,
+                            text: `${titheAmount.toFixed(2)} GDES ont été prélevés pour la dîme`,
                             timer: 3000,
                             showConfirmButton: false
                         });
@@ -1171,7 +1169,7 @@
                 }
             }
 
-            updateIncomeDisplay() {
+           updateIncomeDisplay() {
                 const weekKey = this.currentWeekKey;
                 const incomes = this.weeklyIncomes[weekKey] || {};
 
@@ -1179,9 +1177,9 @@
                 const titheAmount = totalIncome * 0.1;
                 const netIncome = totalIncome - titheAmount;
 
-                document.getElementById('weeklyIncomeTotal').textContent = `Total hebdomadaire : ${totalIncome.toFixed(2)} $`;
-                document.getElementById('titheAmount').textContent = `Dîme à payer : ${titheAmount.toFixed(2)} $`;
-                document.getElementById('netIncome').textContent = `Revenu net : ${netIncome.toFixed(2)} $`;
+                document.getElementById('weeklyIncomeTotal').textContent = `Total hebdomadaire : ${totalIncome.toFixed(2)} GDES`;
+                document.getElementById('titheAmount').textContent = `Dîme à payer : ${titheAmount.toFixed(2)} GDES`;
+                document.getElementById('netIncome').textContent = `Revenu net : ${netIncome.toFixed(2)} GDES`;
             }
 
          async saveIncomeToDb(weekKey, incomes) {
@@ -1315,7 +1313,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'Solde insuffisant',
-                    text: `Votre solde actuel est de ${totalSavings.toFixed(2)} $. Vous ne pouvez pas retirer ${parseFloat(amount).toFixed(2)} $.`,
+                    text: `Votre solde actuel est de ${totalSavings.toFixed(2)} GDES. Vous ne pouvez pas retirer ${parseFloat(amount).toFixed(2)} GDES.`,
                     confirmButtonColor: '#667eea'
                 });
                 return;
@@ -1579,25 +1577,23 @@
         async updateDisplay() {
                 const savings = await this.db.getAllSavings();
 
-                // Utiliser calculateSavingsBalance pour les statistiques d'épargne
                 const savingsBalance = this.calculateSavingsBalance(savings);
-                const depositsOnly = savings.filter(s => s.type !== 'withdrawal' && s.type !== 'tithe'); // Exclure aussi la dîme
+                const depositsOnly = savings.filter(s => s.type !== 'withdrawal' && s.type !== 'tithe');
                 this.currentDebt = this.calculateDebt(depositsOnly);
 
                 const weekStats = this.getWeekStats(depositsOnly);
                 const monthStats = this.getMonthStats(depositsOnly);
 
-                // Afficher le solde d'épargne (sans la dîme)
-                document.getElementById('totalSavings').textContent = `${savingsBalance.toLocaleString()} $`;
-                document.getElementById('currentDebt').textContent = `${this.currentDebt.toLocaleString()} $`;
+                // Affichage avec GDES
+                document.getElementById('totalSavings').textContent = `${savingsBalance.toLocaleString()} GDES`;
+                document.getElementById('currentDebt').textContent = `${this.currentDebt.toLocaleString()} GDES`;
                 document.getElementById('weeklyProgress').textContent = `${weekStats.progress.toFixed(1)}%`;
                 document.getElementById('monthlyProgress').textContent = `${monthStats.progress.toFixed(1)}%`;
 
-                document.getElementById('weekTotal').textContent = `${weekStats.total.toLocaleString()} $`;
-                document.getElementById('weekRemaining').textContent = `${weekStats.remaining.toLocaleString()} $`;
+                document.getElementById('weekTotal').textContent = `${weekStats.total.toLocaleString()} GDES`;
+                document.getElementById('weekRemaining').textContent = `${weekStats.remaining.toLocaleString()} GDES`;
                 document.getElementById('weekProgressBar').style.width = `${weekStats.progress}%`;
 
-                // N'appeler updateTransactionsList QUE si aucun filtre n'est actif
                 if (!this.currentFilter) {
                     await this.updateTransactionsList(savings);
                 }
@@ -1681,26 +1677,26 @@
                   const amountClass = (isWithdrawal || isTithe) ? 'transaction-amount withdrawal' : 'transaction-amount deposit';
                     const amountPrefix = (isWithdrawal || isTithe) ? '-' : '+';
 
-                    item.innerHTML = `
-            <div class="savings-info">
-                <div class="savings-date">${saveDate.toLocaleDateString('fr-FR', {
+                  item.innerHTML = `
+    <div class="savings-info">
+        <div class="savings-date">${saveDate.toLocaleDateString('fr-FR', {
                         weekday: 'long',
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
                     })}</div>
-                <div class="savings-amount ${amountClass}">${amountPrefix}${transaction.amount.toLocaleString()} $</div>
-                <div class="savings-status">${statusText}</div>
-            </div>
-            <div class="actions">
-                <button class="btn btn-warning btn-small" onclick="app.editTransaction('${transaction.id}', '${transaction.date}', ${transaction.amount}, '${transaction.type || 'deposit'}')">
-                    ✏️ Modifier
-                </button>
-                <button class="btn btn-danger btn-small" onclick="app.deleteTransaction('${transaction.id}')">
-                    🗑️ Supprimer
-                </button>
-            </div>
-        `;
+        <div class="savings-amount ${amountClass}">${amountPrefix}${transaction.amount.toLocaleString()} GDES</div>
+        <div class="savings-status">${statusText}</div>
+    </div>
+    <div class="actions">
+        <button class="btn btn-warning btn-small" onclick="app.editTransaction('${transaction.id}', '${transaction.date}', ${transaction.amount}, '${transaction.type || 'deposit'}')">
+            ✏️ Modifier
+        </button>
+        <button class="btn btn-danger btn-small" onclick="app.deleteTransaction('${transaction.id}')">
+            🗑️ Supprimer
+        </button>
+    </div>
+`;
 
                     listContainer.appendChild(item);
                 });
@@ -1956,7 +1952,7 @@
                 });
 
                 const total = weekSavings.reduce((sum, saving) => sum + saving.amount, 0);
-                const target = 6000;
+                const target = 10000; // Changé de 6000 à 10000
                 const progress = Math.min(100, (total / target) * 100);
 
                 return { total, target, progress, remaining: Math.max(0, target - total) };
@@ -1989,7 +1985,7 @@
             showMotivation() {
                 const message = this.motivationalMessages[Math.floor(Math.random() * this.motivationalMessages.length)];
                 const debtStatus = this.currentDebt > 0
-                    ? `Dette actuelle: ${this.currentDebt.toFixed(2)} $ - Continuez vos efforts !`
+                    ? `Dette actuelle: ${this.currentDebt.toFixed(2)} GDES - Continuez vos efforts !`
                     : "Aucune dette - Excellent travail ! 🎉";
 
                 document.getElementById('motivationText').textContent = message;
